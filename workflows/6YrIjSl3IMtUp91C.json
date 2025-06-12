@@ -1,0 +1,96 @@
+{
+  "createdAt": "2025-06-11T11:09:29.690Z",
+  "updatedAt": "2025-06-11T11:09:35.150Z",
+  "id": "6YrIjSl3IMtUp91C",
+  "name": "GetOnboardingFileWorkflowagents",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "ae9e02ab-d8ce-4954-9bcd-da44e0efba22",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -100
+      ],
+      "id": "219257dc-1153-4dd9-ad2a-917bc4e9fee6",
+      "name": "Webhook",
+      "webhookId": "ae9e02ab-d8ce-4954-9bcd-da44e0efba22"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1oxSUjNR_Si5UaX7AfWy0r5tGt2IfbP8GKK7DjBo92Mw/view"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        40,
+        -100
+      ],
+      "id": "3f0ff2e2-5a4e-4288-bd3e-ca030da172a9",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        260,
+        -100
+      ],
+      "id": "7a33660e-357f-4469-891c-fd940772665d",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "712b3340-948d-4816-ba67-a1bbc54e5151",
+  "triggerCount": 0,
+  "tags": []
+}

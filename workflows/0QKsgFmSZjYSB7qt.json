@@ -1,0 +1,1229 @@
+{
+  "createdAt": "2025-06-12T12:53:12.413Z",
+  "updatedAt": "2025-06-12T13:28:42.892Z",
+  "id": "0QKsgFmSZjYSB7qt",
+  "name": "leila copy",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        }
+      },
+      "name": "Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        60
+      ],
+      "id": "bbd3faee-e12f-4e34-89cd-e1352fa49f7e"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 15,
+        "filters": {
+          "q": "from:(gemini-notes OR meetings-noreply)"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "8d472803-65da-48de-8c25-76e03cb8471e",
+      "name": "Gmail",
+      "webhookId": "5f434a35-429e-4e09-9c36-c33145e0c133",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sv4epLX3dUAhBbno",
+          "name": "Sales Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "sales@rh-s.com",
+          "mode": "list",
+          "cachedResultName": "sales@rh-s.com"
+        },
+        "timeMin": "={{ $now.minus({week: 1}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        220,
+        220
+      ],
+      "id": "0f879194-8018-4f3a-aa47-d785044794e8",
+      "name": "Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "lmaohrn9G1cLylHj",
+          "name": "Sales Google Calendar"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "company",
+        "options": {
+          "fuzzyCompare": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        760,
+        60
+      ],
+      "id": "43be7f0a-c251-4461-9680-2d3278844e4e",
+      "name": "Merge",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.calendar_title}}",
+                    "rightValue": "LG Call",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "6bc593b9-430a-4d78-bfa5-af02f1cca6d1"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": " LG Call"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ff4fb890-5dc2-4a6d-8854-5b5e9342e2e8",
+                    "leftValue": "={{$json.calendar_title}}",
+                    "rightValue": " Interview",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": " Interview"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fb22d71a-4ed1-4af8-9f4a-9fd1292c5c6c",
+                    "leftValue": "= {{$json.calendar_title}}",
+                    "rightValue": "Follow Up",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": " Follow Up"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ac388c14-ad74-4fe2-bdc0-0df2fb89b619",
+                    "leftValue": "={{$json.calendar_title}}",
+                    "rightValue": " Kick Off ",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": " Kick Off "
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3f6b629d-d276-41e8-8b6d-51eb007302b0",
+                    "leftValue": "Intro Call",
+                    "rightValue": "={{$json.calendar_title}}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Intro Call"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "92272608-ed73-48ad-8891-8053849dd82d",
+                    "leftValue": "Introductory Call",
+                    "rightValue": "={{$json.calendar_title}}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Introductory Call"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1480,
+        -20
+      ],
+      "id": "3a205ceb-1007-4dda-b68d-5a97a97d7342",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an advanced AI sales call assistant. Summarize the call information provided below in a structured format for internal CRM. Identify key details: client company, contact person, topics discussed, next steps, and any blockers or risks.\n\nCall details:\nEmail Subject: {{$json.email_subject}}\nEmail From: {{$json.email_from}}\nEmail Date: {{$json.email_date}}\nCalendar Title: {{$json.calendar_title}}\nCalendar Start: {{$json.calendar_start}}\nCalendar Description: {{$json.calendar_description}}\n\nReturn your summary in this format:\n- Company:\n- Contact:\n- Main Points:\n- Next Steps:\n- Blockers/Risks:\n- Any additional notes:",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "See the call details above and generate the summary as requested."
+            },
+            {
+              "message": "Return output strictly as JSON: {field1: …, field2: …}"
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 5,
+          "delayBetweenBatches": 3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1860,
+        -700
+      ],
+      "id": "ce080db8-6dd6-4a1c-9c78-11185d34a70a",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {
+          "frequencyPenalty": 0,
+          "maxTokens": 1500,
+          "responseFormat": "json_object",
+          "presencePenalty": 0,
+          "temperature": 0.3,
+          "timeout": 100000,
+          "maxRetries": 2,
+          "topP": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1900,
+        -540
+      ],
+      "id": "e818b733-7b30-454d-b0c2-119f8116f853",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "XMxQ0GCtR8pIxTvP",
+          "name": "DEV OpenAI expensive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"call_type\": \"LG Call\",\n  \"summary\": \"Short structured summary of the call (3-5 речень, без води, без повторів)\",\n  \"client_name\": \"Імʼя Прізвище клієнта (якщо є)\",\n  \"client_company\": \"Назва компанії (якщо є)\",\n  \"main_request\": \"Головний запит/ціль клієнта\",\n  \"next_steps\": \"Конкретні наступні дії з дедлайнами (дати, задачі, відповідальні)\",\n  \"call_date\": \"2025-06-11\",\n  \"key_points\": [\n    \"Коротко пунктами що важливе обговорювали\",\n    \"Ще один пункт\"\n  ],\n  \"decision_maker\": \"Так/Ні (є чи немає на дзвінку)\",\n  \"extra_notes\": \"Щось важливе додатково (якщо є)\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2040,
+        -560
+      ],
+      "id": "ee7b6f83-bbcf-400d-a0be-967860121429",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Analyze this Interview call and create a concise, actionable summary (max 5 sentences). Highlight the main discussion points, candidate strengths, concerns, and next steps. Be direct and avoid fluff.\nReturn only the structured result, no explanations.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an AI assistant helping with interview analysis.   Summarize the following call using only valid JSON as output, with these fields: {   \"call_type\": \"Interview\",   \"summary\": \"Brief (max 5 sentences) actionable summary of the interview\",   \"candidate_strengths\": \"Key positive qualities of the candidate\",   \"concerns\": \"Potential issues or red flags (if any)\",   \"main_topics\": [\"topic 1\", \"topic 2\"],   \"next_steps\": \"What to do next\",   \"date\": \"{{$json.calendar_start}}\" } Respond strictly in valid JSON. Do not write any explanations or extra text."
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 5,
+          "delayBetweenBatches": 3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1900,
+        -400
+      ],
+      "id": "80707cd2-208d-446a-a2d6-56077ba0b360",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {
+          "frequencyPenalty": 0,
+          "maxTokens": 1000,
+          "responseFormat": "json_object",
+          "presencePenalty": 0,
+          "temperature": 0.3,
+          "timeout": 100000,
+          "maxRetries": 2,
+          "topP": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1920,
+        -260
+      ],
+      "id": "26c5a455-d7a0-4b42-b213-c4939fd67cc8",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "XMxQ0GCtR8pIxTvP",
+          "name": "DEV OpenAI expensive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"call_type\": \"Interview\",\n  \"interviewee_name\": \"Jane Smith\",\n  \"interviewer_name\": \"Michael Brown\",\n  \"company\": \"ACME Corp\",\n  \"position\": \"Business Analyst\",\n  \"interview_date\": \"2025-06-10T13:00:00Z\",\n  \"summary\": \"Concise summary of the interview. Main impressions, attitude, and key points.\",\n  \"strengths\": [\"Analytical thinking\", \"Teamwork\", \"Attention to detail\"],\n  \"weaknesses\": [\"Limited experience with AI tools\"],\n  \"questions_asked\": [\n    \"Describe your experience with data analysis.\",\n    \"What motivates you in your work?\"\n  ],\n  \"candidate_questions\": [\n    \"What is the company culture?\",\n    \"Are there opportunities for professional growth?\"\n  ],\n  \"decision\": \"To be decided\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2060,
+        -260
+      ],
+      "id": "9aa5864b-2691-4dc9-8f5b-8db944fd7241",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an AI assistant that processes follow-up sales call notes. Your task is to generate a concise summary, highlight client feedback, next steps, objections, and action items. Respond only in JSON using the schema below. If a field is missing, leave it empty. All output must be strictly valid JSON.\n\n{\n  \"call_type\": \"Follow Up\",\n  \"client_name\": \"\",\n  \"company\": \"\",\n  \"date\": \"\",\n  \"summary\": \"\",\n  \"feedback\": \"\",\n  \"objections\": \"\",\n  \"next_steps\": \"\",\n  \"action_items\": [],\n  \"responsible\": []\n}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an advanced AI assistant for processing [назва гілки, наприклад, Follow Up Call] notes. You must always reply STRICTLY in JSON format matching the provided schema. Output ONLY valid JSON. If data is missing, leave fields empty or null. Do not generate text outside JSON."
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=Here are the notes for the [назва гілки, наприклад, follow-up call]: {{ $json.notes }} Respond in JSON using this schema: {   \"call_type\": \"[назва гілки]\",   \"client_name\": \"\",   \"company\": \"\",   \"date\": \"\",   \"summary\": \"\",   \"feedback\": \"\",   \"objections\": \"\",   \"next_steps\": \"\",   \"action_items\": [],   \"responsible\": [] }"
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 5,
+          "delayBetweenBatches": 3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1900,
+        -120
+      ],
+      "id": "e4488477-f5c8-40a3-8a75-a88b89749465",
+      "name": "Basic LLM Chain2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {
+          "frequencyPenalty": 0,
+          "maxTokens": 1200,
+          "responseFormat": "json_object",
+          "presencePenalty": 0,
+          "temperature": 0.3,
+          "timeout": 100000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1900,
+        -20
+      ],
+      "id": "445c92f4-40c5-4a09-b867-8c300193b30c",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "XMxQ0GCtR8pIxTvP",
+          "name": "DEV OpenAI expensive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"call_type\": \"Follow Up\",\n  \"client_name\": \"John Doe\",\n  \"company\": \"Acme Inc.\",\n  \"date\": \"2025-06-11T10:00:00Z\",\n  \"summary\": \"Summary of the follow up call. Main discussion points.\",\n  \"feedback\": \"Client shared feedback on our offer.\",\n  \"objections\": \"No major objections.\",\n  \"next_steps\": \"Send proposal by next week.\",\n  \"action_items\": [\n    \"Prepare proposal\",\n    \"Schedule next meeting\"\n  ],\n  \"responsible\": [\n    \"Alex (Manager)\",\n    \"Lena (Sales)\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2060,
+        -20
+      ],
+      "id": "9fc22b7b-d83f-4f57-8939-7290d99b1155",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here are the notes for the kick off call:\n{{ $json.notes }}\nRespond in JSON using this schema:\n{\n  \"call_type\": \"Kick Off\",\n  \"client_name\": \"\",\n  \"company\": \"\",\n  \"date\": \"\",\n  \"agenda\": \"\",\n  \"participants\": [],\n  \"main_points\": \"\",\n  \"next_steps\": \"\",\n  \"action_items\": [],\n  \"responsible\": []\n}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an advanced AI assistant for processing Kick Off Call notes. You must always reply STRICTLY in JSON format matching the provided schema. Output ONLY valid JSON. If data is missing, leave fields empty or null. Do not generate text outside JSON."
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 5,
+          "delayBetweenBatches": 3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1900,
+        140
+      ],
+      "id": "9ae7567e-d734-4ee4-b3ff-01b01979f5bd",
+      "name": "Basic LLM Chain3"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {
+          "frequencyPenalty": 0,
+          "maxTokens": 1200,
+          "responseFormat": "json_object",
+          "presencePenalty": 0,
+          "temperature": 0.3,
+          "timeout": 100000,
+          "maxRetries": 2,
+          "topP": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1920,
+        260
+      ],
+      "id": "fc42ebfd-a22a-49ff-b948-e59ff8dc2a6e",
+      "name": "OpenAI Chat Model3",
+      "credentials": {
+        "openAiApi": {
+          "id": "XMxQ0GCtR8pIxTvP",
+          "name": "DEV OpenAI expensive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"call_type\": \"Kick Off\",\n  \"client_name\": \"John Doe\",\n  \"company\": \"Acme Inc.\",\n  \"date\": \"2025-06-11T10:00:00Z\",\n  \"agenda\": \"Discuss project launch\",\n  \"participants\": [\"John Doe\", \"Jane Smith\"],\n  \"main_points\": \"Kick off objectives, deadlines, and responsibilities\",\n  \"next_steps\": \"Prepare project plan\",\n  \"action_items\": [\"Draft project plan\", \"Assign tasks\"],\n  \"responsible\": [\"John Doe\", \"Jane Smith\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2060,
+        260
+      ],
+      "id": "f6765818-fb9b-4e73-86d4-b426f25ab201",
+      "name": "Structured Output Parser3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Ось нотатки Intro Call:\n{{json.description}}\n\nВиділи й підстав у цей JSON будь-яку релевантну інформацію по кожному полю. Якщо поле не знаходиться прямо, але інформація присутня в тексті — витягни її й підстав. Якщо інфи немає взагалі — підстав порожній рядок (\"\"). Форматуй тільки у валідний JSON:\n\n{\n  \"intro_call_summary\": \"\",\n  \"client_name\": \"\",\n  \"client_company\": \"\",\n  \"call_date\": \"\",\n  \"main_questions\": [],\n  \"discussed_topics\": [],\n  \"decisions\": [],\n  \"responsible\": \"\",\n  \"next_steps\": [],\n  \"comments\": \"\"\n}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Ти — AI-асистент для парсингу нотаток Intro Call. Витягуй й підставляй будь-яку релевантну інформацію у відповідні поля навіть якщо вони явно не позначені, а вказані у вільній формі чи контексті (наприклад, ім'я, дата, питання клієнта, компанія, хто відповідальний). Не залишай поле порожнім, якщо є хоча б часткова інформація."
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 5,
+          "delayBetweenBatches": 3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1820,
+        420
+      ],
+      "id": "12af4b28-da0b-4f60-a9a3-016dfb624372",
+      "name": "Basic LLM Chain4",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {
+          "frequencyPenalty": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1840,
+        580
+      ],
+      "id": "e0b9991a-a567-4744-9330-f21f606ee760",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "XMxQ0GCtR8pIxTvP",
+          "name": "DEV OpenAI expensive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"intro_call_summary\": \"string\",\n  \"client_name\": \"string\",\n  \"client_company\": \"string\",\n  \"call_date\": \"string\",\n  \"main_questions\": [\"string\"],\n  \"discussed_topics\": [\"string\"],\n  \"decisions\": [\"string\"],\n  \"responsible\": \"string\",\n  \"next_steps\": [\"string\"],\n  \"comments\": \"string\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1980,
+        580
+      ],
+      "id": "45dea966-da0a-4151-9664-3adced23a7fa",
+      "name": "Structured Output Parser4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Generate the Introductory Call summary as instructed below.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an AI assistant for Introductory Call analysis. Always reply STRICTLY in JSON (GSON) format using the provided schema. No text outside JSON. If any value is missing, use an empty string, null, or an empty array.  Here are the notes from the Introductory Call: {{$json.notes}}  Respond in JSON using this schema: {   \"call_type\": \"Introductory Call\",   \"client_name\": \"\",   \"company\": \"\",   \"date\": \"\",   \"participants\": [],   \"agenda\": \"\",   \"main_points\": [],   \"next_steps\": [],   \"action_items\": [],   \"responsible\": [],   \"comments\": \"\" }"
+            }
+          ]
+        },
+        "batching": {
+          "batchSize": 5,
+          "delayBetweenBatches": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1800,
+        740
+      ],
+      "id": "d104d462-1b95-455e-b3a9-37c401f50d91",
+      "name": "Basic LLM Chain5"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {
+          "frequencyPenalty": 0,
+          "maxTokens": 1000,
+          "responseFormat": "json_object",
+          "presencePenalty": 0,
+          "temperature": 0.3,
+          "timeout": 60000,
+          "maxRetries": 2,
+          "topP": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1800,
+        900
+      ],
+      "id": "d37a0ffa-a80a-45b3-9f1c-fbd7fa411f8c",
+      "name": "OpenAI Chat Model5",
+      "credentials": {
+        "openAiApi": {
+          "id": "XMxQ0GCtR8pIxTvP",
+          "name": "DEV OpenAI expensive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"call_type\": \"Introductory Call\",\n  \"client_name\": \"Anna Voronina\",\n  \"company\": \"Orbit Solutions\",\n  \"date\": \"2025-06-11T14:00:00Z\",\n  \"participants\": [\"Anna Voronina\", \"Maksym Ilchenko\"],\n  \"agenda\": \"Introduction of project scope and key stakeholders.\",\n  \"main_points\": [\n    \"Reviewed client expectations\",\n    \"Discussed timelines\",\n    \"Identified main risks\"\n  ],\n  \"next_steps\": [\n    \"Send initial documentation\",\n    \"Schedule technical deep-dive\"\n  ],\n  \"action_items\": [\n    \"Prepare kickoff materials\",\n    \"Assign onboarding manager\"\n  ],\n  \"responsible\": [\"Anna Voronina\", \"Maksym Ilchenko\"],\n  \"comments\": \"Client motivated, no major blockers.\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1960,
+        900
+      ],
+      "id": "4b0e5374-23ec-4c35-a450-51faac285f17",
+      "name": "Structured Output Parser5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// For each email item, extract the company name from the subject line\nreturn items.map(item => {\n  const subj = item.json.Subject || \"\";\n  // Example: 'Notes: “Simplexity Group AG – Remote Helpers” Jun 10, 2025'\n  // Remove everything before first quotation mark\n  // Remove trailing '- Remote Helpers' and dates\n  let company = \"\";\n  const match = subj.match(/[“\"](.+?)(?:(?:\\s*-\\s*Remote Helpers)?)[”\"]/);\n  if (match) {\n    company = match[1].trim();\n  }\n  item.json.company = company;\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "9b1c9264-f002-4789-9cee-85a142ef005a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "// For each calendar event, extract the company name from the summary field\nreturn items.map(item => {\n  const summary = item.json.summary || \"\";\n  // Example: 'Simplexity Group AG - Follow up'\n  // Remove trailing ' - Follow up' or similar\n  let company = summary;\n  if (company.includes(\" - \")) {\n    company = company.split(\" - \")[0].trim();\n  }\n  item.json.company = company;\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        220
+      ],
+      "id": "bbefdc47-41f7-4ffe-8746-ffe01dde3385",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const data = item.json;\n\n  // Витягуємо company та call_type із Subject (якщо треба)\n  const subject = data.Subject || \"\";\n  const company = data.company || \"\";\n  const summary = data.summary || \"\";\n  const from = data.From || \"\";\n  const to = data.To || \"\";\n  const description = data.description || \"\";\n\n  // Витягуємо старт та кінець (можуть бути вкладені об'єкти)\n  let start = \"\";\n  let end = \"\";\n  if (data.start && typeof data.start === \"object\") {\n    start = data.start.dateTime || \"\";\n  }\n  if (data.end && typeof data.end === \"object\") {\n    end = data.end.dateTime || \"\";\n  }\n\n  // Парсимо тип дзвінка з subject/summary\n  let call_type = \"\";\n  const callTypeSource = subject + \" \" + summary;\n  const match = callTypeSource.match(/(follow ?up|interview|kick ?off|intro ?call|introductory ?call|lg ?call)/i);\n  if (match) {\n    call_type = match[1];\n  }\n\n  return {\n    json: {\n      id: data.id || \"\",\n      threadId: data.threadId || \"\",\n      company: company,\n      subject: subject,\n      summary: summary,\n      call_type: call_type,\n      from: from,\n      to: to,\n      start: start,\n      end: end,\n      description: description\n      // додаєш ще що треба тут\n    }\n  }\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        60
+      ],
+      "id": "0e16da53-f424-4443-9e62-eedede2a9c5c",
+      "name": "merdge gmail+calendar"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        }
+      },
+      "name": "Trigger1",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        480
+      ],
+      "id": "49a75542-dc4e-4f82-8190-e4b609cd7962"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 15,
+        "filters": {
+          "q": "from:(gemini-notes OR meetings-noreply)"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        440
+      ],
+      "id": "48a9b0f6-413c-4abd-b572-ef2768b3abd0",
+      "name": "Gmail1",
+      "webhookId": "5f81371a-df31-4709-852d-76cfa6a7deb0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sv4epLX3dUAhBbno",
+          "name": "Sales Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "sales@rh-s.com",
+          "mode": "list",
+          "cachedResultName": "sales@rh-s.com"
+        },
+        "timeMin": "={{ $now.minus({week: 1}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        220,
+        640
+      ],
+      "id": "1fb5c1a2-8519-46e4-87b1-4282556ea993",
+      "name": "Google Calendar1",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "lmaohrn9G1cLylHj",
+          "name": "Sales Google Calendar"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "company",
+        "options": {
+          "fuzzyCompare": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        760,
+        480
+      ],
+      "id": "af64a218-1292-4499-968a-79fcf1582e3a",
+      "name": "Merge1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// For each email item, extract the company name from the subject line\nreturn items.map(item => {\n  const subj = item.json.Subject || \"\";\n  // Example: 'Notes: “Simplexity Group AG – Remote Helpers” Jun 10, 2025'\n  // Remove everything before first quotation mark\n  // Remove trailing '- Remote Helpers' and dates\n  let company = \"\";\n  const match = subj.match(/[“\"](.+?)(?:(?:\\s*-\\s*Remote Helpers)?)[”\"]/);\n  if (match) {\n    company = match[1].trim();\n  }\n  item.json.company = company;\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        440
+      ],
+      "id": "17e44cc8-0bdd-49be-b62c-04aec0e3417d",
+      "name": "Code2",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Вхідний масив з елементами\nconst inputItems = $input.all(); \n\nlet output = []; // Масив для результатів\n\n// Проходимо по кожному елементу в масиві\ninputItems.forEach(item => {\n  const dateTime = item.json.start.dateTime; // Витягуємо дату та час\n\n  if (dateTime) {\n    // Видаляємо часову зону з рядка, щоб не було зміщення\n    const dateTimeWithoutTimezone = dateTime.split('+')[0];\n\n    // Створюємо об'єкт Date без врахування часової зони\n    const date = new Date(dateTimeWithoutTimezone);\n\n    // Отримуємо години та хвилини\n    const hours = date.getHours();\n    const minutes = date.getMinutes();\n\n    // Форматуємо результат у формат hh:mm (24-годинний формат)\n    const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;\n\n    // Додаємо відформатований час та інші дані з item до результату\n    output.push({\n      ...item.json, // додаємо всі поля з вхідного елемента\n      time: formattedTime // додаємо новий відформатований час\n    });\n  } else {\n    // Якщо в полі dateTime немає значення, додаємо помилку\n    output.push({\n      ...item.json, // додаємо всі поля з вхідного елемента\n      error: 'Invalid dateTime format' // додаємо помилку\n    });\n  }\n});\n\n// Повертаємо масив об'єктів\nreturn output;\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        640
+      ],
+      "id": "993ad5d4-6bb4-4b30-90a2-46e5bf53dc03",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "content": "# Дзвінки окрім \"- Remote Helpers\"",
+        "height": 520,
+        "width": 1380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        360
+      ],
+      "id": "3f6fb353-d85c-4169-a8b5-c772b5e63ad5",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Збираємо всі дзвінки по компаніях\nconst grouped = {};\nitems.forEach(item => {\n  const data = item.json;\n  const company = (data.company || \"\").trim();\n  if (!grouped[company]) grouped[company] = [];\n  grouped[company].push(item);\n});\n\n// Для кожної компанії визначаємо call_type\nObject.keys(grouped).forEach(company => {\n  grouped[company].sort((a, b) => new Date(a.json.start) - new Date(b.json.start));\n  grouped[company].forEach((item, idx) => {\n    // Перший дзвінок по компанії — Intro Call\n    if (idx === 0) {\n      item.json.call_type = \"Intro Call\";\n    } else {\n      // Далі по ключових словах у subject/summary/description\n      const subj = (item.json.subject || \"\").toLowerCase();\n      const summ = (item.json.summary || \"\").toLowerCase();\n      const descr = (item.json.description || \"\").toLowerCase();\n\n      if (subj.includes(\"follow\") || summ.includes(\"follow\") || descr.includes(\"follow\")) {\n        item.json.call_type = \"Follow Up\";\n      } else if (subj.includes(\"interview\") || summ.includes(\"interview\") || descr.includes(\"interview\")) {\n        item.json.call_type = \"Interview\";\n      } else if (subj.includes(\"meeting records\") || summ.includes(\"meeting records\")) {\n        item.json.call_type = \"Meeting\";\n      } else if (subj.includes(\"notes\") || summ.includes(\"notes\")) {\n        item.json.call_type = \"Notes\";\n      } else {\n        item.json.call_type = \"Other\";\n      }\n    }\n  });\n});\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        480
+      ],
+      "id": "9bbddfe5-6f96-4ee1-bcfd-4806da72403e",
+      "name": "merdge gmail+calendar1"
+    }
+  ],
+  "connections": {
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "merdge gmail+calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser3": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain3",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain4",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser4": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain4",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain5",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser5": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain5",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "merdge gmail+calendar": {
+      "main": [
+        []
+      ]
+    },
+    "Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Calendar1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar1": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "merdge gmail+calendar1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "merdge gmail+calendar1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "12ecb28f-c6e0-4b56-86e1-fbfc0c9a4916",
+  "triggerCount": 0,
+  "tags": []
+}

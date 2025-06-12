@@ -1,0 +1,33 @@
+{
+  "createdAt": "2025-06-11T08:08:15.745Z",
+  "updatedAt": "2025-06-11T08:08:52.659Z",
+  "id": "DMjOR3dhzUs6yIdg",
+  "name": "My workflow 4",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "96c81fe6-0b8e-41ce-a285-66255541afc1",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "5f66bbbf-0103-4e95-bcff-613466730fe4",
+  "triggerCount": 0,
+  "tags": []
+}

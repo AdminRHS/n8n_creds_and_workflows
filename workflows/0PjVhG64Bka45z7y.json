@@ -1,0 +1,300 @@
+{
+  "createdAt": "2025-06-11T12:56:12.271Z",
+  "updatedAt": "2025-06-11T12:56:57.889Z",
+  "id": "0PjVhG64Bka45z7y",
+  "name": "N8n-Notion_Task_Management_Automation_read",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        80
+      ],
+      "id": "0f893d61-0215-4c41-ae07-c2091f413d67",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -340,
+        80
+      ],
+      "id": "9a2b37fa-10cf-4513-a749-37b36ce2ea1e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "/**\n * Рекурсивно находит все строковые значения полей \"content\"\n */\nfunction findContent(obj, contentValues) {\n  if (obj && typeof obj === 'object') {\n    if (Array.isArray(obj)) {\n      for (const el of obj) {\n        findContent(el, contentValues);\n      }\n    } else {\n      for (const [key, val] of Object.entries(obj)) {\n        if (key === 'content' && typeof val === 'string') {\n          contentValues.push(val);\n        } else {\n          findContent(val, contentValues);\n        }\n      }\n    }\n  }\n}\n\n// 1. Берём входящий блок\nconst data = item.json;\n\n// 2. Собираем все вхождения \"content\"\nconst contentValues = [];\nfindContent(data, contentValues);\n\n// 3. Формируем текст или null\nconst text = contentValues.length ? contentValues.join(' | ') : null;\n\n// 4. **Очень важно** — вернуть один объект, а не массив\nreturn {\n  json: { text }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        140
+      ],
+      "id": "6d4f4b1a-0f04-4ecc-b643-bf48320179f4",
+      "name": "Parse Notion Block"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      texts: items.map(item => item.json.text).filter(t => t !== null && t !== undefined)\n    }\n  }\n]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        -20
+      ],
+      "id": "82af4e16-bead-4f72-98c3-1a73d865e851",
+      "name": "Build Text Array"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "operation": "getAll",
+        "blockId": {
+          "__rl": true,
+          "value": "1f1b16a314518096935fd8e1836183de",
+          "mode": "id"
+        },
+        "fetchNestedBlocks": true
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -680,
+        80
+      ],
+      "id": "1edf543c-3919-49e4-80fd-94d50779595a",
+      "name": "Notion: Get all inside blocks by ID",
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Ты — помощник по извлечению текста из JSON.  \nТебе на вход даётся один JSON-объект. Твоя задача — найти во всём объекте (рекурсивно) все поля с ключом `\"content\"` и собрать их значения (строки) в одну строку, разделив их через `\" | \"`.  \n\nПотом **нужно вывести ровно один JSON** вида:\n```json\n{\n  \"text\": \"<полученная строка или null>\"\n}\nОбъект: {{ $json }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        100,
+        560
+      ],
+      "id": "efba0dba-d548-43d7-ba95-90869786448f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        100,
+        780
+      ],
+      "id": "ee136e1f-e458-4e99-85d8-04b127ac1c6f",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.content}}",
+                    "rightValue": "\"hasContent\"",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "37080e0d-ac51-454f-b45d-ee24e7324a14"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "hasContent"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0b282c9e-220a-4db8-987a-fd9f63ede679",
+                    "leftValue": "={{$json.content}}",
+                    "rightValue": "\"noContent\"",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "noContent"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -280,
+        540
+      ],
+      "id": "10be1890-68a5-4d72-a466-1541721db3ab",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "functionCode": "// 1. Получаем сырое содержимое (строку с кодом и JSON-объектом)\nconst raw = item.json.output || '';\n\n// 2. Находим в строке границы JSON-объекта\nconst start = raw.indexOf('{');\nconst end   = raw.lastIndexOf('}');\n\n// 3. Парсим только ту часть, что между первой «{» и последней «}»\nlet parsed = {};\nif (start !== -1 && end !== -1 && end > start) {\n  const jsonPart = raw.slice(start, end + 1);\n  try {\n    parsed = JSON.parse(jsonPart);\n  } catch (e) {\n    // Если не удалось распарсить — остаёмся с пустым parsed\n    parsed = {};\n  }\n}\n\n// 4. Берём поле text или null по умолчанию\nconst text = parsed.text ?? null;\n\n// 5. Возвращаем нужный формат\nreturn [\n  {\n    json: { text }\n  }\n];\n"
+      },
+      "id": "e74ba407-2615-47c6-b5fb-08a7dc3fdf6a",
+      "name": "Parse LLM JSON",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        460,
+        560
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Notion: Get all inside blocks by ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Build Text Array",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse Notion Block",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Notion Block": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion: Get all inside blocks by ID": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Parse LLM JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7df7b099-58f1-4cf7-ac38-b4d8c684d803",
+  "triggerCount": 0,
+  "tags": []
+}

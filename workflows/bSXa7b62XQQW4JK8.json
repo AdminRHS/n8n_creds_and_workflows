@@ -1,0 +1,1488 @@
+{
+  "createdAt": "2025-06-10T08:26:12.158Z",
+  "updatedAt": "2025-06-12T07:37:16.307Z",
+  "id": "bSXa7b62XQQW4JK8",
+  "name": "Sales First Call",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3140,
+        380
+      ],
+      "id": "fa805855-6aa0-4d29-86b0-8e38cbf4a350",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        700,
+        940
+      ],
+      "id": "86f506cf-f84b-435c-8c32-aa72b63b09b0",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Sales Workflow\n# This workflow automates data processing from various sources, including Gmail, Google Calendar, Google Sheets, and Google Docs. It gathers information \n# from emails, calendar events, and documents, processes it using a language model (LLM), then updates Google Sheets and sends a message to Discord.\n",
+        "height": 260,
+        "width": 2780,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        -560
+      ],
+      "id": "74e16b25-c269-44da-a524-cab0ade63fd6",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3180,
+        860
+      ],
+      "id": "5f04a16d-8c2d-4112-a87c-cd8815809f82",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=find in the Call Transcription information, about Immediate Requirement, Professional Skills, Software, Responsibilities, Future Needs, Status by the position(s) (possible/impossible), Next Step, Next Contact Day and Planned Start Date.\n\n**If, and ONLY if, a specific piece of information for a field is DIRECTLY MENTIONED in the Call Transcription, then extract it and write it under the corresponding field in the template.**\n\n**If a field's information is NOT mentioned at all in the Call Transcription, then leave that entire field in the template COMPLETELY EMPTY.** This means you should write the field name followed by a colon, and then **immediately insert two newline characters (effectively leaving a blank line after the field name).  Do NOT write anything else like \"(None mentioned)\", \"(Not specified)\", or any explanatory text.  Just leave it blank.**\n\nExtract information **EXACTLY as it appears** in the following call transcription and fill in the report template below.  **Do not infer, assume, or add any information that is not explicitly present in the transcription.**\n\nSome remarks to guide you:\n* \"Software: \" - If there is **no mention** of any software in the transcription, leave this field **completely empty**.\n* \"Responsibilities: \" -  If responsibilities are mentioned, write them as bullet points using the exact wording from the transcription. If **no responsibilities are mentioned**, leave this field **completely empty**.\n* \"Future Needs: \" - If future needs are explicitly mentioned, extract them. If **no future needs are mentioned**, leave this field **completely empty**.\n* \"Status by the position(s) (possible/impossible): \" - If the status of the position is mentioned, extract it. If **no status is mentioned**, leave this field **completely empty**.\n* \"Next Contact Day: \" - If a next contact day is mentioned, extract it. If **no next contact day is mentioned**, leave this field **completely empty**.\n* \"Planned Start Date: \" - If a planned start date is mentioned, extract it. If **no planned start date is mentioned**, leave this field **completely empty**.\n\n\nCall Transcription:\n{{ $json['Extracred Text'] }}\n\nfill information here\n\nImmediate Requirement:\n\nProfessional Skills:\n\nSoftware:\n\nResponsibilities:\n\nFuture Needs:\n\nStatus by the position(s) (possible/impossible): \n\nNext Step:\n\nNext Contact Day:\n\nPlanned Start Date:\n\nFormat the answer exactly according to the template.  For fields with information, leave an empty line between the field name and the value (or the first bullet point for Responsibilities). For fields with NO information from the transcription, leave a **completely empty line** after the field name and colon."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        3300,
+        720
+      ],
+      "id": "31841b4d-669f-452a-bf4b-0f251a284bea",
+      "name": "Usefull information about client"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b533dfaa-055a-4ff3-8ee3-ec01e2648ade",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "Interview",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        -80
+      ],
+      "id": "959d4ba3-f0b4-4872-bfb8-966c096cfb87",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b533dfaa-055a-4ff3-8ee3-ec01e2648ade",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "Second",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        80
+      ],
+      "id": "c661f147-ace8-4c72-b8d9-eb0c355b5dc0",
+      "name": "If3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -80
+      ],
+      "id": "a07813b4-67c9-445c-8863-7943b9863a5e",
+      "name": "If Formatted Data is empty ->"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        -100
+      ],
+      "id": "da8590dc-05a1-4c81-bcc6-204f03da21e3",
+      "name": "If meeting name contains Interview"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        60
+      ],
+      "id": "76e84647-9dc7-4eb3-9abf-d0da9d4d2a31",
+      "name": "If meeting name contains Second call"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b533dfaa-055a-4ff3-8ee3-ec01e2648ade",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "follow up",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "98a2d381-11ee-4edd-af9c-37ec9757aa4a",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "Follow up",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "0b9e5032-cc14-4a21-9f9d-92bef23f01cc",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "follow-up",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "2fef4ca3-3ae6-4e0d-b3db-578d02889253",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "Follow-up",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        240
+      ],
+      "id": "61778fae-cc32-48b4-9e33-577072d4ef0c",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        220
+      ],
+      "id": "eec27c7b-b6f9-4d32-ac12-92f25141e5ea",
+      "name": "If meeting name contains follow up"
+    },
+    {
+      "parameters": {
+        "functionCode": "/**\n * Функция parseInput принимает входной текст, где каждая строка имеет формат \"Ключ: Значение\".\n * Обрабатываются только строки, ключ которых соответствует одному из заданных полей.\n *\n * Заданные поля (колонки):\n *   Company Website, Contact Person, Speciality, Country-Location,\n *   Target Audience, Company Info, Comment, Manager\n */\nfunction parseInput(input) {\n  const fields = [\n    'Company Website',\n    'Contact Person',\n    'Speciality',\n    'Country-Location',\n    'Target Audience',\n    'Company Info',\n    'Comment',\n    'Manager'\n  ];\n  \n  // Инициализируем объект, где каждому полю соответствует пустая строка по умолчанию.\n  let result = {};\n  fields.forEach(field => {\n    result[field] = '';\n  });\n  \n  // Регулярное выражение для поиска строк вида \"Ключ: Значение\"\n  const regex = /^([^:]+):\\s*(.*)$/gm;\n  let match;\n  while ((match = regex.exec(input)) !== null) {\n    const key = match[1].trim();\n    const value = match[2].trim();\n    \n    // Если ключ входит в список нужных полей, обновляем его значение\n    if (fields.includes(key)) {\n      result[key] = value;\n    }\n  }\n  \n  return result;\n}\n\n// Обработка динамического входного массива, где каждый элемент должен содержать свойство \"text\"\nconst newItems = items.map(item => {\n  // Если в элементе отсутствует свойство \"text\", возвращаем его без изменений\n  if (!item.json.text) return item;\n  \n  const parsedData = parseInput(item.json.text);\n  // Объединяем результат парсинга с остальными колонками исходного объекта.\n  const newJson = { ...item.json, ...parsedData };\n  \n  return { json: newJson };\n});\n\n// Возвращаем данные в формате, ожидаемом n8n: массив объектов с полем json\nreturn newItems;\n"
+      },
+      "name": "LG call Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        540
+      ],
+      "id": "3531494a-5b24-4cbf-a166-c058f5523d42"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.start.dateTime }}",
+            "Company name": "={{ $json.summary }}",
+            "Message ID": "={{ $json.id }}",
+            "Extracted Link": "={{ $json.googleDocUrl }}",
+            "Only link": "={{ $json.documentId }}",
+            "Calendar description": "={{ $json.description }}",
+            "Manager": "={{ $json.Manager }}",
+            "Comment": "={{ $json.Comment }}",
+            "Company Info": "={{ $json['Company Info'] }}",
+            "Target Audience": "={{ $json['Target Audience'] }}",
+            "Country-Location": "={{ $json['Country-Location'] }}",
+            "Speciality": "={{ $json.Speciality }}",
+            "Contact person": "={{ $json['Contact Person'] }}",
+            "Company website": "={{ $json['Company Website'] }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calendar description",
+              "displayName": "Calendar description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact person",
+              "displayName": "Contact person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Speciality",
+              "displayName": "Speciality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Country-Location",
+              "displayName": "Country-Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Target Audience",
+              "displayName": "Target Audience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Info",
+              "displayName": "Company Info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Manager",
+              "displayName": "Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1960,
+        540
+      ],
+      "id": "c7af85cc-1da8-454d-a3a7-f7d35cdf691f",
+      "name": "LG call Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dbxVSN0gaWLyc7UW",
+          "name": "Sales Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json[\"Only link\"] }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2180,
+        540
+      ],
+      "id": "39577ed2-51fb-48cd-a037-e24c4e7f985d",
+      "name": "LG call Doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vh0MKh3KIigssxrQ",
+          "name": "Sales Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входящие элементы\nconst items = $input.all();\n\n// Создаем копию массива и разворачиваем его\nconst reversedItems = items.slice().reverse();\n\n// Возвращаем перевернутый массив\nreturn reversedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2440,
+        540
+      ],
+      "id": "fcb28baf-9d27-4bc2-ad26-5853cee328f9",
+      "name": "LG call reverse Code"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Only link": "={{ $json.documentId }}",
+            "Extracred Text": "={{ $json.content }}"
+          },
+          "matchingColumns": [
+            "Only link"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2680,
+        560
+      ],
+      "id": "8bd65acb-4876-41e1-b3f3-31088470bef5",
+      "name": "LG call Append",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dbxVSN0gaWLyc7UW",
+          "name": "Sales Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company name",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Company name\"] }}"
+            },
+            {
+              "lookupColumn": "Message ID",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Message ID\"] }}"
+            },
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $('LG call Sheet').item.json.Date }}"
+            },
+            {
+              "lookupColumn": "Only link",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Only link\"] }}"
+            },
+            {
+              "lookupColumn": "Extracted Link",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Extracted Link\"] }}"
+            },
+            {
+              "lookupColumn": "Calendar description",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Calendar description\"] }}"
+            },
+            {
+              "lookupColumn": "Company website",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Company website'] }}"
+            },
+            {
+              "lookupColumn": "Contact person",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Contact person'] }}"
+            },
+            {
+              "lookupColumn": "Speciality",
+              "lookupValue": "={{ $('LG call Sheet').item.json.Speciality }}"
+            },
+            {
+              "lookupColumn": "Country-Location",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Country-Location'] }}"
+            },
+            {
+              "lookupColumn": "Target Audience",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Target Audience'] }}"
+            },
+            {
+              "lookupColumn": "Company Info",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Company Info'] }}"
+            },
+            {
+              "lookupColumn": "Comment",
+              "lookupValue": "={{ $('LG call Sheet').item.json.Comment }}"
+            },
+            {
+              "lookupColumn": "Manager",
+              "lookupValue": "={{ $('LG call Sheet').item.json.Manager }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2940,
+        540
+      ],
+      "id": "0be62cf0-ed82-4787-8998-c8bff71adcc6",
+      "name": "LG call Read",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dbxVSN0gaWLyc7UW",
+          "name": "Sales Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Familiarize yourself with the list of employees and their roles who may be mentioned from our side in the transcription (they may not be):\n    * Sales Manager: Sona G, Niko K, Sabina H, Anastasia K\n    * Lead generator: Anna Bu, Anahit O, Evgeniya N, Firuza D, Irina Kl, Karina N, Liliia N, Mykhailo Ne, Olena A, Sofiya L, Yelyzaveta P\n    * Financial manager: Daria Y\n    * Front End Developer: Artem S, Maxim S\n    * Graphic Designer: Anastasiya P, Natalia L\n    * Illustrator: Vilhelm S\n    * PPC Specialist: Ekaterina E\n    * prompt engineer: Danylo I, Mykola S\n    * Recruiter: Anastasiya F, Ganna A, Sabina H\n    * UI UX designer: Kristina Y\n    * Video Editor: Dariya A, Svyatoslav Pod\n\nFind mentions of employee names from the list above in the transcription. Important: search specifically for full names or last names as listed and insert them into the appropriate fields.\nIn the Contact Person field, put the name from the call that is not found in the employee list I provided. If there is no information for any field, leave an empty line after \"example: \".\n\nExtract information from the following call transcription and fill in the report template below.\n\nWhat you need to add to the \"Comment: \" - Summarize the call that took place with a client using this call script. Write a paragraph emphasizing client's hiring needs - the position that he wants to fill. End the paragraph with the agreed future steps. Also, write separately the responsibilities and skills required for the position that the client wants to fill.\n\nCall Transcription:\n{{ $json['Extracred Text'] }}\n\nReport Template:\nCompany Name: {{ $json['Company name'] }}\n\nCompany Website: {{ $json['Company website'] }}\n\nContact Person: {{ $json['Contact person'] }}\n\nSpeciality: {{ $json.Speciality }}\n\nCountry-Location: {{ $json['Country-Location'] }}\n\nTarget Audience: {{ $json['Target Audience'] }}\n\nCompany Info: {{ $json['Company Info'] }}\n\nComment: \n\nFormat the answer exactly according to the template, leaving an **empty** line between the field and the value."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        3400,
+        480
+      ],
+      "id": "ceebdf3a-f2e3-473b-8ac3-e7af248a8f6c",
+      "name": "LG call report"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Примерный кусок кода, где мы объединяем тексты и параллельно\n// при помощи регулярного выражения извлекаем 'Company Name'\n\nconst combinedText = (items[0].json.text || '') + ' ' + (items[1].json.text || '');\n\n// Задаём регэксп (пример для \"Company Name: …\"), который ловит всё, что идет\n// после \"Company Name:\" до конца строки или до знака переноса/запятой и т.п.\n// В данном случае используем схему \"Company Name:\" + произвольный текст до конца строки.\nconst companyRegex = /Company\\s+Name:\\s*([^\\r\\n]+)/i;\n\n// Пытаемся найти совпадение\nconst match = combinedText.match(companyRegex);\n\n// Если совпадение найдено, берём группу (подмаску) №1, иначе пустая строка\nconst companyName = match && match[1] ? match[1].trim() : '';\n\nreturn [\n  {\n    json: {\n      // Полный текст, как раньше\n      text: combinedText,\n      // Добавляем отдельную колонку с именем компании\n      companyName: companyName,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4180,
+        620
+      ],
+      "id": "39bb43fe-eccd-48dc-84a9-b63d6d3bb7b3",
+      "name": "Find Company name"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.text }}",
+        "name": "={{ $json.companyName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/folders/1Ehx183d_STnd3-vi-74T8AwFFXW2lPM8",
+          "mode": "url"
+        },
+        "options": {
+          "convertToGoogleDocument": true
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4500,
+        600
+      ],
+      "id": "43d78d00-9425-4e4c-96ba-e5b57cf6df6a",
+      "name": "Add LG Call to Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "5L3Cntf9CvMaPLC9",
+          "name": "Sales Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем значение id из первого элемента входящих данных\nconst id = $input.first().json.id;\n\n// Формируем ссылку на Google Документ, подставляя id\nconst googleDocLink = `https://docs.google.com/document/d/${id}`;\n\n// Возвращаем объект с новым полем, содержащим ссылку на документ\nreturn [\n  {\n    json: {\n      id: id,\n      googleDocLink: googleDocLink,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4740,
+        520
+      ],
+      "id": "b14682b3-b100-48b3-b046-1d8375fb020a",
+      "name": "Add Full Link to the LG call"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "documentURL": "={{ $json.id }}"
+      },
+      "name": "Get LG call text for discord",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [
+        5000,
+        540
+      ],
+      "id": "e5098748-e382-4de5-be39-50dd168dea0d",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vh0MKh3KIigssxrQ",
+          "name": "Sales Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items\nfor (const item of $input.all()) {\n  // Достаём documentId и формируем полную ссылку\n  const docId = item.json.documentId;\n  const googleDocLink = `https://docs.google.com/document/d/${docId}`;\n\n  // Достаём content и ищем в нём Company Name\n  const content = item.json.content || '';\n  // С помощью RegExp ищем строку: \"Company Name: ....\"\n  const companyNameMatch = content.match(/Company Name:\\s*(.*)/i);\n  const companyName = companyNameMatch ? companyNameMatch[1].trim() : 'Not found';\n\n  // Добавляем новые поля к исходным данным\n  item.json.googleDocLink = googleDocLink;\n  item.json.companyName = companyName;\n}\n\nreturn $input.all();\n"
+      },
+      "name": "Format Final Output for discord",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5260,
+        660
+      ],
+      "id": "4a7159b7-70fa-45b5-a022-3f7fdce6779e"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1372903833667375145",
+          "mode": "list",
+          "cachedResultName": "sales-bot",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1372903833667375145"
+        },
+        "content": "=Report after call with company {{ $json.companyName }}:\n{{ $json.googleDocLink }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        5500,
+        580
+      ],
+      "id": "f39ff58b-834f-4777-ad94-d76ee205449d",
+      "name": "LG call send to Sales Comment",
+      "webhookId": "0dd4c953-a86e-41eb-9258-01d9a011e87a",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "RH Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3900,
+        600
+      ],
+      "id": "2fc702c4-119c-47ee-8769-305ec02e3ec4",
+      "name": "Merge LLMs of LG call"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "formattedTime",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1540,
+        780
+      ],
+      "id": "10b5cc56-9154-4a52-a849-a82d227619a1",
+      "name": "Merge Gmail-Calendar and LLM"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "formattedTime",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1340,
+        440
+      ],
+      "id": "1054a9af-5e84-44ab-9f2e-efb4c0658fa4",
+      "name": "Merge Gmail and Calendar"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * n8n Code Node Script: Обрабатывает МНОЖЕСТВО входных элементов (items).\n * Для КАЖДОГО элемента берет текст из item.json.text,\n * обрабатывает его как единый блок и извлекает время из его конца.\n * Возвращает массив, содержащий один обработанный объект для КАЖДОГО\n * успешно обработанного входного элемента.\n */\n\n// --- Выполнение скрипта в n8n ---\n\n// Массив для хранения результатов обработки КАЖДОГО элемента\nconst outputItems = [];\n\n// 1. Перебираем КАЖДЫЙ элемент (item), который пришел в узел Code\nfor (let itemIndex = 0; itemIndex < items.length; itemIndex++) {\n  const item = items[itemIndex]; // Текущий обрабатываемый элемент\n  console.log(`Обработка элемента ${itemIndex + 1} из ${items.length}`);\n\n  // 2. Проверяем, содержит ли ТЕКУЩИЙ элемент нужные данные\n  if (!item || !item.json || typeof item.json.text === 'undefined') {\n    console.warn(`Элемент ${itemIndex + 1} пропущен: данные отсутствуют или имеют неверный формат (ожидается item.json.text).`);\n    // Пропускаем этот элемент и переходим к следующему\n    continue;\n  }\n\n  // 3. Получаем текст для ТЕКУЩЕГО элемента и убираем пробелы\n  const inputText = String(item.json.text || \"\").trim();\n\n  if (!inputText) {\n    console.warn(`Элемент ${itemIndex + 1} пропущен: текст пуст после очистки пробелов.`);\n    continue; // Переходим к следующему элементу\n  }\n  // console.log(`Текст элемента ${itemIndex + 1} (фрагмент):`, inputText.substring(0, 200));\n\n  // 4. Обрабатываем текст ТЕКУЩЕГО элемента\n  let formattedTime = null;\n  let textContent = inputText; // По умолчанию текст - это весь inputText для этого элемента\n\n  // Ищем время ЧЧ:ММ в конце текста ТЕКУЩЕГО элемента\n  const timeRegex = /\\n\\s*(\\d{1,2}:\\d{2})\\s*$/;\n  const timeMatch = inputText.match(timeRegex);\n\n  if (timeMatch) {\n    // Если время найдено в конце текста этого элемента:\n    formattedTime = timeMatch[1]; // Извлекаем время ЧЧ:ММ\n    const timeStartIndex = inputText.lastIndexOf(timeMatch[0]); // Находим начало \"\\n...ЧЧ:ММ\"\n    // Текст - это всё ДО этой строки времени\n    textContent = inputText.substring(0, timeStartIndex).trim();\n    // console.log(`Элемент ${itemIndex + 1}: Найдено время '${formattedTime}'.`);\n  } else {\n    // Если время в конце текста этого элемента не найдено\n    // console.warn(`Элемент ${itemIndex + 1}: Время в конце текста не найдено.`);\n  }\n\n  // 5. Создаем выходной объект для ТЕКУЩЕГО элемента\n  //    Важно: создаем новый объект, чтобы не изменять исходный item напрямую\n  const outputItem = {\n    json: {\n      // Сначала копируем все существующие поля из json исходного элемента (если нужно)\n      // ...item.json,\n      // Затем добавляем/перезаписываем наши поля\n      text: textContent,\n      formattedTime: formattedTime\n    }\n    // Если нужно скопировать бинарные данные (файлы), раскомментируйте:\n    // binary: item.binary\n  };\n   // Если НЕ нужно копировать остальные поля из item.json, используйте только:\n   /*\n   const outputItem = {\n     json: {\n       text: textContent,\n       formattedTime: formattedTime\n     }\n   };\n   */\n\n\n  // 6. Добавляем обработанный объект в наш массив результатов\n  outputItems.push(outputItem);\n  console.log(`Элемент ${itemIndex + 1} успешно обработан.`);\n\n} // Конец цикла for по элементам (items)\n\n// 7. ЯВНО возвращаем МАССИВ со всеми обработанными элементами для n8n\nconsole.log(`Возвращаем ${outputItems.length} обработанных элементов в n8n.`);\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        1020
+      ],
+      "id": "68f3c9a3-04ab-42c7-8fce-463158c43f87",
+      "name": "Parse data in Calendar bio"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Доставай из {{ $json.description }} следующие значения и выводи каждую информацию как отдельный столбик (поле) не пиши в табличном виде, пиши в формате название поля: название того что в ней\n\n\"Company Website\": extractField(description, \"Company Website\"), (НЕ ПИШИ rh-s.com, если другой ссылки нету - оставь пустоту)\n\"Contact Person\": extractField(description, \"Contact Person\"),\nSpeciality\": extractField(description, \"Speciality\"),\nCountry-Location\": extractField(description, \"Country-Location\"),\nTarget Audience\": extractField(description, \"Target Audience\"),\nCompany Info\": extractField(description, \"Company Info\"),\nComment\": extractField(description, \"Comment\"),\nManager\": extractField(description, \"Manager\") \nТакже с новой строки выводи и {{ $json.formattedTime }}\n\nПример \nCompany Website: example.com\n\n\n\n\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        780,
+        700
+      ],
+      "id": "afcf7798-db93-451a-ba54-017465aa1f36",
+      "name": "Description in Calendar"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Функция для округления времени до ближайшего полчасового интервала (с использованием UTC)\n// Если минуты меньше 30, округляем до :30, иначе до начала следующего часа\nfunction getHalfHourBlockUTC(dateString) {\n  const dateObj = new Date(dateString);\n  if (isNaN(dateObj.getTime())) return \"\";\n  let hours = dateObj.getUTCHours();\n  const minutes = dateObj.getUTCMinutes();\n  \n  if (minutes < 30) {\n    return `${String(hours).padStart(2, '0')}:30`;\n  } else {\n    hours = hours + 1;\n    if (hours === 24) {\n      hours = 0;\n    }\n    return `${String(hours).padStart(2, '0')}:00`;\n  }\n}\n\n// Этап 1. Получаем все входящие элементы и проводим обработку полей summary, description и end\nconst items = $input.all();\n\n// Проверяем, что items – массив\nif (!Array.isArray(items)) {\n  throw new Error(\"Ожидался массив входящих элементов\");\n}\n\nconst tempResults = items.map(item => {\n  // Если структура не соответствует ожиданиям, пропускаем элемент\n  if (!item || !item.json) return null;\n  \n  const jsonData = item.json;\n  \n  // Извлекаем поля summary и description, остальные поля сохраняем в restFields\n  const summary = jsonData.summary || \"\";\n  const description = jsonData.description || \"Нет описания\";\n  \n  // Очищаем поле summary: удаляем подстроку \"- Remote Helpers\" (без учета регистра)\n  let cleanedSummary = summary.replace(/-\\s*Remote\\s*Helpers\\s*/gi, \"\").trim();\n  \n  // Получаем оригинальное время окончания из jsonData.end\n  let originalEnd = \"\";\n  if (jsonData.end) {\n    originalEnd = jsonData.end.dateTime || jsonData.end.date || \"\";\n  }\n  \n  // Форматируем время окончания в формате HH:MM (округление до ближайшего полчасового интервала)\n  const formattedTime = originalEnd ? getHalfHourBlockUTC(originalEnd) : \"\";\n  \n  // Формируем итоговый объект.\n  // Сохраняем оригинальное время окончания (_originalEnd) для фильтрации и сортировки.\n  const finalData = {\n    ...jsonData,\n    summary: cleanedSummary,\n    description: description,\n    formattedTime: formattedTime,  // переименованное значение end\n    _originalEnd: originalEnd\n  };\n  \n  return { json: finalData };\n})\n// Фильтруем элементы, у которых не удалось сформировать объект\n.filter(item => item !== null);\n\n// Этап 2. Фильтрация дубликатов с использованием комбинации summary и округленного времени (UTC)\n// Используем _originalEnd для определения уникальности\nconst seenKeys = new Set();\nconst uniqueResults = tempResults.filter(item => {\n  const currentSummary = item.json.summary;\n  const originalEndTime = item.json._originalEnd;\n  \n  // Если время окончания задано, округляем его по UTC, иначе оставляем пустую строку\n  const normalizedTime = originalEndTime ? getHalfHourBlockUTC(originalEndTime) : \"\";\n  \n  // Если у события есть уникальный id, используем его; иначе – комбинацию summary и нормализованного времени\n  const uniqueId = item.json.id;\n  const dedupKey = uniqueId ? uniqueId : `${currentSummary}__${normalizedTime}`;\n  \n  if (seenKeys.has(dedupKey)) {\n    return false;\n  } else {\n    seenKeys.add(dedupKey);\n    return true;\n  }\n});\n\n// Этап 3. Сортировка по оригинальному времени окончания (используя _originalEnd)\nuniqueResults.sort((a, b) => {\n  const timeA = new Date(a.json._originalEnd);\n  const timeB = new Date(b.json._originalEnd);\n  return timeA - timeB;\n});\n\n// Инвертируем порядок элементов, чтобы вывод был снизу вверх\nuniqueResults.reverse();\n\n// Удаляем вспомогательное поле _originalEnd из финального вывода\nconst finalResults = uniqueResults.map(item => {\n  delete item.json._originalEnd;\n  return item;\n});\n\n// Возвращаем итоговый массив уникальных, отсортированных по времени окончания\nreturn finalResults;\n"
+      },
+      "name": "Format data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        400,
+        480
+      ],
+      "id": "21122e45-0622-4ef2-b1e4-6daaf2bb5c7d"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "sales@rh-s.com",
+          "mode": "list",
+          "cachedResultName": "sales@rh-s.com"
+        },
+        "limit": 5,
+        "timeMin": "={{ $now.minus( {hours: 222, minutes: 30} ) }}",
+        "timeMax": "={{ $now }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        60,
+        500
+      ],
+      "id": "3ec5dc83-2d10-4a30-b369-773864cc28a7",
+      "name": "Find Calendar meetings from now to minus 2 hours",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "lmaohrn9G1cLylHj",
+          "name": "Sales Google Calendar"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5a742060-4452-4221-8d68-05aa654ef2e2",
+              "leftValue": "={{ $json.formattedTime }}",
+              "rightValue": "={{ $json.summary }}",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        840,
+        160
+      ],
+      "id": "e5c728a0-c5e6-4b7b-98f9-5217818d12f6",
+      "name": "If formatted data empty - do nothing"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Функция для округления времени до ближайшего полчасового интервала (с использованием UTC)\n// Если минуты меньше 30, округляем до :30, иначе до начала следующего часа\nfunction getHalfHourBlockUTC(dateString) {\n  const dateObj = new Date(dateString);\n  if (isNaN(dateObj.getTime())) return \"\";\n  let hours = dateObj.getUTCHours();\n  const minutes = dateObj.getUTCMinutes();\n  \n  if (minutes < 30) {\n    return `${String(hours).padStart(2, '0')}:30`;\n  } else {\n    hours = hours + 1;\n    if (hours === 24) {\n      hours = 0;\n    }\n    return `${String(hours).padStart(2, '0')}:00`;\n  }\n}\n\n// Этап 1. Получаем все входящие элементы и проводим обработку полей summary, description и date\nconst items = $input.all();\n\n// Проверяем, что items – массив\nif (!Array.isArray(items)) {\n  throw new Error(\"Ожидался массив входящих элементов\");\n}\n\nconst tempResults = items.map(item => {\n  // Если структура не соответствует ожиданиям, пропускаем элемент\n  if (!item || !item.json) return null;\n  \n  const jsonData = item.json;\n  \n  // Извлекаем поля summary и description, остальные поля сохраняем в restFields\n  const summary = jsonData.summary || \"\";\n  const description = jsonData.description || \"Нет описания\";\n  \n  // Очищаем поле summary: удаляем подстроку \"- Remote Helpers\" (без учета регистра)\n  let cleanedSummary = summary.replace(/-\\s*Remote\\s*Helpers\\s*/gi, \"\").trim();\n  \n  // Получаем оригинальное время события из jsonData.date\n  const originalTime = jsonData.date || \"\";\n  \n  // Форматируем время в формате HH:MM (округление до ближайшего полчасового интервала)\n  const formattedTime = originalTime ? getHalfHourBlockUTC(originalTime) : \"\";\n  \n  // Формируем итоговый объект.\n  // Сохраняем оригинальное время (_originalTime) для фильтрации и сортировки.\n  const finalData = {\n    ...jsonData,\n    summary: cleanedSummary,\n    description: description,\n    formattedTime: formattedTime,  // добавленное поле с округленным временем\n    _originalTime: originalTime\n  };\n  \n  return { json: finalData };\n})\n// Фильтруем элементы, у которых не удалось сформировать объект\n.filter(item => item !== null);\n\n// Этап 2. Фильтрация дубликатов с использованием комбинации summary и округленного времени (UTC)\nconst seenKeys = new Set();\nconst uniqueResults = tempResults.filter(item => {\n  const currentSummary = item.json.summary;\n  const originalTimeValue = item.json._originalTime;\n  \n  // Если время события задано, округляем его по UTC, иначе оставляем пустую строку\n  const normalizedTime = originalTimeValue ? getHalfHourBlockUTC(originalTimeValue) : \"\";\n  \n  // Если у события есть уникальный id, используем его; иначе – комбинацию summary и нормализованного времени\n  const uniqueId = item.json.id;\n  const dedupKey = uniqueId ? uniqueId : `${currentSummary}__${normalizedTime}`;\n  \n  if (seenKeys.has(dedupKey)) {\n    return false;\n  } else {\n    seenKeys.add(dedupKey);\n    return true;\n  }\n});\n\n// Этап 3. Сортировка по оригинальному времени события (используя _originalTime)\nuniqueResults.sort((a, b) => {\n  const timeA = new Date(a.json._originalTime);\n  const timeB = new Date(b.json._originalTime);\n  return timeA - timeB;\n});\n\n// Этап 4. Фильтрация событий, оставляем только те, которые произошли в течение последнего часа\nconst oneHour = 60 * 60 * 1.5 * 1000; // 1 час в миллисекундах\nconst now = new Date();\n\nconst filteredResults = uniqueResults.filter(item => {\n  const eventTime = new Date(item.json.date);\n  // Проверяем, что событие уже прошло и разница между текущим временем и временем события не превышает 1 час\n  return eventTime <= now && (now - eventTime) <= oneHour;\n});\n\n// Удаляем вспомогательное поле _originalTime из финального вывода\nconst finalResults = filteredResults.map(item => {\n  delete item.json._originalTime;\n  return item;\n});\n\n// Возвращаем итоговый массив уникальных, отсортированных по времени события,\n// которые произошли в течение последнего часа\nreturn finalResults;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        160
+      ],
+      "id": "8327052c-8aa5-41bd-b8a9-7e571f55f08b",
+      "name": "Messages that was from now to 1 hour ago"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входящие элементы\nconst items = $input.all();\n\n// Преобразуем каждый входящий элемент\nconst results = items.map(item => {\n  // Извлекаем необходимые поля\n  const subject = item.json.subject || \"\";\n  const date = item.json.headers?.date || item.json.date || \"\";\n  const messageId = item.json.id || \"\";\n  const html = item.json.html || \"\";\n  const text = item.json.text || \"\";\n\n  // Извлекаем ссылку на Google Документ из источника (используем html, а если его нет — text)\n  let googleDocUrl = null;\n  let documentId = null;\n  {\n    const sourceForDoc = html || text;\n    const docRegex = /(https:\\/\\/docs\\.google\\.com\\/document\\/d\\/[\\w-]+)/;\n    const docMatch = sourceForDoc.match(docRegex);\n    if (docMatch && docMatch[0]) {\n      googleDocUrl = docMatch[0];\n      // Удаляем \"/edit\" и параметры, если они присутствуют\n      googleDocUrl = googleDocUrl.split('/edit')[0].split('?')[0];\n      \n      // Извлекаем ID документа из URL\n      const idRegex = /\\/d\\/([\\w-]+)/;\n      const idMatch = googleDocUrl.match(idRegex);\n      documentId = idMatch && idMatch[1] ? idMatch[1] : null;\n    }\n  }\n\n  // Название встречи равно значению subject\n  const meetingName = subject;\n\n  // Форматируем дату в ISO-формат, если возможно\n  let formattedDate = date;\n  if (date) {\n    try {\n      formattedDate = new Date(date).toISOString();\n    } catch (e) {\n      // В случае ошибки оставляем исходное значение\n    }\n  }\n\n  // Собираем итоговый объект с извлечёнными данными\n  const extractedData = {\n    messageId: messageId,\n    date: formattedDate,\n    googleDocUrl: googleDocUrl,\n    documentId: documentId,\n    meetingName: meetingName // Извлекаем название встречи из subject\n  };\n\n  return { json: extractedData };\n});\n\n// Возвращаем массив объектов\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        160
+      ],
+      "id": "f6c99d86-976c-4e21-b9fc-2fb4d638cff6",
+      "name": "Extract useful data for scrapping and merging"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -220,
+        400
+      ],
+      "id": "00afe53e-a221-4c4c-8d89-1d44a62a94e2",
+      "name": "1 Hour Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 10,
+        "simple": false,
+        "filters": {
+          "q": "",
+          "sender": "gemini-notes@google.com"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        40,
+        80
+      ],
+      "id": "09b9bdc9-c9b8-4369-bce5-04491e6b7c9d",
+      "name": "Find Gmails from gemini-notes",
+      "webhookId": "fd589834-de5f-4a43-9809-04de4bcc6b08",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sv4epLX3dUAhBbno",
+          "name": "Sales Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 10,
+        "simple": false,
+        "filters": {
+          "q": "",
+          "sender": "meetings-noreply@google.com"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        40,
+        280
+      ],
+      "id": "5e274f6c-121b-44e3-9ee7-581fdc72c54c",
+      "name": "Find Gmails from gemini-notes1",
+      "webhookId": "fd589834-de5f-4a43-9809-04de4bcc6b08",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sv4epLX3dUAhBbno",
+          "name": "Sales Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LG call report",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Description in Calendar",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Usefull information about client",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Usefull information about client": {
+      "main": [
+        [
+          {
+            "node": "Merge LLMs of LG call",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "If meeting name contains Interview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "If meeting name contains Second call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If meeting name contains follow up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Data": {
+      "main": [
+        [
+          {
+            "node": "LG call Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Sheet": {
+      "main": [
+        [
+          {
+            "node": "LG call Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Doc": {
+      "main": [
+        [
+          {
+            "node": "LG call reverse Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call reverse Code": {
+      "main": [
+        [
+          {
+            "node": "LG call Append",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Append": {
+      "main": [
+        [
+          {
+            "node": "LG call Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Read": {
+      "main": [
+        [
+          {
+            "node": "LG call report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Usefull information about client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call report": {
+      "main": [
+        [
+          {
+            "node": "Merge LLMs of LG call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Company name": {
+      "main": [
+        [
+          {
+            "node": "Add LG Call to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add LG Call to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Add Full Link to the LG call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Full Link to the LG call": {
+      "main": [
+        [
+          {
+            "node": "Get LG call text for discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get LG call text for discord": {
+      "main": [
+        [
+          {
+            "node": "Format Final Output for discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Final Output for discord": {
+      "main": [
+        [
+          {
+            "node": "LG call send to Sales Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge LLMs of LG call": {
+      "main": [
+        [
+          {
+            "node": "Find Company name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Gmail-Calendar and LLM": {
+      "main": [
+        [
+          {
+            "node": "LG call Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Gmail and Calendar": {
+      "main": [
+        [
+          {
+            "node": "Merge Gmail-Calendar and LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse data in Calendar bio": {
+      "main": [
+        [
+          {
+            "node": "Merge Gmail-Calendar and LLM",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Description in Calendar": {
+      "main": [
+        [
+          {
+            "node": "Parse data in Calendar bio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format data": {
+      "main": [
+        [
+          {
+            "node": "Description in Calendar",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Gmail and Calendar",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Find Calendar meetings from now to minus 2 hours": {
+      "main": [
+        [
+          {
+            "node": "Format data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If formatted data empty - do nothing": {
+      "main": [
+        [
+          {
+            "node": "If Formatted Data is empty ->",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge Gmail and Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Messages that was from now to 1 hour ago": {
+      "main": [
+        [
+          {
+            "node": "If formatted data empty - do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract useful data for scrapping and merging": {
+      "main": [
+        [
+          {
+            "node": "Messages that was from now to 1 hour ago",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1 Hour Trigger": {
+      "main": [
+        [
+          {
+            "node": "Find Gmails from gemini-notes",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find Calendar meetings from now to minus 2 hours",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find Gmails from gemini-notes1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Gmails from gemini-notes": {
+      "main": [
+        [
+          {
+            "node": "Extract useful data for scrapping and merging",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "97af8993-0278-460a-b0c1-96a2ec48663a",
+  "triggerCount": 0,
+  "tags": []
+}

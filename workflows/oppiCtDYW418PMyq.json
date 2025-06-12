@@ -1,0 +1,1458 @@
+{
+  "createdAt": "2025-06-11T11:47:58.669Z",
+  "updatedAt": "2025-06-11T11:49:06.511Z",
+  "id": "oppiCtDYW418PMyq",
+  "name": "Topic_and_Quiz_SMM_onboarding_generator_not_relevant",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -180,
+        -180
+      ],
+      "id": "68e6083d-f685-4d23-841e-4bab61257b3f",
+      "name": "Триггер таймера"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8",
+          "mode": "list",
+          "cachedResultName": "Onboarding for content creators",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 647402261,
+          "mode": "list",
+          "cachedResultName": "Topics N8N",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit#gid=647402261"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Guide Text link"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        100,
+        -180
+      ],
+      "id": "f8a2d324-6f2e-447a-b997-b5f6672edce0",
+      "name": "Получение строк из таблицы",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все данные из Google Sheets\nconst items = $input.all();\n\n// Фильтруем строки, где Guide Text link пустое\nconst filteredItems = items.filter(item => {\n  // Проверяем, есть ли у item свойство json\n  if (item.json) {\n    return !item.json[\"Guide Text link\"] || \n           item.json[\"Guide Text link\"] === \"\" || \n           item.json[\"Guide Text link\"] === \"[empty]\";\n  }\n  return false;\n});\n\n// Проверяем, что у нас есть подходящие записи\nif (filteredItems.length === 0) {\n  return { message: \"No items with empty Guide Text link found\" };\n}\n\n// Выбираем первую строку с пустым значением в Guide Text link\nconst firstItem = filteredItems[0].json; // Доступ к данным через .json\n\n// Проверка и удаление лишних пробелов из темы\nconst topic = firstItem.Topics ? firstItem.Topics.trim() : \"Content generation\";\nconst course = firstItem.Courses ? firstItem.Courses.trim() : \"Prompt Engineering\";\n\n// Получение и обработка подтем\nconst subtopicsRaw = firstItem.Subtopics || \"\";\nconst subtopics = subtopicsRaw.split(',').map(subtopic => subtopic.trim());\n\n// Создаем промпт для ИИ с данными из выбранной строки\nconst prompt = `Create an educational article about \"${topic}\" that focuses SPECIFICALLY on these exact subtopics: ${subtopicsRaw}.\n\nEXTREMELY IMPORTANT FORMATTING INSTRUCTIONS:\n- Do NOT use Markdown format\n- Do NOT include any code blocks or triple backticks\n- Do NOT include any instructions about copying, pasting, or formatting the text\n- Provide ONLY plain text content\n- Do NOT add any meta-instructions at the beginning or end\n\nThe article should have this structure:\n\nThe Content Creator's Guide to ${topic}\n\nTable of Contents\n(List EXACTLY these subtopics with appropriate emoji for each - these are the ONLY subtopics you should cover):\n${subtopics.map(sub => `- ${sub}`).join('\\n')}\n\n(Introduction paragraph explaining ${topic} and its importance - no heading needed)\n\n(For each subtopic, create a section with the EXACT subtopic name as heading)\n${subtopics.map((sub, index) => `${sub}`).join('\\n\\n')}\n\n(Each subtopic section should include relevant content explaining that specific subtopic in detail)\n\n(End with a brief Key Takeaways section)\n\nIMPORTANT NOTES:\n1. You MUST use these EXACT subtopic names as your main sections\n2. Do not create your own subtopics - ONLY use the ones provided\n3. The document won't be automatically formatted in Google Docs - it will need manual formatting\n4. Make content accessible for beginners, approximately 1500-2000 words total\n\nReturn ONLY the plain text content with no additional commentary.`;\n\n// Возвращаем результат, чтобы передать его в следующий нод\nreturn {\n  topic: topic,\n  course: course,\n  subtopics: subtopics,\n  prompt: prompt,\n  original_item: firstItem\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -180
+      ],
+      "id": "53e13096-d2b7-43b1-a3bf-1759501b5ac8",
+      "name": "Промпт и условия"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.topic }}{{ $json.subtopics }}{{ $json.prompt }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        540,
+        -180
+      ],
+      "id": "4f5b934f-0809-4e19-aef4-a2604af318f8",
+      "name": "Генерация топика",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "folderId": "1HIQ4ZQR5x4BunaNBGM42012WWgxGc7fV",
+        "title": "={{ $('Промпт и условия').item.json.original_item.Topics }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        900,
+        -180
+      ],
+      "id": "e7496bee-90f4-4758-aeb2-ff83c3821af0",
+      "name": "Создание документа для топика",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Генерация топика').item.json.text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        -180
+      ],
+      "id": "eec603b8-156d-4ba8-b6a2-d93fcce1f1de",
+      "name": "Заполнение документа для топика",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8",
+          "mode": "list",
+          "cachedResultName": "Onboarding for content creators",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 647402261,
+          "mode": "list",
+          "cachedResultName": "Topics N8N",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit#gid=647402261"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Промпт и условия').item.json.original_item.row_number }}",
+            "Guide Text link": "=https://docs.google.com/document/d/{{ $json.documentId }}/view",
+            "Topics": "={{ $('Промпт и условия').item.json.original_item.Topics }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Courses",
+              "displayName": "Courses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Topics",
+              "displayName": "Topics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subtopics",
+              "displayName": "Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ONB Day",
+              "displayName": "ONB Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guide Text link",
+              "displayName": "Guide Text link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guides markdown",
+              "displayName": "Guides markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guide Hook link",
+              "displayName": "Guide Hook link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams",
+              "displayName": "Exams",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams Markdown",
+              "displayName": "Exams Markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams Hook link",
+              "displayName": "Exams Hook link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Audio Link ",
+              "displayName": "Audio Link ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Audio Embed",
+              "displayName": "Audio Embed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task MD",
+              "displayName": "Task MD",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1340,
+        -180
+      ],
+      "id": "7c09005f-0b0a-4cfe-b378-c7d2bfca5afd",
+      "name": "Обновление таблицы с топиками",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=convert  {{ $('Генерация топика').item.json.text }} to markdown"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        560,
+        140
+      ],
+      "id": "4829d77a-8c84-4370-afc9-51a672de62d9",
+      "name": "Перевод топика в маркдаун"
+    },
+    {
+      "parameters": {
+        "folderId": "1GyODa7YSVnQTBs_ZTCz-ShB8qyyof-Jl",
+        "title": "={{ $('Промпт и условия').item.json.original_item.Topics }} MD"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        920,
+        140
+      ],
+      "id": "78c8460d-35ba-4c00-99bf-20e39037154b",
+      "name": "Создание документа для топика в маркдаун",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Перевод топика в маркдаун').item.json.text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        140
+      ],
+      "id": "e2770e15-4546-48df-b37c-92e38137e24f",
+      "name": "Заполнение документа для топика в маркдаун",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8",
+          "mode": "list",
+          "cachedResultName": "Onboarding for content creators",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 647402261,
+          "mode": "list",
+          "cachedResultName": "Topics N8N",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit#gid=647402261"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Промпт и условия').item.json.original_item.row_number }}",
+            "Topics": "={{ $('Промпт и условия').item.json.original_item.Topics }}",
+            "Guides markdown": "=https://docs.google.com/document/d/{{ $json.documentId }}/view "
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Courses",
+              "displayName": "Courses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Topics",
+              "displayName": "Topics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subtopics",
+              "displayName": "Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ONB Day",
+              "displayName": "ONB Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guide Text link",
+              "displayName": "Guide Text link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guides markdown",
+              "displayName": "Guides markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guide Hook link",
+              "displayName": "Guide Hook link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams",
+              "displayName": "Exams",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams Markdown",
+              "displayName": "Exams Markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams Hook link",
+              "displayName": "Exams Hook link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Audio Link ",
+              "displayName": "Audio Link ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Audio Embed",
+              "displayName": "Audio Embed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task MD",
+              "displayName": "Task MD",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1360,
+        140
+      ],
+      "id": "94ef1530-212a-4abd-9bc7-8eb2549b7c9f",
+      "name": "Обновление таблицы с топиками маркдаун",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Take this topic content and create a quiz for it.  {{ $('Генерация топика').item.json.text }}\n15 questions, 4 aswer options, 1 correct answer. Mark correct answer with check mark in answer options. Plane text for google docs. "
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        560,
+        460
+      ],
+      "id": "414eb00f-395c-4e9e-861e-e5f52ce0775c",
+      "name": "Генерация квизов"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {
+          "responseFormat": "json_object"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        680,
+        -40
+      ],
+      "id": "e08da9ec-b22f-4f00-807c-258e8b44dcc9",
+      "name": "Модель ИИ для генерации топиков",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        700,
+        280
+      ],
+      "id": "b6a37439-bb7f-418e-abb4-702d096ebbb3",
+      "name": "Модель ИИ для перевода топиков в маркдаун",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        700,
+        600
+      ],
+      "id": "986ab33f-9619-4f42-a878-5314dd1c590c",
+      "name": "Модель ИИ для генерации квизов",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "1r57mu3KZiTOYuyk2hE0K-Vhq91-5AfSN",
+        "title": "={{ $('Промпт и условия').item.json.original_item.Topics }} quiz"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        920,
+        460
+      ],
+      "id": "cc23cb1f-1728-48b7-a9ab-e38c58bf1494",
+      "name": "Создание документа для квиза",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Генерация квизов').item.json.text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        460
+      ],
+      "id": "6db6e483-8495-4502-8add-d28b6641526f",
+      "name": "Заполнение документа для квиза",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8",
+          "mode": "list",
+          "cachedResultName": "Onboarding for content creators",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 647402261,
+          "mode": "list",
+          "cachedResultName": "Topics N8N",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit#gid=647402261"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Промпт и условия').item.json.original_item.row_number }}",
+            "Topics": "={{ $('Промпт и условия').item.json.original_item.Topics }}",
+            "Exams": "=https://docs.google.com/document/d/{{ $json.documentId }}/view"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Courses",
+              "displayName": "Courses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Topics",
+              "displayName": "Topics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subtopics",
+              "displayName": "Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ONB Day",
+              "displayName": "ONB Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guide Text link",
+              "displayName": "Guide Text link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guides markdown",
+              "displayName": "Guides markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guide Hook link",
+              "displayName": "Guide Hook link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams",
+              "displayName": "Exams",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams Markdown",
+              "displayName": "Exams Markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams Hook link",
+              "displayName": "Exams Hook link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Audio Link ",
+              "displayName": "Audio Link ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Audio Embed",
+              "displayName": "Audio Embed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task MD",
+              "displayName": "Task MD",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1360,
+        460
+      ],
+      "id": "962ac80a-070a-43f6-a8e4-ce3565543c1c",
+      "name": "Обновление таблицы с квизами",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Генерация квизов').item.json.text }} convert it to markdown"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        560,
+        780
+      ],
+      "id": "a62700b5-95bc-49b7-8846-1e5df72f23b7",
+      "name": "Перевод квизов в маркдаун"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        700,
+        920
+      ],
+      "id": "548d76a8-8fd7-45d9-a200-aa197398969b",
+      "name": "Модель ИИ для перевода квизов в маркдаун",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "1h4HBYsr3j8-_StAt1KRfIDgYWhNzCVrJ",
+        "title": "={{ $('Промпт и условия').item.json.original_item.Topics }} quiz md"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        920,
+        780
+      ],
+      "id": "d97f5407-636a-4d53-b998-0618ee4b513a",
+      "name": "Создание документа для квиза маркдаун",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Перевод квизов в маркдаун').item.json.text }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        780
+      ],
+      "id": "26354688-998c-417f-8b0f-319e68d837f8",
+      "name": "Заполнение документа для квиза маркдаун",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8",
+          "mode": "list",
+          "cachedResultName": "Onboarding for content creators",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 647402261,
+          "mode": "list",
+          "cachedResultName": "Topics N8N",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit#gid=647402261"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Промпт и условия').item.json.original_item.row_number }}",
+            "Topics": "={{ $('Промпт и условия').item.json.original_item.Topics }}",
+            "Exams Markdown": "=https://docs.google.com/document/d/{{ $json.documentId }}/view "
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Courses",
+              "displayName": "Courses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Topics",
+              "displayName": "Topics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subtopics",
+              "displayName": "Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ONB Day",
+              "displayName": "ONB Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guide Text link",
+              "displayName": "Guide Text link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guides markdown",
+              "displayName": "Guides markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guide Hook link",
+              "displayName": "Guide Hook link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams",
+              "displayName": "Exams",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams Markdown",
+              "displayName": "Exams Markdown",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Exams Hook link",
+              "displayName": "Exams Hook link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Audio Link ",
+              "displayName": "Audio Link ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Audio Embed",
+              "displayName": "Audio Embed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task MD",
+              "displayName": "Task MD",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1360,
+        780
+      ],
+      "id": "f8123523-1658-4dad-9e34-d68b1e73aa8e",
+      "name": "Обновление таблицы с квизами маркдаун",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "960429558560063518",
+          "mode": "id"
+        },
+        "content": "=📚 **Контент для топика \"{{ $('Промпт и условия').item.json.original_item.Topics }}\" готов!**\n\n🔗 [Ссылка на таблицу](https://docs.google.com/spreadsheets/d/15BTeQjbR9bxw6a-S_kvxV-s4h_5oEWcPyk1qPCWQQL8/edit?gid=647402261#gid=647402261) ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1580,
+        780
+      ],
+      "id": "7556b5c2-e710-438f-9584-cb80ad2b7773",
+      "name": "Discord",
+      "webhookId": "9ecc8ab0-580f-4a11-a954-1d4c8deac14e",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "RH Report Discord Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Триггер таймера": {
+      "main": [
+        [
+          {
+            "node": "Получение строк из таблицы",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Получение строк из таблицы": {
+      "main": [
+        [
+          {
+            "node": "Промпт и условия",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Промпт и условия": {
+      "main": [
+        [
+          {
+            "node": "Генерация топика",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Генерация топика": {
+      "main": [
+        [
+          {
+            "node": "Создание документа для топика",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Создание документа для топика": {
+      "main": [
+        [
+          {
+            "node": "Заполнение документа для топика",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Заполнение документа для топика": {
+      "main": [
+        [
+          {
+            "node": "Обновление таблицы с топиками",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Обновление таблицы с топиками": {
+      "main": [
+        [
+          {
+            "node": "Перевод топика в маркдаун",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Перевод топика в маркдаун": {
+      "main": [
+        [
+          {
+            "node": "Создание документа для топика в маркдаун",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Создание документа для топика в маркдаун": {
+      "main": [
+        [
+          {
+            "node": "Заполнение документа для топика в маркдаун",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Заполнение документа для топика в маркдаун": {
+      "main": [
+        [
+          {
+            "node": "Обновление таблицы с топиками маркдаун",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Обновление таблицы с топиками маркдаун": {
+      "main": [
+        [
+          {
+            "node": "Генерация квизов",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Генерация квизов": {
+      "main": [
+        [
+          {
+            "node": "Создание документа для квиза",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Модель ИИ для генерации топиков": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Генерация топика",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Модель ИИ для перевода топиков в маркдаун": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Перевод топика в маркдаун",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Модель ИИ для генерации квизов": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Генерация квизов",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Создание документа для квиза": {
+      "main": [
+        [
+          {
+            "node": "Заполнение документа для квиза",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Заполнение документа для квиза": {
+      "main": [
+        [
+          {
+            "node": "Обновление таблицы с квизами",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Обновление таблицы с квизами": {
+      "main": [
+        [
+          {
+            "node": "Перевод квизов в маркдаун",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Модель ИИ для перевода квизов в маркдаун": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Перевод квизов в маркдаун",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Перевод квизов в маркдаун": {
+      "main": [
+        [
+          {
+            "node": "Создание документа для квиза маркдаун",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Создание документа для квиза маркдаун": {
+      "main": [
+        [
+          {
+            "node": "Заполнение документа для квиза маркдаун",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Заполнение документа для квиза маркдаун": {
+      "main": [
+        [
+          {
+            "node": "Обновление таблицы с квизами маркдаун",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Обновление таблицы с квизами маркдаун": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "d3788c84-d53b-44e7-a6cd-20ec59157c8b",
+  "triggerCount": 0,
+  "tags": []
+}

@@ -1,0 +1,137 @@
+{
+  "createdAt": "2025-06-11T11:46:04.775Z",
+  "updatedAt": "2025-06-11T11:46:31.896Z",
+  "id": "MPchjQd1bi9Huvyf",
+  "name": "Post_Memory",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "PostMemory",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1240,
+        -20
+      ],
+      "id": "8654c2ca-4754-424c-b846-4a458ce66e8f",
+      "name": "Webhook",
+      "webhookId": "ef72f95f-37a6-4189-af72-b7bd1c702d19"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "https://docs.google.com/document/d/1BvJFzEBew0ExBGfj0jUO2OSevJxJ5PB5I_jtEXwK7iQ/edit?tab=t.0#heading=h.8g3n5ap8bnhp",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Webhook').item.json.body.newText }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        -20
+      ],
+      "id": "d7b2b4bf-524d-47f1-98a0-d1ba183f25c1",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -380,
+        -140
+      ],
+      "id": "3d0a3487-6bed-4295-a57f-fa316806811e",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1BvJFzEBew0ExBGfj0jUO2OSevJxJ5PB5I_jtEXwK7iQ/edit?usp=drivesdk"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -1020,
+        -20
+      ],
+      "id": "ad22c1f4-cc51-4d89-85ba-5578651651b6",
+      "name": "Google Docs1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Docs1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs1": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "3caa7f3c-5c43-4277-8e2d-31db225a0c76",
+  "triggerCount": 0,
+  "tags": []
+}

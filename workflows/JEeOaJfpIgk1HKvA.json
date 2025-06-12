@@ -1,0 +1,470 @@
+{
+  "createdAt": "2025-06-10T09:08:24.982Z",
+  "updatedAt": "2025-06-11T07:38:58.326Z",
+  "id": "JEeOaJfpIgk1HKvA",
+  "name": "Maxim Florian Project",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "5bd98721-5bc4-4e36-b930-b1bd2e41da29",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1000,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "companyName",
+              "stringValue": "stealthaistartup"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b0353076-44e7-459a-8540-15c01b59f469",
+      "name": "Set Company",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -700,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://google.serper.dev/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "5c1a3a475b4f628a19fbdc1d2d2c075f68ad5b14"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "=site:linkedin.com/company {{$json.companyName}}"
+            },
+            {
+              "name": "num",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "46e395e7-c09a-4b01-be75-b6c1934491fa",
+      "name": "Serper Search for LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -500,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "companyProfileUrl",
+              "stringValue": "={{$json.organic.filter(item => item.link && item.link.includes('linkedin.com/company/'))[0]?.link || ''}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7174314c-e14d-4e2c-ae47-29004103df4c",
+      "name": "Extract LinkedIn URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        -300,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.companyProfileUrl}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.9"
+            },
+            {
+              "name": "Accept",
+              "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            },
+            {
+              "name": "Pragma",
+              "value": "no-cache"
+            },
+            {
+              "name": "Sec-Fetch-Dest",
+              "value": "document"
+            },
+            {
+              "name": "Sec-Fetch-Mode",
+              "value": "navigate"
+            },
+            {
+              "name": "Sec-Fetch-Site",
+              "value": "none"
+            },
+            {
+              "name": "Sec-Fetch-User",
+              "value": "?1"
+            },
+            {
+              "name": "Upgrade-Insecure-Requests",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "c335e05c-465e-40d6-942b-8ebcc5145144",
+      "name": "Fetch Company Page HTML",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -100,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "companyName",
+              "cssSelector": "h1.org-top-card-summary__title, h1.org-top-card-summary__title span, h1[data-test-id='org-name'], h1.top-card-layout__title, h1.t-24, h1.text-2xl, div.org-top-card__primary-content h1, .org-top-card-summary-info__title, h1"
+            },
+            {
+              "key": "industries",
+              "cssSelector": "[data-test-id='about-us__industries'] button, .org-about-company-module__specialities, .org-page-details__item:contains('Industry') .t-black--light, .org-top-card-summary-info-list__info-item:contains('Industry'), .mb1:contains('Industry') + .inline-block, .org-industries__tag"
+            },
+            {
+              "key": "locations",
+              "cssSelector": ".org-locations-module__location, .org-about-company-module__locations, .org-page-details__item:contains('Headquarters') .t-black--light, .org-top-card-summary-info-list__info-item:contains('Headquarters'), .mb1:contains('Headquarters') + .inline-block, [data-test-id='about-us__headquarters']"
+            },
+            {
+              "key": "description",
+              "cssSelector": "p.break-words.whitespace-pre-wrap, section[data-test-id='about-us'] p, .org-about-us-organization-description p, .org-about-company-module__description p, section.artdeco-card p, [class*='description'] p"
+            },
+            {
+              "key": "website",
+              "cssSelector": "a[data-test-id='org-website'], .org-top-card-primary-actions a[href*='http']:not([href*='linkedin']), .link-without-visited-state, a.org-about-us-company-module__website, .org-about-company-module__company-page-url a, a.ember-view.org-top-card-primary-actions__action, .org-top-card__primary-actions a, a[class*='link'][href*='http']:not([href*='linkedin']), .org-top-card-secondary-content a[href*='http']:not([href*='linkedin']), a[aria-label*='website' i], a[aria-label*='site' i], .org-top-card__primary-actions a[rel='noopener noreferrer'], div[data-test-id='about-us__website'] a"
+            },
+            {
+              "key": "employeeCountRange",
+              "cssSelector": "[data-test-id='about-us__size'] dd, .org-about-company-module__company-staff-count-range, .org-page-details__item:contains('Company size') .t-black--light, .org-top-card-summary-info-list__info-item:contains('Company size'), .mb1:contains('Company size') + .inline-block, .org-about-company-module__company-size-definition-text"
+            },
+            {
+              "key": "employeesOnLinkedIn",
+              "cssSelector": ".org-top-card-summary-info-list__info-item a:contains('employees on LinkedIn'), a[data-test-id='employees-at-org-link'], .mt2.mb1:contains('employees on LinkedIn'), .org-company-employees-snackbar__details-highlight"
+            },
+            {
+              "key": "specialties",
+              "cssSelector": "[data-test-id='about-us__specialties'] dd, .org-about-company-module__specialities, .mb1:contains('Specialties') + .inline-block"
+            },
+            {
+              "key": "allLinks",
+              "cssSelector": "a[href]"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "id": "9f928710-1808-4487-b360-e3629a2eae95",
+      "name": "HTML Extract",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1,
+      "position": [
+        100,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Function to clean and extract text from array or string\nfunction cleanValue(value) {\n  if (!value) return '';\n  \n  // If it's an array, take the first non-empty element\n  if (Array.isArray(value)) {\n    value = value.find(v => v && v.toString().trim()) || '';\n  }\n  \n  // Convert to string and clean\n  return value.toString()\n    .trim()\n    .replace(/\\s+/g, ' ')  // Replace multiple spaces with single space\n    .replace(/\\n+/g, ' ')  // Replace newlines with space\n    .replace(/^[,\\s]+|[,\\s]+$/g, '');  // Remove leading/trailing commas and spaces\n}\n\n// Function to extract employee count from various formats\nfunction extractEmployeeCount(employeeRange, employeesOnLinkedIn) {\n  // First try employee count range (like API returns)\n  if (employeeRange) {\n    const rangeText = cleanValue(employeeRange);\n    \n    // LinkedIn employee count ranges mapping\n    const rangeMap = {\n      'A': '1',\n      'B': '2-10',\n      'C': '11-50', \n      'D': '51-200',\n      'E': '201-500',\n      'F': '501-1000',\n      'G': '1001-5000',\n      'H': '5001-10000',\n      'I': '10000+'\n    };\n    \n    // Check if it's a single letter code\n    if (rangeMap[rangeText]) {\n      return rangeMap[rangeText];\n    }\n    \n    // Try to extract range pattern like \"201-500 employees\" or \"Company size: 201-500\"\n    const rangeMatch = rangeText.match(/(\\d+[\\s,-]+\\d+|\\d+\\+?)\\s*(employees|$)/i);\n    if (rangeMatch) return rangeMatch[1].replace(/\\s/g, '');\n  }\n  \n  // Then try employees on LinkedIn count\n  if (employeesOnLinkedIn) {\n    const linkedInText = cleanValue(employeesOnLinkedIn);\n    const countMatch = linkedInText.match(/(\\d+[,\\d]*)\\s*employees/i);\n    if (countMatch) return countMatch[1] + ' on LinkedIn';\n  }\n  \n  return '';\n}\n\n// Function to extract industry from various formats\nfunction extractIndustry(industries) {\n  if (!industries) return '';\n  \n  const cleanIndustries = cleanValue(industries);\n  \n  // Remove common prefixes\n  return cleanIndustries\n    .replace(/^Industry\\s*:?\\s*/i, '')\n    .replace(/^Industries\\s*:?\\s*/i, '')\n    .trim();\n}\n\n// Function to extract headquarters/location\nfunction extractHeadquarters(locations) {\n  if (!locations) return '';\n  \n  const cleanLocations = cleanValue(locations);\n  \n  // Remove common prefixes\n  return cleanLocations\n    .replace(/^Headquarters\\s*:?\\s*/i, '')\n    .replace(/^Location\\s*:?\\s*/i, '')\n    .replace(/^Locations\\s*:?\\s*/i, '')\n    .trim();\n}\n\n// Function to extract website from text\nfunction extractWebsite(text) {\n  if (!text) return '';\n  \n  // Try to find URLs in the text\n  const urlMatch = text.match(/https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/gi);\n  \n  if (urlMatch) {\n    // Filter out LinkedIn URLs and return the first non-LinkedIn URL\n    const nonLinkedInUrl = urlMatch.find(url => !url.includes('linkedin.com') && !url.includes('lnkd.in'));\n    if (nonLinkedInUrl) return nonLinkedInUrl;\n  }\n  \n  return '';\n}\n\n// Function to clean website URL\nfunction cleanWebsite(url) {\n  if (!url) return '';\n  \n  const cleanUrl = cleanValue(url);\n  \n  // Remove any tracking parameters\n  try {\n    const urlObj = new URL(cleanUrl);\n    return urlObj.origin + urlObj.pathname.replace(/\\/$/, '');\n  } catch (e) {\n    // If not a valid URL, just return cleaned value\n    return cleanUrl;\n  }\n}\n\n// Function to extract company name from LinkedIn URL\nfunction extractCompanyNameFromUrl(url) {\n  if (!url) return '';\n  \n  const match = url.match(/linkedin\\.com\\/company\\/([^/?]+)/i);\n  if (match) {\n    return match[1]\n      .replace(/-/g, ' ')  // Replace hyphens with spaces\n      .replace(/\\b\\w/g, l => l.toUpperCase());  // Capitalize first letter of each word\n  }\n  \n  return '';\n}\n\n// Process the extracted data\nconst item = items[0].json;\n\n// Get LinkedIn URL from the input (it should come from the Fetch Company Page HTML2 node)\nlet linkedinUrl = '';\n\n// Try to get the LinkedIn URL from the input item\n// The URL is passed from the \"Extract LinkedIn URL2\" node through \"Fetch Company Page HTML2\"\nif ($input.item && $input.item.json && $input.item.json.url) {\n  linkedinUrl = $input.item.json.url;\n} else if (item.url) {\n  linkedinUrl = item.url;\n}\n\n// If still no URL, try to get it from the previous node's data\nif (!linkedinUrl) {\n  try {\n    // n8n allows accessing previous nodes' data\n    const fetchNode = $('Fetch Company Page HTML2').item;\n    if (fetchNode && fetchNode.json && fetchNode.json.url) {\n      linkedinUrl = fetchNode.json.url;\n    }\n  } catch (e) {\n    // If we can't get the URL from previous node, continue without it\n  }\n}\n\n// Extract company name - try multiple sources\nlet companyName = cleanValue(item.companyName);\nif (!companyName && linkedinUrl) {\n  companyName = extractCompanyNameFromUrl(linkedinUrl);\n}\n\n// Extract industry\nlet industry = extractIndustry(item.industries);\n\n// Extract headquarters\nlet headquarters = extractHeadquarters(item.locations);\n\n// Extract employee count\nlet employeeCount = extractEmployeeCount(item.employeeCountRange, item.employeesOnLinkedIn);\n\n// Extract website - try from direct extraction or from description text\nlet website = cleanWebsite(item.website);\nif (!website && item.description) {\n  website = extractWebsite(item.description);\n}\nif (!website && item.allLinks) {\n  // Try to find website from all links\n  const links = Array.isArray(item.allLinks) ? item.allLinks : [item.allLinks];\n  const websiteLink = links.find(link => \n    link && !link.includes('linkedin.com') && !link.includes('lnkd.in') && \n    (link.startsWith('http://') || link.startsWith('https://'))\n  );\n  if (websiteLink) {\n    website = cleanWebsite(websiteLink);\n  }\n}\n\n// Extract other fields\nconst description = cleanValue(item.description);\nconst specialties = cleanValue(item.specialties);\n\nreturn [{\n  json: {\n    companyName: companyName,\n    industry: industry,\n    headquarters: headquarters,\n    description: description,\n    website: website,\n    employeeCount: employeeCount,\n    specialties: specialties,\n    linkedinUrl: linkedinUrl\n  }\n}];"
+      },
+      "id": "91e07d66-7641-44f9-aeb9-e1f3a4bb6d32",
+      "name": "Parse Details",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1XtExkUCUEALBKIwifnP0ro3vNyvaSrwp0OQsSXGqOV0/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XtExkUCUEALBKIwifnP0ro3vNyvaSrwp0OQsSXGqOV0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "companyName": "={{ $json.companyName }}",
+            "industry": "={{ $json.industry }}",
+            "headquarters": "={{ $json.headquarters }}",
+            "description": "={{ $json.description }}",
+            "website": "={{ $json.website }}",
+            "employeeCount": "={{ $json.employeeCount }}",
+            "specialties": "={{ $json.specialties }}",
+            "linkedinUrl": "={{ $json.linkedinUrl }}"
+          },
+          "matchingColumns": [
+            "companyName"
+          ],
+          "schema": [
+            {
+              "id": "companyName",
+              "displayName": "companyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "industry",
+              "displayName": "industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "headquarters",
+              "displayName": "headquarters",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "employeeCount",
+              "displayName": "employeeCount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "specialties",
+              "displayName": "specialties",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinUrl",
+              "displayName": "linkedinUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        500,
+        -40
+      ],
+      "id": "4a1dc352-eaea-4b4e-a654-7b2720fd2b3c",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Company": {
+      "main": [
+        [
+          {
+            "node": "Serper Search for LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Serper Search for LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Extract LinkedIn URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract LinkedIn URL": {
+      "main": [
+        [
+          {
+            "node": "Fetch Company Page HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Company Page HTML": {
+      "main": [
+        [
+          {
+            "node": "HTML Extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML Extract": {
+      "main": [
+        [
+          {
+            "node": "Parse Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Details": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "9c90ebc2-b68d-4020-8fdf-f6556953987f",
+  "triggerCount": 0,
+  "tags": []
+}

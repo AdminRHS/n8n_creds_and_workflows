@@ -1,0 +1,1001 @@
+{
+  "createdAt": "2025-06-10T07:38:01.733Z",
+  "updatedAt": "2025-06-12T09:44:32.466Z",
+  "id": "oqjLsht3y0w9q9ZE",
+  "name": "AI YouTube transcript",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -20,
+        420
+      ],
+      "id": "a7fdc0e5-dcbf-49f2-acfc-a1d3c88b5a3c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "playlistItem",
+        "operation": "getAll",
+        "playlistId": "=UUPjNBjflYl0-HQtUvOx0Ibw",
+        "part": [
+          "snippet",
+          "contentDetails"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        200,
+        -80
+      ],
+      "id": "a6f2a3bc-6fc1-46e2-abb5-8e02774cdd57",
+      "name": "Greg Isenberg",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "jWlNickvUhnmffw9",
+          "name": "DEV YouTube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "playlistItem",
+        "operation": "getAll",
+        "playlistId": "=UUbo-KbSjJDG6JWQ_MTZ_rNA",
+        "part": [
+          "snippet",
+          "contentDetails"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        200,
+        120
+      ],
+      "id": "5c736b7a-3b50-4cb0-ba38-3b17deec1caa",
+      "name": "Nick Saraev",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "jWlNickvUhnmffw9",
+          "name": "DEV YouTube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "playlistItem",
+        "operation": "getAll",
+        "playlistId": "=UU08Fah8EIryeOZRkjBRohcQ",
+        "part": [
+          "snippet",
+          "contentDetails"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ],
+      "id": "7d63cb6a-6b1f-48b5-a83e-dd4c99bddb85",
+      "name": "Creator Magic",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "jWlNickvUhnmffw9",
+          "name": "DEV YouTube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "playlistItem",
+        "operation": "getAll",
+        "playlistId": "=UUMwVTLZIRRUyyVrkjDpn4pA",
+        "part": [
+          "snippet",
+          "contentDetails"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        200,
+        540
+      ],
+      "id": "7d6d9b56-4c48-41cb-ac1b-1402bda96530",
+      "name": "Cole Medin",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "jWlNickvUhnmffw9",
+          "name": "DEV YouTube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "playlistItem",
+        "operation": "getAll",
+        "playlistId": "=UUI4xxi0p97BghIqgEPYx6sw",
+        "part": [
+          "snippet",
+          "contentDetails"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        200,
+        740
+      ],
+      "id": "11c6892a-a61e-4dbe-aecd-6ab63eec3331",
+      "name": "Your AI Workflow",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "jWlNickvUhnmffw9",
+          "name": "DEV YouTube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "playlistItem",
+        "operation": "getAll",
+        "playlistId": "=UUc-FovAyBAQDw2Y7PQ_v0Zw",
+        "part": [
+          "snippet",
+          "contentDetails"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        200,
+        940
+      ],
+      "id": "9c646fcb-a6c2-4877-97ec-dad9dc9164b0",
+      "name": "Julian Goldie SEO",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "jWlNickvUhnmffw9",
+          "name": "DEV YouTube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// вычисляем метку времени «неделю назад»\nconst oneWeekAgo = Date.now() - 1 * 24 * 60 * 60 * 1000;\n\n// фильтруем элементы по дате публикации из snippet.publishedAt\nconst recentItems = items.filter(item => {\n  const pubDate = new Date(item.json.snippet.publishedAt).getTime();\n  return pubDate >= oneWeekAgo;\n});\n\nreturn recentItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        400
+      ],
+      "id": "b6b8a6a2-1dce-44a2-91b4-47a7b9bc41b1",
+      "name": "24 hours"
+    },
+    {
+      "parameters": {
+        "numberInputs": 6
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        700,
+        340
+      ],
+      "id": "6d7f7968-99a5-48e4-bd31-cc892cfb4a2b",
+      "name": "Merge YouTube videos"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Этот код предназначен для использования в узле \"Code\" в n8n.\n// Входные данные узла доступны в переменной 'items' как массив элементов.\n\n// Мы обработаем каждый входной элемент и добавим новое свойство\n// с объединенным текстом транскрипции ВНУТРИ объекта 'json'.\n\nconst outputItems = items.map(item => {\n  let concatenatedText = '';\n  let transcript = null;\n\n  // Безопасно получаем доступ к массиву транскрипции,\n  // ожидая структуру item.json.transcript.\n  // Используем оператор опциональной последовательности (?.) для безопасного доступа.\n  transcript = item?.json?.transcript;\n\n  // Проверяем, что полученный объект действительно является массивом\n  if (Array.isArray(transcript)) {\n    // Фильтруем записи, которые не являются валидными объектами\n    // или не имеют строкового свойства 'text'.\n    // Затем извлекаем только текст и объединяем его пробелом.\n    const textSegments = transcript\n      .filter(entry => entry && typeof entry === 'object' && typeof entry.text === 'string')\n      .map(entry => entry.text);\n\n    concatenatedText = textSegments.join(' ');\n  } else {\n    // Обрабатываем случаи, когда массив транскрипции отсутствует или не является массивом\n    console.warn(\"Элемент не содержит валидный массив 'json.transcript' или путь к нему:\", item);\n    // В этом случае concatenatedText останется пустой строкой ('').\n    // Вы можете изменить это поведение при необходимости.\n  }\n\n  // Создаем выходной элемент.\n  // Включаем все исходные свойства входного элемента.\n  // Добавляем или модифицируем свойство 'json', чтобы добавить объединенный текст внутрь него.\n  return {\n    ...item, // Копируем все свойства из исходного элемента на верхний уровень\n    json: { // Создаем или обращаемся к объекту 'json'\n      ...(item.json || {}), // Копируем все существующие свойства из item.json (если он есть)\n      concatenatedTranscript: concatenatedText // Добавляем сюда объединенный текст\n    }\n  };\n});\n\n// Узел \"Code\" должен возвращать массив элементов.\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2120,
+        380
+      ],
+      "id": "0e200a48-1cfa-420c-a6e1-36668d10d11a",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "firstExtractedTitle",
+              "field2": "title"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1400,
+        960
+      ],
+      "id": "a7af25d7-1813-4341-9825-ce5a0aa037d9",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1pongTk5EFZI1D6RRpYwz_Ex_Tt3lsHfD0jHcGgnAq0k/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Parsing",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pongTk5EFZI1D6RRpYwz_Ex_Tt3lsHfD0jHcGgnAq0k/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{ $json.title }}",
+            "Link": "={{ $json.url }}",
+            "channelLink": "={{ $json.channel_id }}",
+            "videoLink": "={{ $json.videoId }}",
+            "json": "={{ $json.cleanedText }}"
+          },
+          "matchingColumns": [
+            "Title"
+          ],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "json",
+              "displayName": "json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "videoLink",
+              "displayName": "videoLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channelLink",
+              "displayName": "channelLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Topic",
+              "displayName": "Topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1620,
+        1140
+      ],
+      "id": "d753454b-860c-4ea6-96b7-4082c8e7289e",
+      "name": "Google Sheets2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const newItems = [];\n\nfor (const item of items) {\n  const concatenatedTranscript = item.json.concatenatedTranscript;\n  const title = item.json.title;\n\n  // Create a new item object with the desired structure (separate columns)\n  // You can name the properties (columns) as you wish\n  newItems.push({\n    json: {\n      transcriptColumn: concatenatedTranscript,\n      titleColumn: title\n    }\n  });\n}\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        680
+      ],
+      "id": "59efac89-a39a-4fb9-a0ee-1984505a46d9",
+      "name": "Add Columns"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Этот код предназначен для узла Code в n8n.\n// Он обрабатывает массив входных элементов (items).\n// Для каждого элемента он проходит по всем свойствам его объекта 'json'.\n// Если свойство является строкой, к нему применяются шаги очистки\n// для удаления форматирования, похожего на JSON.\n\n// Вспомогательная функция для очистки строки\nfunction cleanString(inputString) {\n    // Если входное значение не является строкой, возвращаем его как есть.\n    if (typeof inputString !== 'string') {\n        return inputString;\n    }\n\n    let cleanedJsonString = inputString;\n\n    // --- Шаги очистки ---\n\n    // 1. Удалить потенциальный ведущий маркер 'json' (```json или ``json) и окружающие пробелы/переводы строк.\n    // Флаг 'i' добавлен для нечувствительного к регистру сопоставления 'json'.\n    // (?:```|``) соответствует трем или двум обратным кавычкам.\n    cleanedJsonString = cleanedJsonString.replace(/^\\s*(?:```|``)\\s*json\\s*\\n*/i, '');\n\n    // 2. Удалить потенциальные замыкающие обратные кавычки (``` или ``) и окружающие пробелы/переводы строк.\n    cleanedJsonString = cleanedJsonString.replace(/\\s*(?:```|``)\\s*$/, '');\n\n    // 3. Обрезать все оставшиеся ведущие/конечные пробелы.\n    cleanedJsonString = cleanedJsonString.trim();\n\n    // --- !!! ПРЕДУПРЕЖДЕНИЕ !!! ---\n    // Следующий шаг удаляет критически важные символы структуры JSON: квадратные скобки ([ ]) и фигурные скобки ({ }).\n    // Как указано в исходном описании проблемы, это сделает строку невалидным JSON.\n    // Если следующий узел n8n попытается выполнить JSON.parse() для этого вывода, он ОБЯЗАТЕЛЬНО ВЫДАСТ ОШИБКУ,\n    // если ожидает валидный JSON-объект или массив. Эта логика сохранена согласно вашему исходному заданию.\n    cleanedJsonString = cleanedJsonString.replace(/[\\[\\]\\{\\}]/g, '');\n\n    return cleanedJsonString;\n}\n\n// Обработка каждого элемента во входном массиве 'items'\nconst outputItems = items.map(item => {\n    const newItem = {\n        json: {},\n        // Сохраняем бинарные данные, если они есть\n        ...(item.binary && { binary: item.binary })\n    };\n\n    // Проверяем, существует ли объект item.json\n    if (item.json && typeof item.json === 'object' && item.json !== null) {\n        // Проходим по всем ключам в объекте item.json\n        for (const key in item.json) {\n            if (Object.prototype.hasOwnProperty.call(item.json, key)) {\n                // Применяем функцию очистки к значению свойства\n                newItem.json[key] = cleanString(item.json[key]);\n            }\n        }\n    } else if (item.json) {\n        // Если item.json не является объектом, но существует (например, строка, число),\n        // попробуем обработать его как единственное значение.\n        // Это может потребовать корректировки в зависимости от точной структуры ваших данных.\n        console.warn(`Warning: item.json for an item was not an object. Attempting to clean it directly. Value: ${item.json}`);\n        newItem.json.unknownProcessedValue = cleanString(item.json);\n    }\n\n\n    return newItem;\n});\n\n// --- Вывод ---\n// Возвращаем массив обработанных элементов.\nreturn outputItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        680
+      ],
+      "id": "a4da500e-4526-4c29-8b26-0d96ca6024c1",
+      "name": "remove json1"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        840
+      ],
+      "id": "782a56b8-269d-4465-b3f4-794bbbd21841",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Функция для удаления лишних символов из строки\nconst cleanString = (inputText) => {\n  let text = inputText;\n  // Убедимся, что на вход подается именно строка\n  if (typeof text !== 'string') {\n    // Если это не строка, преобразуем ее в строку, чтобы избежать ошибок при дальнейшей обработке.\n    // В зависимости от требований, здесь можно было бы также вернуть пустую строку или ошибку.\n    text = String(text);\n  }\n  return text\n    .replace(/```json\\n/g, '') // Убираем возможное начало блока json-кода, если оно есть\n    .replace(/```/g, '')       // Убираем возможные символы окончания блока кода\n    .replace(/\\n/g, ' ')      // Заменяем все символы переноса строки на пробелы\n    .replace(/\\s+/g, ' ')    // Заменяем последовательности из нескольких пробельных символов на один пробел\n    .trim();                   // Удаляем пробелы в начале и в конце строки\n};\n\n// Инициализируем массив, в который будем собирать все входные элементы для обработки.\nlet allInputItems = [];\n\n// Определяем, каким образом получить все входные элементы.\n// В исходном коде использовался метод $input.first(), что характерно для сред,\n// где $input является специальным объектом-хелпером для доступа к входным данным.\n// В таких средах обычно есть и метод для получения всех элементов.\n\nif (typeof $input.all === 'function') {\n  // Это стандартный способ во многих платформах (например, n8n) для получения массива всех входящих элементов.\n  allInputItems = $input.all();\n} else if (Array.isArray($input)) {\n  // Если переменная $input сама по себе уже является массивом элементов.\n  allInputItems = $input;\n} else if ($input && Array.isArray($input.items)) {\n  // Если элементы хранятся в свойстве 'items' объекта $input (другой распространенный паттерн).\n  allInputItems = $input.items;\n} else if ($input && typeof $input.first === 'function') {\n  // Если есть метод .first(), но нет очевидного стандартного способа получить все элементы (типа .all() или .items).\n  // Это может означать, что платформа не передает все элементы сразу таким образом,\n  // или что код изначально не был рассчитан на пакетную обработку.\n  // Поскольку задача — обработать \"все\" элементы, простое использование .first() здесь будет\n  // некорректным, если элементов на входе больше одного.\n  console.warn(\"Обнаружен метод $input.first(), но не найден стандартный способ получения всех элементов (например, $input.all() или $input.items). Будет предпринята попытка обработать $input как одиночный элемент, если он соответствует ожидаемой структуре.\");\n  // Попытка обработать $input как одиночный элемент, если он имеет структуру item.json.text\n  if ($input && $input.json && typeof $input.json.text === 'string') {\n     allInputItems = [$input]; // Обрабатываем сам $input как массив из одного элемента\n  } else {\n      // Если $input.first() есть, но $input не является одиночным элементом нужной структуры,\n      // и нет $input.all(), то мы не можем надежно получить \"все\" элементы.\n      console.error(\"Не удалось получить все элементы из $input. $input не является массивом, не имеет метода .all() или свойства .items, и сам не является одиночным элементом нужной структуры. Попытка использовать $input.first() как единственный элемент.\");\n      try {\n        const firstItem = $input.first();\n        if (firstItem && firstItem.json && typeof firstItem.json.text === 'string') {\n            allInputItems = [firstItem]; // Обрабатываем только первый, так как другие не найдены\n        } else {\n            allInputItems = []; // Не удалось получить даже первый элемент в нужном формате\n        }\n      } catch(e) {\n        console.error(\"Ошибка при попытке доступа к $input.first() после неудачных попыток получить все элементы:\", e);\n        allInputItems = [];\n      }\n  }\n} else if ($input && $input.json && typeof $input.json.text === 'string') {\n  // Если $input — это сам по себе одиночный элемент (не массив и не хелпер),\n  // но он соответствует ожидаемой структуре { json: { text: \"...\" } }.\n  allInputItems = [$input];\n} else {\n  // Если ни один из известных способов не подошел.\n  console.error(\"Неизвестная структура $input. Не удалось извлечь элементы для обработки. $input:\", $input);\n  allInputItems = []; // Инициализируем пустым массивом, чтобы избежать ошибок далее\n}\n\n// Дополнительная проверка: убедимся, что allInputItems действительно является массивом.\nif (!Array.isArray(allInputItems)) {\n  console.error(\"Переменная allInputItems не является массивом после попыток ее определения. Невозможно обработать элементы. Текущее значение allInputItems:\", allInputItems);\n  // Возвращаем пустой массив, чтобы не прерывать выполнение всего потока ошибкой,\n  // но при этом сигнализируем о проблеме в логах.\n  return [];\n}\n\n// Если массив allInputItems пуст (например, на вход ничего не пришло или не удалось распознать структуру),\n// нет смысла продолжать обработку.\nif (allInputItems.length === 0) {\n    console.log(\"Входные данные для обработки отсутствуют или не были корректно распознаны.\");\n    return []; // Возвращаем пустой массив\n}\n\n// Теперь обрабатываем каждый элемент в полученном массиве allInputItems\nconst results = allInputItems.map((item, index) => {\n  // Проверяем, что текущий 'item' существует, содержит ключ 'json',\n  // и 'item.json' содержит ключ 'text' со строковым значением.\n  // Эта структура должна соответствовать тому, что возвращал $input.first() в вашем оригинальном коде.\n  if (item && item.json && typeof item.json.text === 'string') {\n    const inputString = item.json.text;\n    // Применяем функцию очистки к текстовому содержимому\n    const cleanedString = cleanString(inputString);\n    // Возвращаем объект в требуемом формате\n    return { json: { json: cleanedString } };\n  } else {\n    // Если элемент имеет неверную структуру или отсутствует необходимое текстовое поле,\n    // логируем это и возвращаем объект с информацией об ошибке.\n    // Это позволяет не прерывать всю обработку из-за одного \"плохого\" элемента.\n    console.warn(`Элемент с индексом ${index} имеет неверную структуру или отсутствует обязательное поле 'item.json.text'. Элемент:`, item);\n    return { json: { error: \"Неверная структура элемента или отсутствует поле 'json.text'\", originalItem: item } };\n  }\n});\n\n// Возвращаем массив обработанных элементов.\n// Каждый элемент этого массива будет объектом вида { json: { cleanedText: \"...\" } }\n// или { json: { error: \"...\", originalItem: ... } } в случае проблем с конкретным элементом.\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2500,
+        680
+      ],
+      "id": "58c66c4d-7040-4f08-96d2-c0d887dbeb26",
+      "name": "Delete trash1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "=youtubeId",
+              "field2": "=videoId"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1900,
+        380
+      ],
+      "id": "98dbde68-bf25-422a-9d73-b7e20b3de2c8",
+      "name": "Merge transcribation and title, url,  etc1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "60d0d292-7f04-40b4-acf3-8a64c13acd26",
+              "name": "title",
+              "value": "={{ $json.snippet.title }}",
+              "type": "string"
+            },
+            {
+              "id": "753c7ef6-4008-4b16-81f0-7fbe291f015a",
+              "name": "url",
+              "value": "=https://youtube.com/watch?v={{ $json.snippet.resourceId.videoId }}",
+              "type": "string"
+            },
+            {
+              "id": "b51008a2-7ca7-408c-b212-f8a441d7c3e5",
+              "name": "publishedAt",
+              "value": "={{ $json.snippet.publishedAt }}",
+              "type": "string"
+            },
+            {
+              "id": "32915e1e-22a5-452f-a234-8371d3993da3",
+              "name": "videoId",
+              "value": "={{ $json.snippet.resourceId.videoId }}",
+              "type": "string"
+            },
+            {
+              "id": "081f3dd5-08ce-455f-9275-e10a8078a5b5",
+              "name": "channel_id",
+              "value": "=https://www.youtube.com/channel/{{ $json.snippet.channelId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1240,
+        400
+      ],
+      "id": "dd4b169c-72ca-4a8d-999d-7b6745f275b5",
+      "name": "Parse title ulr and publishedAt2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7f472442-7031-477a-91e5-7c4c1f395342",
+              "name": "transcript",
+              "value": "={{ $json.transcript }}",
+              "type": "array"
+            },
+            {
+              "id": "a31a1ac5-1b68-4555-a3b2-185871443971",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "9a348f4d-6993-4c14-8843-0f8526b66538",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "8cb5f6fc-103c-4632-be0f-bd20d2a871bd",
+              "name": "videoId",
+              "value": "={{ $json.videoId }}",
+              "type": "string"
+            },
+            {
+              "id": "8bf407f6-c4ca-42c1-b0d1-a870f4d533a5",
+              "name": "concatenatedTranscript",
+              "value": "={{ $json.concatenatedTranscript }}",
+              "type": "string"
+            },
+            {
+              "id": "148d1f7d-10dc-448a-960b-533f4113ee53",
+              "name": "channel_id",
+              "value": "={{ $json.channel_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2340,
+        380
+      ],
+      "id": "3b78e5ff-1783-480d-b783-d072c04ec454",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b3e41e7d-b40e-4ba8-88cb-38e12e541e40",
+              "leftValue": "={{ $json.transcriptColumn }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1880,
+        680
+      ],
+      "id": "26890b6c-278a-48d4-9176-bb00ff9eb41c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = [];\n\n// Проходимся по каждому входному JSON-файлу\nfor (const item of $input.all()) {\n  const inputData = item.json.json; // Получаем содержимое JSON из текущего элемента\n\n  // Регулярное выражение для извлечения первого \"title\"\n  const regex = /\"title\":\\s*\"(.*?)\"/;\n  const match = inputData.match(regex);\n\n  let firstTitle = null;\n  if (match && match[1]) {\n    firstTitle = match[1];\n  }\n\n  // Создаем новый элемент, сохраняя все исходные данные и добавляя извлеченный заголовок\n  output.push({\n    json: {\n      ...item.json, // Сохраняем все исходные данные текущего элемента\n      firstExtractedTitle: firstTitle // Добавляем новую колонку с извлеченным заголовком\n    }\n  });\n}\n\n// Возвращаем массив обработанных элементов\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2720,
+        680
+      ],
+      "id": "92974379-67d0-4f37-b835-7797e202b75a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=Сгенерируй ОДИН валидный JSON-объект для импорта на обучающую платформу по ДАННЫМ, которые я пришлю в следующем сообщении. Соблюдай ВСЕ правила, проверь себя по чек-листу и затем выведи только JSON. Если понял — ответь:  Да, жду следующее сообщение.   \n\n⸻ 1 Шаблон, который ОБЯЗАТЕЛЬНО следует клонировать\n⸻ 1 Шаблон, который ОБЯЗАТЕЛЬНО следует клонировать\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"category\": \"681dfaab642ad2b18ee6e8d3\",\n  \"difficulty\": \"beginner\",\n  \"instructor\": \"67f4c1cf43048b820d373709\",\n  \"image\": \"\",\n  \"imagePreview\": \"\",\n  \"modules\": [\n    {\n    \"title\": \"Module A\",\n    \"description\": \"Description of all lessons in this module.\",\n    \"content\": \"One-sentence summary of the module.\",\n    \"lessons\": [\n      { \"title\": \"Lesson 1\", \"content\": \"...\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n      { \"title\": \"Lesson 2\", \"content\": \"...\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n      { \"title\": \"Lesson 3\", \"content\": \"...\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n      ...,\n      { \"title\": \"Lesson 10\", \"content\": \"...\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" }\n      ],\n    \"tests\": []\n    }\n  ]\n}\n\nНи одного лишнего или пропущенного ключа, порядок свойств сохраняй.\n\n⸻ 2 Как заполнять поля\n\nУровень\tПоле\tЧто писать\nКурс\ttitle, description, instructor\tБери дословно из моих данных.\nКурс\timage, imagePreview\tОставь \"\", если в данных нет ссылок.\nМодуль\ttitle, description\tКопируй дословно. Описание — краткий фразовый заголовок (≤ 15 слов).\nМодуль\tcontent\tОдно предложение-саммари (≤ 20 слов).\nУрок\ttitle\tКопируй заголовок урока.\nУрок\tcontent\tПредставь материал как гайд: короткое предложение, несколько абзацев или структура «шаги:». Без «воды».\nУрок\tduration\tЧисло из данных или 15 по умолчанию.\nУрок\ttype, contentType\tВсегда \"text\" и \"standard\".\nМодуль\ttests\tВсегда [].\n\nВнутри массива \"lessons\" добавь несколько объектов уроков, разделяя их запятыми, чтобы сгруппировать все уроки в одном модуле.\n\n⸻ 3 Формат ответа\nВерни только JSON без Markdown-блоков, комментариев и пояснений.\nОтвет должен начинаться с { и заканчиваться }.\nВсе строки в кавычках \", все переносы в content — через \\n.  \n⸻ 4 Чек-лист перед отправкой\n\nКол-во модулей и уроков точно совпадает с входными данными.\n\nУ каждого модуля несколько уроков.\n\ncontent модуля — 1 предложение.\n\ncontent урока — короткое предложение, несколько абзацев или пункты.\n\nВесь JSON валиден (скобки, запятые, кавычки).\n\n⸻ 5 Типичные ошибки и как правильно\n\nОшибка\tПочему плохо\tПравильно\nПрерываешься после первого модуля\tПотеря остальных модулей.\tВыведи все модули из данных.\nПропускаешь уроки\tНарушена целостность курса.\tВключи каждый урок из данных.\ncontent модуля = много строк\tДолжно быть 1 предложение.\tcontent: \"Summarise whole module in one sentence.\"\ncontent урока = одно слово\tДолжен быть текст или структура с абзацами/пунктами.\tcontent: \"Short summary or detailed steps:\\n- Step one\\n- Step two\"\nДобавил комментарий // TODO или <!-- -->\tJSON станет невалидным.\tУбери комментарии.\nВывел Markdown json …\tПлатформа не принимает.\tПросто JSON без обёртки.\nВывел два одинаковых модуля с одинаковым содержимым - плохо\n\n⸻ 6 Два учебных примера (НЕ реальные данные)\nОшибочный ответ\n\n{\n  \"title\": \"Demo\",\n  \"modules\": [\n    { \"title\": \"Only module\" }\n  ]\n}\n\nОшибки: отсутствуют обязательные поля, content не заполнен, пропущены уроки, JSON усечён.\n\nКорректный ответ\n\n{\n  \"title\": \"Demo Course\",\n  \"description\": \"Quick demo.\",\n  \"category\": \"681dfaab642ad2b18ee6e8d3\",\n  \"difficulty\": \"beginner\",\n  \"instructor\": \"67f4c1cf43048b820d373709\",\n  \"image\": \"\",\n  \"imagePreview\": \"\",\n  \"modules\": [\n    {\n      \"title\": \"Module A\",\n      \"description\": \"description of all lessons in this module.\",\n      \"content\": \"This module gives an info of the whole course.\",\n      \"lessons\": [\n        { \"title\": \"Lesson 1\", \"content\": \"content\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n        { \"title\": \"Lesson 2\", \"content\": \"another content\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n        { \"title\": \"Lesson 3\", \"content\": \"another another content\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" }\n      ],\n      \"tests\": []\n    }\n  ]\n}\n\n\n⸻  Если всё понятно — ответь ровно:  Да, жду следующее сообщение.  "
+            },
+            {
+              "type": "AIMessagePromptTemplate",
+              "message": "Да, жду следующее сообщение"
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=Входной текст: {{ $json.transcriptColumn }} , а название всего курса - {{ $json.titleColumn }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        2140,
+        680
+      ],
+      "id": "f0aa8ffd-45e9-4d6e-afa2-7d0bb8430b23",
+      "name": "JSON generator1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://lrn.oa-y.com/api/course",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Token",
+              "value": "63f223e1-08bf-4825-8aed-3ad1653c1467"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1620,
+        960
+      ],
+      "id": "19e68820-e2a6-44de-a6a1-017e7a675768",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemma-3-27b-it:generateContent?key=AIzaSyBbBt2vbs2k4r1Gz5Q3Q3P1b391Q7hbzBU",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Name",
+              "value": "Content-Type"
+            },
+            {
+              "name": "Value",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        { \"text\": \"Carefully review the entire video transcript. Then extract the spoken content as one continuous block of text, without timestamps, speaker labels, annotations, or any additional suggestions. Only output the words exactly as they were said: {{ $json.url }}\" }\n      ]\n    }\n  ]\n}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 61000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        80
+      ],
+      "id": "9070738e-894e-45cd-b672-87e2420cdb88",
+      "name": "ai studio video parser",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "videoId": "={{ $json.videoId }}"
+      },
+      "type": "n8n-nodes-youtube-transcription-kasha.youtubeTranscripter",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        260
+      ],
+      "id": "5cd1b8eb-18b3-4658-8502-f722e0362ebd",
+      "name": "YouTube Transcript"
+    },
+    {
+      "parameters": {
+        "content": "Все ключи на месте, content модуля = 1 предложение, content урока = текст строго по входным данным. Все писать на английском.\n",
+        "height": 240,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2140,
+        560
+      ],
+      "id": "08dea6e4-4393-4b64-9aab-220c45c9fb6a",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Greg Isenberg",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Nick Saraev",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Creator Magic",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Cole Medin",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Your AI Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Julian Goldie SEO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Greg Isenberg": {
+      "main": [
+        [
+          {
+            "node": "Merge YouTube videos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nick Saraev": {
+      "main": [
+        [
+          {
+            "node": "Merge YouTube videos",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Creator Magic": {
+      "main": [
+        [
+          {
+            "node": "Merge YouTube videos",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Cole Medin": {
+      "main": [
+        [
+          {
+            "node": "Merge YouTube videos",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Your AI Workflow": {
+      "main": [
+        [
+          {
+            "node": "Merge YouTube videos",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Julian Goldie SEO": {
+      "main": [
+        [
+          {
+            "node": "Merge YouTube videos",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "24 hours": {
+      "main": [
+        [
+          {
+            "node": "Parse title ulr and publishedAt2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge YouTube videos": {
+      "main": [
+        [
+          {
+            "node": "24 hours",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Columns": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remove json1": {
+      "main": [
+        [
+          {
+            "node": "Add Columns",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "JSON generator1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete trash1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge transcribation and title, url,  etc1": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse title ulr and publishedAt2": {
+      "main": [
+        [
+          {
+            "node": "Merge transcribation and title, url,  etc1",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "YouTube Transcript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "remove json1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "JSON generator1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON generator1": {
+      "main": [
+        [
+          {
+            "node": "Delete trash1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube Transcript": {
+      "main": [
+        [
+          {
+            "node": "Merge transcribation and title, url,  etc1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "ff0b13c2-4ce0-4be4-b275-f26e363d8e60",
+  "triggerCount": 0,
+  "tags": []
+}

@@ -1,0 +1,182 @@
+{
+  "createdAt": "2025-06-11T11:52:50.966Z",
+  "updatedAt": "2025-06-11T11:52:58.142Z",
+  "id": "r1KL9cwbBpBL9PtM",
+  "name": "Add_courses",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Функция для удаления лишних символов из строки\nconst cleanString = (inputText) => {\n  let text = inputText;\n  // Убедимся, что на вход подается именно строка\n  if (typeof text !== 'string') {\n    // Если это не строка, преобразуем ее в строку, чтобы избежать ошибок при дальнейшей обработке.\n    // В зависимости от требований, здесь можно было бы также вернуть пустую строку или ошибку.\n    text = String(text);\n  }\n  return text\n    .replace(/```json\\n/g, '') // Убираем возможное начало блока json-кода, если оно есть\n    .replace(/```/g, '')       // Убираем возможные символы окончания блока кода\n    .replace(/\\n/g, ' ')      // Заменяем все символы переноса строки на пробелы\n    .replace(/\\s+/g, ' ')    // Заменяем последовательности из нескольких пробельных символов на один пробел\n    .trim();                   // Удаляем пробелы в начале и в конце строки\n};\n\n// Инициализируем массив, в который будем собирать все входные элементы для обработки.\nlet allInputItems = [];\n\n// Определяем, каким образом получить все входные элементы.\n// В исходном коде использовался метод $input.first(), что характерно для сред,\n// где $input является специальным объектом-хелпером для доступа к входным данным.\n// В таких средах обычно есть и метод для получения всех элементов.\n\nif (typeof $input.all === 'function') {\n  // Это стандартный способ во многих платформах (например, n8n) для получения массива всех входящих элементов.\n  allInputItems = $input.all();\n} else if (Array.isArray($input)) {\n  // Если переменная $input сама по себе уже является массивом элементов.\n  allInputItems = $input;\n} else if ($input && Array.isArray($input.items)) {\n  // Если элементы хранятся в свойстве 'items' объекта $input (другой распространенный паттерн).\n  allInputItems = $input.items;\n} else if ($input && typeof $input.first === 'function') {\n  // Если есть метод .first(), но нет очевидного стандартного способа получить все элементы (типа .all() или .items).\n  // Это может означать, что платформа не передает все элементы сразу таким образом,\n  // или что код изначально не был рассчитан на пакетную обработку.\n  // Поскольку задача — обработать \"все\" элементы, простое использование .first() здесь будет\n  // некорректным, если элементов на входе больше одного.\n  console.warn(\"Обнаружен метод $input.first(), но не найден стандартный способ получения всех элементов (например, $input.all() или $input.items). Будет предпринята попытка обработать $input как одиночный элемент, если он соответствует ожидаемой структуре.\");\n  // Попытка обработать $input как одиночный элемент, если он имеет структуру item.json.text\n  if ($input && $input.json && typeof $input.json.text === 'string') {\n     allInputItems = [$input]; // Обрабатываем сам $input как массив из одного элемента\n  } else {\n      // Если $input.first() есть, но $input не является одиночным элементом нужной структуры,\n      // и нет $input.all(), то мы не можем надежно получить \"все\" элементы.\n      console.error(\"Не удалось получить все элементы из $input. $input не является массивом, не имеет метода .all() или свойства .items, и сам не является одиночным элементом нужной структуры. Попытка использовать $input.first() как единственный элемент.\");\n      try {\n        const firstItem = $input.first();\n        if (firstItem && firstItem.json && typeof firstItem.json.text === 'string') {\n            allInputItems = [firstItem]; // Обрабатываем только первый, так как другие не найдены\n        } else {\n            allInputItems = []; // Не удалось получить даже первый элемент в нужном формате\n        }\n      } catch(e) {\n        console.error(\"Ошибка при попытке доступа к $input.first() после неудачных попыток получить все элементы:\", e);\n        allInputItems = [];\n      }\n  }\n} else if ($input && $input.json && typeof $input.json.text === 'string') {\n  // Если $input — это сам по себе одиночный элемент (не массив и не хелпер),\n  // но он соответствует ожидаемой структуре { json: { text: \"...\" } }.\n  allInputItems = [$input];\n} else {\n  // Если ни один из известных способов не подошел.\n  console.error(\"Неизвестная структура $input. Не удалось извлечь элементы для обработки. $input:\", $input);\n  allInputItems = []; // Инициализируем пустым массивом, чтобы избежать ошибок далее\n}\n\n// Дополнительная проверка: убедимся, что allInputItems действительно является массивом.\nif (!Array.isArray(allInputItems)) {\n  console.error(\"Переменная allInputItems не является массивом после попыток ее определения. Невозможно обработать элементы. Текущее значение allInputItems:\", allInputItems);\n  // Возвращаем пустой массив, чтобы не прерывать выполнение всего потока ошибкой,\n  // но при этом сигнализируем о проблеме в логах.\n  return [];\n}\n\n// Если массив allInputItems пуст (например, на вход ничего не пришло или не удалось распознать структуру),\n// нет смысла продолжать обработку.\nif (allInputItems.length === 0) {\n    console.log(\"Входные данные для обработки отсутствуют или не были корректно распознаны.\");\n    return []; // Возвращаем пустой массив\n}\n\n// Теперь обрабатываем каждый элемент в полученном массиве allInputItems\nconst results = allInputItems.map((item, index) => {\n  // Проверяем, что текущий 'item' существует, содержит ключ 'json',\n  // и 'item.json' содержит ключ 'text' со строковым значением.\n  // Эта структура должна соответствовать тому, что возвращал $input.first() в вашем оригинальном коде.\n  if (item && item.json && typeof item.json.text === 'string') {\n    const inputString = item.json.text;\n    // Применяем функцию очистки к текстовому содержимому\n    const cleanedString = cleanString(inputString);\n    // Возвращаем объект в требуемом формате\n    return { json: { json: cleanedString } };\n  } else {\n    // Если элемент имеет неверную структуру или отсутствует необходимое текстовое поле,\n    // логируем это и возвращаем объект с информацией об ошибке.\n    // Это позволяет не прерывать всю обработку из-за одного \"плохого\" элемента.\n    console.warn(`Элемент с индексом ${index} имеет неверную структуру или отсутствует обязательное поле 'item.json.text'. Элемент:`, item);\n    return { json: { error: \"Неверная структура элемента или отсутствует поле 'json.text'\", originalItem: item } };\n  }\n});\n\n// Возвращаем массив обработанных элементов.\n// Каждый элемент этого массива будет объектом вида { json: { cleanedText: \"...\" } }\n// или { json: { error: \"...\", originalItem: ... } } в случае проблем с конкретным элементом.\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        -100
+      ],
+      "id": "f8e961bf-daad-46fa-932b-e4d7e2f6a5b2",
+      "name": "Delete trash1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": " ",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=Сгенерируй ОДИН валидный JSON-объект для импорта на обучающую платформу по ДАННЫМ, которые я пришлю в следующем сообщении. Соблюдай ВСЕ правила, проверь себя по чек-листу и затем выведи только JSON. Если понял — ответь:  Да, жду следующее сообщение.   \n\n⸻ 1 Шаблон, который ОБЯЗАТЕЛЬНО следует клонировать\n⸻ 1 Шаблон, который ОБЯЗАТЕЛЬНО следует клонировать\n{\n  \"title\": \"\",\n  \"description\": \"\",\n  \"category\": \"681dfaab642ad2b18ee6e8d3\",\n  \"difficulty\": \"beginner\",\n  \"instructor\": \"67f4c1cf43048b820d373709\",\n  \"image\": \"\",\n  \"imagePreview\": \"\",\n  \"modules\": [\n    {\n    \"title\": \"Module A\",\n    \"description\": \"Description of all lessons in this module.\",\n    \"content\": \"One-sentence summary of the module.\",\n    \"lessons\": [\n      { \"title\": \"Lesson 1\", \"content\": \"...\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n      { \"title\": \"Lesson 2\", \"content\": \"...\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n      { \"title\": \"Lesson 3\", \"content\": \"...\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n      ...,\n      { \"title\": \"Lesson 10\", \"content\": \"...\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" }\n      ],\n    \"tests\": []\n    }\n  ]\n}\n\nНи одного лишнего или пропущенного ключа, порядок свойств сохраняй.\n\n⸻ 2 Как заполнять поля\n\nУровень\tПоле\tЧто писать\nКурс\ttitle, description, instructor\tБери дословно из моих данных.\nКурс\timage, imagePreview\tОставь \"\", если в данных нет ссылок.\nМодуль\ttitle, description\tКопируй дословно. Описание — краткий фразовый заголовок (≤ 15 слов).\nМодуль\tcontent\tОдно предложение-саммари (≤ 20 слов).\nУрок\ttitle\tКопируй заголовок урока.\nУрок\tcontent\tПредставь материал как гайд: короткое предложение, несколько абзацев или структура «шаги:». Без «воды».\nУрок\tduration\tЧисло из данных или 15 по умолчанию.\nУрок\ttype, contentType\tВсегда \"text\" и \"standard\".\nМодуль\ttests\tВсегда [].\n\nВнутри массива \"lessons\" добавь несколько объектов уроков, разделяя их запятыми, чтобы сгруппировать все уроки в одном модуле.\n\n⸻ 3 Формат ответа\nВерни только JSON без Markdown-блоков, комментариев и пояснений.\nОтвет должен начинаться с { и заканчиваться }.\nВсе строки в кавычках \", все переносы в content — через \\n.  \n⸻ 4 Чек-лист перед отправкой\n\nКол-во модулей и уроков точно совпадает с входными данными.\n\nУ каждого модуля несколько уроков.\n\ncontent модуля — 1 предложение.\n\ncontent урока — короткое предложение, несколько абзацев или пункты.\n\nВесь JSON валиден (скобки, запятые, кавычки).\n\n⸻ 5 Типичные ошибки и как правильно\n\nОшибка\tПочему плохо\tПравильно\nПрерываешься после первого модуля\tПотеря остальных модулей.\tВыведи все модули из данных.\nПропускаешь уроки\tНарушена целостность курса.\tВключи каждый урок из данных.\ncontent модуля = много строк\tДолжно быть 1 предложение.\tcontent: \"Summarise whole module in one sentence.\"\ncontent урока = одно слово\tДолжен быть текст или структура с абзацами/пунктами.\tcontent: \"Short summary or detailed steps:\\n- Step one\\n- Step two\"\nДобавил комментарий // TODO или <!-- -->\tJSON станет невалидным.\tУбери комментарии.\nВывел Markdown json …\tПлатформа не принимает.\tПросто JSON без обёртки.\nВывел два одинаковых модуля с одинаковым содержимым - плохо\n\n⸻ 6 Два учебных примера (НЕ реальные данные)\nОшибочный ответ\n\n{\n  \"title\": \"Demo\",\n  \"modules\": [\n    { \"title\": \"Only module\" }\n  ]\n}\n\nОшибки: отсутствуют обязательные поля, content не заполнен, пропущены уроки, JSON усечён.\n\nКорректный ответ\n\n{\n  \"title\": \"Demo Course\",\n  \"description\": \"Quick demo.\",\n  \"category\": \"681dfaab642ad2b18ee6e8d3\",\n  \"difficulty\": \"beginner\",\n  \"instructor\": \"67f4c1cf43048b820d373709\",\n  \"image\": \"\",\n  \"imagePreview\": \"\",\n  \"modules\": [\n    {\n      \"title\": \"Module A\",\n      \"description\": \"description of all lessons in this module.\",\n      \"content\": \"This module gives an info of the whole course.\",\n      \"lessons\": [\n        { \"title\": \"Lesson 1\", \"content\": \"content\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n        { \"title\": \"Lesson 2\", \"content\": \"another content\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" },\n        { \"title\": \"Lesson 3\", \"content\": \"another another content\", \"duration\": 15, \"type\": \"text\", \"contentType\": \"standard\" }\n      ],\n      \"tests\": []\n    }\n  ]\n}\n\n\n⸻  Если всё понятно — ответь ровно:  Да, жду следующее сообщение.  "
+            },
+            {
+              "type": "AIMessagePromptTemplate",
+              "message": "Да, жду следующее сообщение"
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=# Course: Automating Candidate Form Collection for Absolute Beginners (with n8n and AI)\n\n## Course Summary\nThis beginner-friendly course guides you step-by-step in building a candidate registration form, automating its processing with n8n, and saving data in Google Sheets. Every lesson includes a glossary, troubleshooting tips, and ready-to-use code templates that you can copy and use immediately. The course focuses on practical, no-code/low-code solutions and shows how to leverage AI for code generation and explanation.\n\n---\n\n## Glossary (for all modules)\n- **Automation**: Making tasks happen by themselves using software, not manual work.\n- **Form**: A web page where someone enters information (name, email, etc.).\n- **Webhook**: A special internet address (URL) where your form sends data for processing.\n- **n8n**: A tool that helps you connect different apps and automate processes visually.\n- **JSON**: A way to send data as a set of \"labels\" and \"values\" (like Name: John).\n- **Node**: A “step” in n8n; each node does one specific thing (like receive data or write to Google Sheets).\n- **Credentials**: Secret info (like passwords or API keys) needed to connect to other services.\n\n---\n\n## Module 1: Introduction and Setting Up\n\n1. **What is Automation?**\n   - Explanation in plain language with examples from daily life (e.g., auto-replies in messengers).\n   - *Troubleshooting*: If you feel lost, re-read the glossary or ask ChatGPT for more examples.\n\n2. **Creating a Google Account and Google Sheet**\n   - Instructions for creating a Google account, accessing Google Sheets, and making a new spreadsheet.\n   - *Code Template*: None needed.\n   - *Troubleshooting*: Can’t find Google Sheets? Search “Google Sheets” and log in.\n\n3. **Introduction to n8n**\n   - How to register for n8n.cloud (or run locally with guidance).\n   - *Troubleshooting*: If n8n asks for credentials, follow on-screen instructions.\n\n4. **Understanding Webhooks and APIs**\n   - Plain explanation: “A webhook is where your form will send the information.”\n   - *Troubleshooting*: Not sure what a URL is? It’s the address in your browser, like https://example.com/webhook.\n\n5. **Getting Started with AI Code Generation**\n   - How to use ChatGPT or other AI to generate code for forms and automations.\n   - *Example Prompt*: “Generate an HTML form for candidate registration with name, email, and phone fields.”\n   - *Troubleshooting*: If AI code doesn't work, copy the error message and ask the AI for help.\n\n---\n\n## Module 2: Building and Testing the Candidate Form\n\n1. **Using AI to Generate the Form Code**\n   - How to ask ChatGPT: “Generate a full HTML form for candidate registration. Fields: Name, Email, Phone, etc.”\n   - *Ready Template*:  \n     ```html\n     <form id=\"candidateForm\">\n       <input name=\"name\" placeholder=\"Name\" required>\n       <input name=\"email\" type=\"email\" placeholder=\"Email\" required>\n       <input name=\"phone\" type=\"tel\" placeholder=\"Phone\">\n       <button type=\"submit\">Submit</button>\n     </form>\n     ```\n   - *Troubleshooting*: Not sure how to use this? Copy, paste into Notepad, save as `.html`, and open in your browser.\n\n2. **Adding a Test Data Button**\n   - Use AI: “Show how to add a button that fills the form with sample data using JavaScript.”\n   - *Ready Template*:  \n     ```html\n     <button type=\"button\" onclick=\"fillTest()\">Fill with Test Data</button>\n     <script>\n       function fillTest() {\n         document.querySelector('[name=\"name\"]').value = \"John Doe\";\n         document.querySelector('[name=\"email\"]').value = \"john@example.com\";\n         document.querySelector('[name=\"phone\"]').value = \"+1234567890\";\n       }\n     </script>\n     ```\n   - *Troubleshooting*: Not working? Double-check the `name` attributes.\n\n3. **Collecting Form Data as JSON**\n   - AI prompt: “How do I collect form data as JSON and prepare to send?”\n   - *Ready Template*:  \n     ```js\n     document.getElementById('candidateForm').onsubmit = function(e){\n       e.preventDefault();\n       const data = {\n         name: this.name.value,\n         email: this.email.value,\n         phone: this.phone.value\n       };\n       // Show JSON in the console for now:\n       console.log(JSON.stringify(data));\n     };\n     ```\n   - *Troubleshooting*: Open browser “Console” (F12) to see the JSON.\n\n4. **Sending Data to the Webhook**\n   - AI prompt: “Show me JavaScript code to POST JSON to a webhook URL.”\n   - *Ready Template*:  \n     ```js\n     fetch('YOUR_WEBHOOK_URL', {\n       method: 'POST',\n       headers: {'Content-Type':'application/json'},\n       body: JSON.stringify(data)\n     })\n     .then(r=>r.ok ? alert('Sent!') : alert('Failed'))\n     .catch(e=>alert('Error: '+e));\n     ```\n   - *Troubleshooting*: Replace `YOUR_WEBHOOK_URL` with your actual n8n webhook URL.\n\n5. **Testing Everything Together**\n   - Fill out the form, send data, check in n8n if request arrives.\n   - *Troubleshooting*: If nothing happens, check the browser console and your webhook’s logs.\n\n---\n\n## Module 3: Connecting n8n and Google Sheets\n\n1. **Receiving Webhook Data in n8n**\n   - Step-by-step: Add Webhook node, copy its URL into your form code.\n   - *Troubleshooting*: Webhook URL mismatch? Make sure to use the “Test” or “Production” URL as needed.\n\n2. **Inspecting and Mapping Data**\n   - See what your webhook received: open the workflow’s execution, look at the incoming JSON.\n   - *Troubleshooting*: Fields missing? Check that form field names and Sheet headers match.\n\n3. **Adding Google Sheets Node**\n   - Drag in “Google Sheets” node, connect your Google account, choose “Append Row”.\n   - *Troubleshooting*: Auth error? Reconnect or re-authorize Google Sheets in n8n.\n\n4. **Manual Field Mapping for Control**\n   - Manually match each incoming JSON field to the correct Google Sheets column.\n   - *Ready Template*:\n     - In n8n’s field mapping UI, enter e.g. `{{$json[\"body\"][\"name\"]}}` for “Name” column.\n   - *Troubleshooting*: Typo in field name? Copy/paste exactly from form/Sheet.\n\n5. **Testing the End-to-End Process**\n   - Submit a test form and confirm a new row appears in Google Sheets.\n   - *Troubleshooting*: No new row? Double-check all previous steps.\n\n---\n\n## Module 4: Troubleshooting and Common Issues\n\n1. **Glossary for Quick Reference**\n   - Review and print out the glossary from the start of the course.\n\n2. **What to Do if Data Doesn’t Arrive**\n   - Check browser console for JavaScript errors.\n   - Check n8n workflow “Executions” for incoming requests.\n\n3. **Debugging Field Mapping Problems**\n   - Confirm that all `name` attributes in the form match the Sheet and n8n mapping exactly.\n   - Use n8n’s expression editor to see suggestions/autocomplete.\n\n4. **AI for Debugging Help**\n   - If stuck, copy error messages or unexpected results and paste into ChatGPT with a prompt like:\n     - “Why does my form submission not reach Google Sheets in my n8n workflow?”\n     - “Explain what this error means: [paste error].”\n   - The AI can often explain or even fix simple mistakes.\n\n5. **Improving and Extending the Automation**\n   - Use AI for “how do I add X?” questions (file uploads, dropdowns, more fields).\n   - Always test after adding new code—copy errors to the AI for help.\n\n---\n\n## Module 5: Best Practices and Next Steps\n\n1. **Copy-Paste Ready Code**\n   - Use provided templates as starting points; modify only field names and webhook URL.\n   - Always test in small steps.\n\n2. **Documenting Your Process**\n   - Write down what you did and why (e.g., in a Google Doc or Notion).\n\n3. **Glossary and FAQ**\n   - Keep a running list of new terms you encounter and their meanings.\n   - FAQ examples: “What is a webhook?”, “How do I get my n8n URL?”\n\n4. **Using AI for Further Learning**\n   - Prompt ChatGPT for explanations, templates, or error fixes at every step.\n\n5. **Encouragement and Next Steps**\n   - Don’t worry if something doesn’t work the first time—learning is iterative.\n   - Try to expand: add more fields, validations, or even notifications (email, Slack) using similar patterns.\n\n---\n\n## Resources\n\n- [n8n Docs](https://docs.n8n.io/)\n- [Google Sheets Help](https://support.google.com/docs/)\n- [ChatGPT](https://chat.openai.com/)\n- [MDN: HTML Forms](https://developer.mozilla.org/en-US/docs/Learn/Forms)"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -120,
+        -100
+      ],
+      "id": "dd270e50-339c-4428-8e58-c258afe9e0b8",
+      "name": "JSON generator1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://lrn.oa-y.com/api/course",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Token",
+              "value": "63f223e1-08bf-4825-8aed-3ad1653c1467"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.json) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        -100
+      ],
+      "id": "407987cd-3a54-438b-8213-3a5b255d4c85",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        220
+      ],
+      "id": "b9c23639-2e98-4bb8-8236-9ed2c677e893",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "XMxQ0GCtR8pIxTvP",
+          "name": "DEV OpenAI expensive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "7a271a9b-cef4-4eb3-ba06-68b90fd4b3d1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        -100
+      ],
+      "id": "aee95eaa-07f1-408d-91fa-387fee7b324c",
+      "name": "Webhook",
+      "webhookId": "7a271a9b-cef4-4eb3-ba06-68b90fd4b3d1"
+    }
+  ],
+  "connections": {
+    "JSON generator1": {
+      "main": [
+        [
+          {
+            "node": "Delete trash1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "JSON generator1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete trash1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "JSON generator1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b6442387-50e2-48e0-ba52-3f427788e969",
+  "triggerCount": 0,
+  "tags": []
+}

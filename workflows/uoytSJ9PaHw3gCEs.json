@@ -1,0 +1,1983 @@
+{
+  "createdAt": "2025-06-10T07:57:35.091Z",
+  "updatedAt": "2025-06-11T08:08:51.202Z",
+  "id": "uoytSJ9PaHw3gCEs",
+  "name": "Discord Report Verification",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['Report text'] }} and {{ $json.UserID }} and {{ $json.Name }}",
+        "options": {
+          "systemMessage": "=You are an automation agent that processes an array of Lead Generator daily reports, each with fields such as:\n- row_number\n- Name (e.g. \"alinapolishchuk\")\n- Date (e.g. \"19.03.2025 12:59\")\n- Report text\n- UserID (e.g. \"999018101779742841\")\n- formatOk\n- normOk\n- status\n- companiesCount\n- messagesCount\n(and possibly other fields)\n\nTreat each report as a separate entry. For each entry, output one or more JSON objects (each on its own line) containing:\n- **Name** (the person's name, taken from the input field `{{ $json.Name }}`),\n- **UserID** (taken from the input field ` {{ $json.UserID }}`),\n- **status** (exactly one of `\"project_leadgen\"`, `\"incorrect_report_or_daily_quota\"`, or `\"correct_report_and_daily_quota\"`).\n\nDo not output anything else.\n\nClassification Rules (in order):\n\n1. If the Report text contains the exact substring \"Project:\" (case‑insensitive), classify the report as \"project_leadgen\" — with two exceptions:\n   - If the report explicitly says it's Part-Time plus some project (like “Part-Time Project” or “worked half-day on a project, half-day on regular tasks”), treat the entire day as regular Part-Time (ignore the project part) and do not classify as \"project_leadgen\".\n   - If the user did not clarify Part-Time Project, but they list a project name (e.g., “Project ACME”), consider them Full-Time Project and classify as \"project_leadgen\".\n\n2. Otherwise, verify the format: the report must include a Full‑Time or Part‑Time indicator, a \"Creates\" line with a number, a \"Sent Request\" line with a number, and a \"Connected\" line with a number. (A \"Messages to old connections\" line is optional.)  \n   If any required field is missing or malformed, classify the report as \"incorrect_report_or_daily_quota\".\n\n3. If the format is correct, check the daily quota:\n   - For Full‑Time: \"Creates\" should be between 50 and 70 and \"Messages\" (if present) should be at least 60.\n   - For Part‑Time: \"Creates\" should be between 20 and 40 and \"Messages\" (if present) should be at least 30.\n   If the quota is not met, classify the report as \"incorrect_report_or_daily_quota\".\n\n4. If the format is correct and the quota is met, classify the report as \"correct_report_and_daily_quota\".\n\nAdditional requirement:\n- For each report, you must output **Name**, **UserID**, and **status**. If a single report qualifies for multiple classifications (for instance, part-time project plus meeting the part-time quota), return 2 JSON objects with the same Name and UserID, but different status.\n\nReturn the results as a JSON array of objects, for example:\n\n[\n  {\n    \"Name\": \"alinapolishchuk\",\n    \"UserID\": \"999018101779742841\",\n    \"status\": \"project_leadgen\"\n  },\n  {\n    \"Name\": \"Bob\",\n    \"UserID\": \"123456789012345678\",\n    \"status\": \"incorrect_report_or_daily_quota\"\n  },\n  {\n    \"Name\": \"Max\",\n    \"UserID\": \"987654321098765432\",\n    \"status\": \"correct_report_and_daily_quota\"\n  }\n]\n\nMake sure to respond with valid JSON only, with no extra text or explanation. \nDo not wrap the JSON in markdown fences.\nDont forget about {{ $json.UserID }}, i dont need empty \"\"!\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1060,
+        300
+      ],
+      "id": "5a5bf968-1fcc-44b2-bfec-c08c5ae43e1e",
+      "name": "AI Agent",
+      "alwaysOutputData": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-4b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1360,
+        520
+      ],
+      "id": "006054b6-4138-4e99-802a-5748b803a4c0",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('LG read Sheets').item.json['Report text'] }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1060,
+        500
+      ],
+      "id": "133bc94a-5243-4256-90d9-efc13f2f7c1e",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4",
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2011925316,
+          "mode": "list",
+          "cachedResultName": "LeadGen Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=2011925316"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        -880,
+        500
+      ],
+      "id": "91bdb5ee-71ba-4748-9413-29fd5d976bc2",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "Last_day",
+        "jsCode": "const results = [];\n\n// 1. Определяем «вчера» как промежуток с 00:00 до 23:59 предыдущего дня\nconst now = new Date();\nconst startYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 0, 0, 0, 0);\nconst endYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 23, 59, 59, 999);\n\nfor (const item of items) {\n  // Получаем строку даты из поля \"Date\"\n  const dateStr = item.json[\"Date\"] || \"\";\n  if (!dateStr) {\n    // Если дата не указана, пропускаем\n    continue;\n  }\n\n  // 2. Парсим дату в формате \"DD.MM.YYYY HH:MM\" или \"DD.MM.YYYY\"\n  // Разделяем дату и время (если время отсутствует, будет undefined)\n  const [datePart, timePart] = dateStr.split(\" \");\n  // Разделяем день, месяц, год\n  const [day, month, year] = datePart.split(\".\");\n  if (!day || !month || !year) {\n    // Если не получилось извлечь три части, пропускаем\n    continue;\n  }\n\n  let hours = 0;\n  let minutes = 0;\n  if (timePart) {\n    // Если есть время, разделяем часы и минуты\n    const [hh, mm] = timePart.split(\":\");\n    hours = parseInt(hh, 10) || 0;\n    minutes = parseInt(mm, 10) || 0;\n  }\n\n  // Создаём объект даты: year, month-1 (т.к. в JS месяцы с 0), day, hours, minutes\n  const itemDate = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), hours, minutes);\n\n  // Проверяем валидность\n  if (isNaN(itemDate.getTime())) {\n    // Дата некорректна\n    continue;\n  }\n\n  // 3. Фильтруем: берём только записи, попадающие во «вчера»\n  if (itemDate < startYesterday || itemDate > endYesterday) {\n    // Если дата вне диапазона, пропускаем\n    continue;\n  }\n\n  // 4. Анализируем текст отчёта\n  const reportText = item.json[\"Report text\"] || \"\";\n  const lines = reportText.split(\"\\n\").map(line => line.trim());\n\n  // Если есть \"Project:\", сразу помечаем как хороший отчёт\n  if (reportText.includes(\"Project:\")) {\n    item.json.formatOk = true;\n    item.json.normOk = true;\n    item.json.status = \"Project\";\n    item.json.companiesCount = null;\n    item.json.messagesCount = null;\n    results.push(item);\n    continue;\n  }\n\n  // Иначе начинаем проверять формат\n  let formatOk = true;\n  let normOk = true;\n  let status = null;\n  let companiesCount = null;\n  let messagesCount = null;\n\n  // 5. Ищем в тексте \"Full-Time\" или \"Part-Time\"\n  if (reportText.includes(\"Full-Time\")) {\n    status = \"Full-Time\";\n  } else if (reportText.includes(\"Part-Time\")) {\n    status = \"Part-Time\";\n  } else {\n    formatOk = false;\n  }\n\n  // 6. Ищем строку \"Creates companies:\"\n  const lineCompanies = lines.find(l => l.startsWith(\"Creates companies:\"));\n  if (lineCompanies) {\n    const match = lineCompanies.match(/\\d+/);\n    if (match) {\n      companiesCount = parseInt(match[0], 10);\n    } else {\n      formatOk = false;\n    }\n  } else {\n    formatOk = false;\n  }\n\n  // 7. Ищем строку \"Messages to old connections:\"\n  const lineMessages = lines.find(l => l.startsWith(\"Messages to old connections:\"));\n  if (lineMessages) {\n    const match = lineMessages.match(/\\d+/);\n    if (match) {\n      messagesCount = parseInt(match[0], 10);\n    } else {\n      formatOk = false;\n    }\n  } else {\n    formatOk = false;\n  }\n\n  // 8. Проверяем нормы, только если формат корректный\n  if (formatOk) {\n    if (status === \"Full-Time\") {\n      // Full-Time: 50–70 компаний, ≥60 сообщений\n      if (companiesCount < 50 || companiesCount > 70) normOk = false;\n      if (messagesCount < 60) normOk = false;\n    } else if (status === \"Part-Time\") {\n      // Part-Time: 20–40 компаний, ≥30 сообщений\n      if (companiesCount < 20 || companiesCount > 40) normOk = false;\n      if (messagesCount < 30) normOk = false;\n    }\n  }\n\n  // 9. Записываем результат в item.json\n  item.json.formatOk = formatOk;\n  item.json.normOk = normOk;\n  item.json.status = status;\n  item.json.companiesCount = companiesCount;\n  item.json.messagesCount = messagesCount;\n\n  results.push(item);\n}\n\nreturn results;"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.1,
+      "position": [
+        -760,
+        480
+      ],
+      "id": "9a37fe82-b036-4d9a-bcac-f8fd83b3f650",
+      "name": "Code Tool"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4",
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2011925316,
+          "mode": "list",
+          "cachedResultName": "LeadGen Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=2011925316"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1640,
+        300
+      ],
+      "id": "7a907a4a-48a4-4a86-8db5-87490f9aebd3",
+      "name": "LG read Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "o3-mini",
+          "mode": "list",
+          "cachedResultName": "o3-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1200,
+        440
+      ],
+      "id": "68105450-4fe5-42cc-be7a-b16f8e508293",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "XMxQ0GCtR8pIxTvP",
+          "name": "DEV OpenAI expensive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "incorrect_report_or_daily_quota",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "c79c7e88-9a78-443e-9fc5-0b2c9c9fffd9"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "906cba3f-eb31-4e10-a9be-426d97799238",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "correct_report_and_daily_quota",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6fc315a7-ff0c-4420-9d22-17eb5ed45cb0",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "project_leadgen",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -600,
+        240
+      ],
+      "id": "4e67541c-f278-4178-bd71-b0b0fac401f4",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Предположим, что в item.json.output лежит строка вида:\n// \"[\\n  {\\\"Name\\\": \\\"Alice\\\", \\\"status\\\": \\\"project_leadgen\\\"},\\n  {\\\"Name\\\": \\\"Bob\\\", \\\"status\\\": \\\"incorrect_report_or_daily_quota\\\"}\\n]\"\n\nconst results = [];\n\nfor (const item of items) {\n  // 1. Получаем строку из поля output\n  const rawOutput = item.json.output || \"\";\n  if (!rawOutput) {\n    // Если поле пустое, пропускаем\n    continue;\n  }\n\n  try {\n    // 2. Парсим JSON\n    const parsedArray = JSON.parse(rawOutput);\n    // Ожидаем, что parsedArray – это массив объектов вида { Name, status }\n\n    // 3. Для каждого объекта в массиве создаём отдельный item\n    for (const obj of parsedArray) {\n      results.push({ json: obj });\n    }\n\n  } catch (error) {\n    // Если парсинг не удался, можно обработать ошибку или пропустить\n    console.log(\"JSON parse error:\", error);\n  }\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        20
+      ],
+      "id": "2a336185-0ed0-44ea-9f63-dd07743d90ab",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Предположим, что в item.json.output лежит строка вида:\n// \"[\\n  {\\\"Name\\\": \\\"Alice\\\", \\\"status\\\": \\\"project_leadgen\\\"},\\n  {\\\"Name\\\": \\\"Bob\\\", \\\"status\\\": \\\"incorrect_report_or_daily_quota\\\"}\\n]\"\n\nconst results = [];\n\nfor (const item of items) {\n  // 1. Получаем строку из поля output\n  const rawOutput = item.json.output || \"\";\n  if (!rawOutput) {\n    // Если поле пустое, пропускаем\n    continue;\n  }\n\n  try {\n    // 2. Парсим JSON\n    const parsedArray = JSON.parse(rawOutput);\n    // Ожидаем, что parsedArray – это массив объектов вида { Name, status }\n\n    // 3. Для каждого объекта в массиве создаём отдельный item\n    for (const obj of parsedArray) {\n      results.push({ json: obj });\n    }\n\n  } catch (error) {\n    // Если парсинг не удался, можно обработать ошибку или пропустить\n    console.log(\"JSON parse error:\", error);\n  }\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        240
+      ],
+      "id": "e7763a9b-21a8-410f-b36f-80abd1e2473b",
+      "name": "Code2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        480
+      ],
+      "id": "61eee35f-96a0-47f9-ac87-cfbf4ee40d01",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "={{ $json.UserID }}",
+          "mode": "id"
+        },
+        "content": "=Hi {{ $json.Name }}, I'm monitoring your reports, great job! You're formatting the report correctly and meeting the quota. \n\nI know you complete all quota and make correct report, but remind:\nfor part-time, we have a quota of at least 20 new companies. If it's slightly below that or you've been working on other tasks, it's not a big deal—I might still message you because I don’t yet have a full report-checking feature. For full-time, the quota is at least 40 companies.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        240
+      ],
+      "id": "b7b63eb8-c877-4aa4-acab-a74d1b03e309",
+      "name": "Discord full quota and correct reports",
+      "webhookId": "15cedc03-0e12-43a0-9732-33260de960c1",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "={{ $json.UserID }}",
+          "mode": "id"
+        },
+        "content": "=Hi {{ $json.Name }}, I'm monitoring how you write reports, and I see there's an error. Just a reminder, this is what the report should look like:\n\nFull Time (Part-Time)\n18.03.2025\nYour name\nCountry\nCreates: XX\nSent Request: XXX\nConnected: XXX\nMessages to old connections: XXX \n\nAlso, I'd like to remind you that for part-time, we have a quota of at least 20 new companies. If it's slightly below that or you've been working on other tasks, it's not a big deal—I might still message you because I don’t yet have a full report-checking feature. For full-time, the quota is at least 40 companies.\n\nP.S. If you're on a project and received this message, it means I couldn't find the word \"Project\" that I filter by. Please correct this.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        20
+      ],
+      "id": "34fcc4c6-fc3e-4206-b084-47118dfe88d0",
+      "name": "Discord incorrect quota or report",
+      "webhookId": "223801da-9451-4237-b55c-85df150c6492",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1960,
+        300
+      ],
+      "id": "75960640-a9f1-4803-b71a-16ada0ec159b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "454595558779387904",
+          "mode": "id"
+        },
+        "content": "Hi {{ $json.Name }}, I'm monitoring how you write reports, and I see there's an error. Just a reminder, this is what the report should look like:\n\nFull Time (Part-Time)\n18.03.2025\nYour name\nCountry\nCreates: XX\nSent Request: XXX\nConnected: XXX\nMessages to old connections: XXX \n\nAlso, I'd like to remind you that for part-time, we have a quota of at least 20 new companies. If it's slightly below that or you've been working on other tasks, it's not a big deal—I might still message you because I don’t yet have a full report-checking feature. For full-time, the quota is at least 40 companies.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        540,
+        -140
+      ],
+      "id": "ce1c37a7-9abb-4e38-8af6-2881e88354e3",
+      "name": "Discord",
+      "webhookId": "514abc4b-33ca-466e-967f-620496d7ada0",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      },
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1QeD7v2l4y04FYGVjxu-DbM-2jv1xHomYYfR2IoCMuh8/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1QeD7v2l4y04FYGVjxu-DbM-2jv1xHomYYfR2IoCMuh8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Messages": "={{ $json.content }}"
+          },
+          "matchingColumns": [
+            "Messages"
+          ],
+          "schema": [
+            {
+              "id": "Messages",
+              "displayName": "Messages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        260,
+        240
+      ],
+      "id": "a858bf79-f94f-49af-ac06-f1f5a7855aa7",
+      "name": "Add reports to spreadsheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "# ANALYSIS LEADGENS REPORTS",
+        "height": 80,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1180,
+        160
+      ],
+      "id": "e972f08b-f0a9-4a3b-863c-7f9662f3591c",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4",
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1723319401,
+          "mode": "list",
+          "cachedResultName": "LG TeamLeads Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=1723319401"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1980,
+        1460
+      ],
+      "id": "7f718287-b5f2-408e-ade3-bbacbf6abe95",
+      "name": "LG TeamLeads read Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1320,
+        1680
+      ],
+      "id": "831f4bed-73df-4ae1-906b-b8a9cb0c8b79",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "1080887161169117214",
+          "mode": "id"
+        },
+        "content": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -580,
+        1460
+      ],
+      "id": "10566048-3f32-494b-a581-e1c63112f4e0",
+      "name": "Discord1",
+      "webhookId": "d8a80908-22b4-4aa8-851d-a54a1656a49d",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp-1219:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1000,
+        1660
+      ],
+      "id": "77686387-3814-4254-9e4a-85ac7a87e4ec",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        1140
+      ],
+      "id": "f7242056-2449-4aff-992a-92c3214047b1",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Create }}{{ $json[\"Sent Request\"] }}{{ $json.Connected }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Summarize lead generation reports. In total, the team created a certain number of companies, sent a certain number of LinkedIn requests, and connected with a certain number of new leads. Write simmilar text and add to this paragraph this three raws. You need to add firstly \"Yesterday, leadgens ...\" and than all text Summarize these aggregated results in one brief paragraph, using the exact format below and no additional commentary or headings:\n\nCreate: {{ $json.Create }}  \nSent Request: {{ $json['Sent Request'] }}  \nConnected: {{ $json.Connected }} \n\nReturn only the final paragraph, ensuring it remains concise and clear. Add bullet points if you like it"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -720,
+        980
+      ],
+      "id": "5672d087-3080-4914-b115-704258b48489",
+      "name": "Leadgens summary reports"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=At first, use date - {{ $json.date }}, than that {{ $json.beginning_of_day }} and {{ $json.end_of_day }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "={{ $json.date }}\nStart message from \"LG TeamLeads summary\" title !!\nafter title write that:\nRead the provided text divided into two sections — “Beginning of the Day” ({{ $json.beginning_of_day }}) and “End of the Day.” ({{ $json.end_of_day }}) Produce a concise, straightforward summary that captures the key objectives, activities, and outcomes from each section without using conversational language or meta commentary. Limit the content summary to two paragraphs: one summarizing the “Beginning of the Day” section and the other summarizing the “End of the Day” section.\n\nBeginning: Summarize the planned tasks, priorities, and objectives detailed in the “Beginning of the Day” section in clear, simple language.\n\nEnding: Summarize the accomplishments, progress updates, challenges, and outcomes outlined in the “End of the Day” section, ensuring the summary is brief and free of repetition.\n\nremember, you create a summary of the work"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -1400,
+        1460
+      ],
+      "id": "da741563-56d1-4e6e-94e2-0271519e32ea",
+      "name": "Generate formating for teamleads"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Reformat the {{ $json.text }} below to be more visually appealing. Add headings, bullet points, emojis, and short paragraphs as needed. Insert blank lines to separate sections. Do not remove or alter any essential details. Return only the improved text, with no extra explanations or commentary. Use clear language and avoid repetition."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -1000,
+        1460
+      ],
+      "id": "4b99f7cb-62f3-4df2-824c-4434d56c1236",
+      "name": "Refactoring teamleads"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json[\"Report text\"] }}",
+        "options": {
+          "systemMessage": "=Take info from {{ $json[\"Report text\"] }}\n\nYou are given an array of lead generator daily reports. Each report contains counts for created companies, sent LinkedIn requests, and LinkedIn connections. Note that these values may appear under similar variant field names (e.g. \"Create\", \"Created\", \"Companies Created\" for companies; \"Sent Request\", \"Requests Sent\", \"Invitations Sent\" for requests; \"Connected\", \"Connections\", \"Added Friends\" for connections). Your task is to aggregate these numbers across all reports by summing up all relevant counts for each category. Output a single summary paragraph with the following format, ensuring each item is on a new line:\n\nCreate: <create>  \nSent Request: <sent_requests>  \nConnected: <connected>\n\nReturn only what i need, with no additional commentary. If you didnot find field \"Create\", or \"Sent Request\", or \"Connected\" - write 0"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1280,
+        980
+      ],
+      "id": "dafe474a-8373-4f25-a535-4254302de974",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('LG read Sheets2').item.json[\"Report text\"] }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1200,
+        1140
+      ],
+      "id": "b774737c-fb80-4a80-83f4-36f54c3b4f69",
+      "name": "Window Buffer Memory1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "o3-mini",
+          "mode": "list",
+          "cachedResultName": "o3-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1340,
+        1160
+      ],
+      "id": "ad3c8b4f-9ea4-493f-94f9-bf3ca0ec6af2",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "XMxQ0GCtR8pIxTvP",
+          "name": "DEV OpenAI expensive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# SUMMARIZE TEAMLEAD REPORTS",
+        "height": 80,
+        "width": 640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1400,
+        1360
+      ],
+      "id": "71ceed95-82da-4bef-9ee2-a7b53a653c87",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# SUMMARIZE LG REPORTS",
+        "height": 80,
+        "width": 480
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1400,
+        880
+      ],
+      "id": "4d763f76-e584-4ab9-bf1a-b5dd988d5eb5",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1300,
+        2140
+      ],
+      "id": "fc62c864-176a-43bf-b3d5-ffac59a13378",
+      "name": "OpenRouter Chat Model4",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.combined_report }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Write {{ $json.date }}, than write \"RC summary\" title !!\nafter title write that:\nRead the provided {{ $json.combined_report }} divided into summary that captures the key objectives, activities, and outcomes from each section without using conversational language or meta commentary. Limit the content summary to two paragraphs. If report has links - attach them in the end in markdown style (name of the task)[https://..]\n\nremember, you create a summary of RC work. Write data only one time, do not duplicate it\n\nSimmilar of two ore more people information summarise to one overall. Like if first human add 3 candidates and second 22. write them summa please."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -1300,
+        1980
+      ],
+      "id": "d712a842-3e38-4738-ae93-bc1c51b53475",
+      "name": "Generate formating for RC"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp-1219:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        2120
+      ],
+      "id": "b425c994-5d5a-4ffc-bfd4-e3d5dfc17602",
+      "name": "OpenRouter Chat Model5",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Reformat the {{ $json.text }} below to be more visually appealing. Add headings, bullet points, emojis, and short paragraphs as needed. Insert blank lines to separate sections. Do not remove or alter any essential details. Return only the improved text, with no extra explanations or commentary. Use clear language and avoid repetition. do not add <br/> to the summa"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -940,
+        1980
+      ],
+      "id": "c8977343-5faf-4a36-812c-7d4bdfcd3e9f",
+      "name": "Refactoring RC"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "1080887161169117214",
+          "mode": "id"
+        },
+        "content": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        1980
+      ],
+      "id": "b6d658d0-32a8-41da-a75f-8bdb85521727",
+      "name": "Discord2",
+      "webhookId": "d8a80908-22b4-4aa8-851d-a54a1656a49d",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Получаем вчерашнюю дату\nconst today = new Date();\nconst yesterday = new Date(today);\nyesterday.setDate(yesterday.getDate() - 1);\n\nconst tDay = String(yesterday.getDate()).padStart(2, \"0\");\nconst tMonth = String(yesterday.getMonth() + 1).padStart(2, \"0\");\nconst tYear = String(yesterday.getFullYear());\n\n// Функция парсинга дат: DD.MM.YYYY, DD/MM/YYYY, + опционально HH:mm\nfunction parseDateDDMMYYYYHHmm(dateStr) {\n  if (!dateStr || typeof dateStr !== 'string') return null;\n\n  // Отделяем дату и время\n  const [datePart, timePart] = dateStr.split(\" \");\n  if (!datePart) return null;\n\n  // Разделяем дату по точке или слешу\n  let [day, month, year] = datePart.split(/[./]/);\n\n  // Если год записан двумя цифрами, считаем 20xx\n  if (year && year.length === 2) {\n    year = `20${year}`;\n  }\n\n  let hours = 0;\n  let minutes = 0;\n  if (timePart) {\n    const [hh, mm] = timePart.split(\":\");\n    hours = parseInt(hh, 10) || 0;\n    minutes = parseInt(mm, 10) || 0;\n  }\n\n  const parsedDate = new Date(\n    parseInt(year, 10),\n    parseInt(month, 10) - 1,\n    parseInt(day, 10),\n    hours,\n    minutes\n  );\n  if (isNaN(parsedDate.getTime())) return null;\n\n  return parsedDate;\n}\n\n// Функция проверки совпадения дня, месяца и года\nfunction isSameDay(dateStr, d, m, y) {\n  const parsed = parseDateDDMMYYYYHHmm(dateStr);\n  if (!parsed) return false;\n\n  const dd = String(parsed.getDate()).padStart(2, \"0\");\n  const mm = String(parsed.getMonth() + 1).padStart(2, \"0\");\n  const yyyy = String(parsed.getFullYear());\n\n  return (dd === d && mm === m && yyyy === y);\n}\n\n// 2) Фильтруем записи, у которых item.json.Date совпадает с «вчера»\nlet sameDayItems = items.filter(item => {\n  return isSameDay(item.json.Date, tDay, tMonth, tYear);\n});\n\n// 3) Если записей нет — возвращаем предупреждение\nif (sameDayItems.length === 0) {\n  return [\n    {\n      json: {\n        warning: `Нет сообщений за дату ${tDay}.${tMonth}.${tYear}`\n      }\n    }\n  ];\n}\n\n// 4) Сортируем найденные записи по времени (если оно есть)\nsameDayItems.sort((a, b) => {\n  const da = parseDateDDMMYYYYHHmm(a.json.Date) || 0;\n  const db = parseDateDDMMYYYYHHmm(b.json.Date) || 0;\n  return da - db;\n});\n\n// Возвращаем отфильтрованные и отсортированные записи\nreturn sameDayItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1740,
+        1980
+      ],
+      "id": "0a5a8140-ed73-4be4-a1af-85fb6af06ce5",
+      "name": "RC find yesterdays reports"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Определяем \"вчерашнюю\" дату\nconst today = new Date();\nconst yesterday = new Date(today);\nyesterday.setDate(yesterday.getDate() - 1);\n\nconst tDay = String(yesterday.getDate()).padStart(2, \"0\");\nconst tMonth = String(yesterday.getMonth() + 1).padStart(2, \"0\");\nconst tYear = String(yesterday.getFullYear());\nconst dateStr = `${tDay}.${tMonth}.${tYear}`;\n\n// 2) Склеиваем тексты из входных items\nconst combinedText = items\n  .map(item => {\n    // Если поле называется иначе, поменяй здесь:\n    // item.json.report, item.json[\"Report text\"], item.json.report_text и т.д.\n    return item.json.report \n      || item.json[\"Report text\"] \n      || item.json.report_text \n      || \"\";\n  })\n  .join(\"\\n\");\n\n// 3) Возвращаем итог\nreturn [\n  {\n    json: {\n      date: dateStr,\n      combined_report: combinedText\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1520,
+        1980
+      ],
+      "id": "81227bfc-b727-466c-a29a-dd9b18a1d29b",
+      "name": "RC summarize all reports"
+    },
+    {
+      "parameters": {
+        "jsCode": "// --- 1) Определяем «вчерашнюю» дату в формате \"DD.MM.YYYY\"\nconst today = new Date();\nconst yesterday = new Date(today);\nyesterday.setDate(yesterday.getDate() - 1);\n\nconst yDay = String(yesterday.getDate()).padStart(2, \"0\");\nconst yMonth = String(yesterday.getMonth() + 1).padStart(2, \"0\");\nconst yYear = String(yesterday.getFullYear());\n\n// Это итоговая строка вида \"19.03.2025\"\nconst targetDate = `${yDay}.${yMonth}.${yYear}`;\n\n// Разбиваем для дальнейшей проверки\nconst [tDay, tMonth, tYear] = targetDate.split(\".\");\n\n// --- Функция для парсинга \"DD.MM.YYYY HH:mm\" или \"DD.MM.YYYY\"\nfunction parseDateDDMMYYYYHHmm(dateStr) {\n  if (!dateStr || typeof dateStr !== 'string') return null;\n  \n  // Разделяем дату и время (если время есть)\n  const [datePart, timePart] = dateStr.split(\" \");\n  if (!datePart) return null;\n  \n  const [day, month, year] = datePart.split(\".\");\n  \n  // По умолчанию 0 часов, 0 минут\n  let hours = 0;\n  let minutes = 0;\n  if (timePart) {\n    const [hh, mm] = timePart.split(\":\");\n    hours = parseInt(hh, 10) || 0;\n    minutes = parseInt(mm, 10) || 0;\n  }\n  \n  const parsedDate = new Date(\n    parseInt(year, 10),\n    parseInt(month, 10) - 1,\n    parseInt(day, 10),\n    hours,\n    minutes\n  );\n  if (isNaN(parsedDate.getTime())) return null;\n  \n  return parsedDate;\n}\n\n// --- Функция для проверки: совпадает ли дата (только день, месяц, год) с targetDate\nfunction isSameDay(dateStr, tDay, tMonth, tYear) {\n  const parsed = parseDateDDMMYYYYHHmm(dateStr);\n  if (!parsed) return false;\n  \n  const dd = String(parsed.getDate()).padStart(2, \"0\");\n  const mm = String(parsed.getMonth() + 1).padStart(2, \"0\");\n  const yyyy = String(parsed.getFullYear());\n  \n  return (dd === tDay && mm === tMonth && yyyy === tYear);\n}\n\n// --- 2) Фильтруем все записи, где item.json.Date совпадает с «вчера»\nlet sameDayItems = items.filter(item => {\n  return isSameDay(item.json.Date, tDay, tMonth, tYear);\n});\n\n// Если ничего не нашли, вернём предупреждение\nif (sameDayItems.length === 0) {\n  return [\n    {\n      json: {\n        warning: `Нет сообщений за дату ${targetDate}`\n      }\n    }\n  ];\n}\n\n// --- 3) Сортируем эти записи по времени (если есть часы и минуты)\nsameDayItems.sort((a, b) => {\n  const da = parseDateDDMMYYYYHHmm(a.json.Date) || 0;\n  const db = parseDateDDMMYYYYHHmm(b.json.Date) || 0;\n  return da - db;\n});\n\n// --- 4) Логика «склейки» частей: \n//     - Если встречаем \"Beginning of the Day\", начинаем собирать в bodText\n//     - Если \"End of the Day\", начинаем собирать в eodText\n//     - Если сообщение не содержит эти фразы, оно добавляется к текущему сегменту (bod или eod),\n//       если такой уже начат.\nlet bodText = \"\";\nlet eodText = \"\";\nlet currentSegment = null; // может быть \"bod\", \"eod\" или null\n\nsameDayItems.forEach(item => {\n  const content = item.json[\"Report text\"] || \"\";\n  const lower = content.toLowerCase();\n  \n  if (lower.includes(\"beginning of the day\")) {\n    // Начинаем (или продолжаем) утренний блок\n    currentSegment = \"bod\";\n    if (bodText) bodText += \"\\n\\n\";\n    bodText += content;\n  }\n  else if (lower.includes(\"end of the day\")) {\n    // Начинаем (или продолжаем) вечерний блок\n    currentSegment = \"eod\";\n    if (eodText) eodText += \"\\n\\n\";\n    eodText += content;\n  }\n  else {\n    // Это кусок без ключевых фраз — добавим к текущему сегменту, если он есть\n    if (currentSegment === \"bod\") {\n      bodText += \"\\n\\n\" + content;\n    } else if (currentSegment === \"eod\") {\n      eodText += \"\\n\\n\" + content;\n    }\n  }\n});\n\n// --- 5) Формируем результат (один элемент) со склеенными текстами:\nreturn [\n  {\n    json: {\n      date: targetDate,\n      beginning_of_day: bodText || null,\n      end_of_day: eodText || null\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1720,
+        1460
+      ],
+      "id": "eb115123-2537-4bb6-b5e7-544610d3ff88",
+      "name": "LG TeamLeads find yesterdays reports"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\n// 1. Определяем «вчера» как промежуток с 00:00 до 23:59 предыдущего дня\nconst now = new Date();\nconst startYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 0, 0, 0, 0);\nconst endYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 23, 59, 59, 999);\n\nfor (const item of items) {\n  // Получаем строку даты из поля \"Date\"\n  const dateStr = item.json[\"Date\"] || \"\";\n  if (!dateStr) {\n    // Если дата не указана, пропускаем\n    continue;\n  }\n\n  // 2. Парсим дату в формате \"DD.MM.YYYY HH:MM\" или \"DD.MM.YYYY\"\n  // Разделяем дату и время (если время отсутствует, будет undefined)\n  const [datePart, timePart] = dateStr.split(\" \");\n  // Разделяем день, месяц, год\n  const [day, month, year] = datePart.split(\".\");\n  if (!day || !month || !year) {\n    // Если не получилось извлечь три части, пропускаем\n    continue;\n  }\n\n  let hours = 0;\n  let minutes = 0;\n  if (timePart) {\n    // Если есть время, разделяем часы и минуты\n    const [hh, mm] = timePart.split(\":\");\n    hours = parseInt(hh, 10) || 0;\n    minutes = parseInt(mm, 10) || 0;\n  }\n\n  // Создаём объект даты: year, month-1 (т.к. в JS месяцы с 0), day, hours, minutes\n  const itemDate = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), hours, minutes);\n\n  // Проверяем валидность\n  if (isNaN(itemDate.getTime())) {\n    // Дата некорректна\n    continue;\n  }\n\n  // 3. Фильтруем: берём только записи, попадающие во «вчера»\n  if (itemDate < startYesterday || itemDate > endYesterday) {\n    // Если дата вне диапазона, пропускаем\n    continue;\n  }\n\n  // 4. Анализируем текст отчёта\n  const reportText = item.json[\"Report text\"] || \"\";\n  const lines = reportText.split(\"\\n\").map(line => line.trim()).filter(line => line !== \"\");\n\n  // Если встречается \"Project:\" сразу помечаем как хороший отчёт (проект)\n  if (reportText.includes(\"Project:\")) {\n    item.json.formatOk = true;\n    item.json.normOk = true;\n    item.json.status = \"Project\";\n    item.json.companiesCount = null;\n    item.json.messagesCount = null;\n    \n    // Добавляем ID, если он есть в исходных данных\n    item.json.recordID = item.json[\"ID\"] || item.json[\"id\"] || null;\n    \n    results.push(item);\n    continue;\n  }\n\n  // Иначе начинаем проверять формат\n  let formatOk = true;\n  let normOk = true;\n  let status = null;\n  let companiesCount = null;\n  let messagesCount = null;\n\n  // 5. Ищем в тексте \"Full-Time\" или \"Part-Time\"\n  if (reportText.includes(\"Full-Time\")) {\n    status = \"Full-Time\";\n  } else if (reportText.includes(\"Part-Time\")) {\n    status = \"Part-Time\";\n  } else {\n    formatOk = false;\n  }\n\n  // 6. Ищем строку \"Creates companies:\" – допускаем разные варианты оформления\n  const lineCompanies = lines.find(l => /Creates(\\s*companies)?\\s*[:\\-]\\s*\\d+/i.test(l));\n  if (lineCompanies) {\n    const match = lineCompanies.match(/\\d+/);\n    if (match) {\n      companiesCount = parseInt(match[0], 10);\n    } else {\n      formatOk = false;\n    }\n  } else {\n    formatOk = false;\n  }\n\n  // 7. Ищем строку \"Messages to old connections:\" – допускаем разные варианты оформления\n  const lineMessages = lines.find(l => /Messages(\\s*(to\\s+old\\s+connections))?\\s*[:\\-]\\s*\\d+/i.test(l));\n  if (lineMessages) {\n    const match = lineMessages.match(/\\d+/);\n    if (match) {\n      messagesCount = parseInt(match[0], 10);\n    } else {\n      formatOk = false;\n    }\n  } else {\n    // Если строка не найдена, оставляем messagesCount = null (не обязательное поле)\n  }\n\n  // 8. Проверяем нормы, только если формат корректный\n  if (formatOk) {\n    if (status === \"Full-Time\") {\n      // Full-Time: 50–70 компаний, ≥60 сообщений (если messages указаны)\n      if (companiesCount < 50 || companiesCount > 70) normOk = false;\n      if (messagesCount !== null && messagesCount < 60) normOk = false;\n    } else if (status === \"Part-Time\") {\n      // Part-Time: 20–40 компаний, ≥30 сообщений (если messages указаны)\n      if (companiesCount < 20 || companiesCount > 40) normOk = false;\n      if (messagesCount !== null && messagesCount < 30) normOk = false;\n    }\n  }\n\n  // 9. Записываем результат в item.json\n  item.json.formatOk = formatOk;\n  item.json.normOk = normOk;\n  item.json.status = status;\n  item.json.companiesCount = companiesCount;\n  item.json.messagesCount = messagesCount;\n  \n  // Добавляем ID из исходных данных\n  item.json.recordID = item.json[\"Name\"];\n\n\n\n  results.push(item);\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1420,
+        300
+      ],
+      "id": "6bb719da-fa98-479d-9053-a003ff8c8b50",
+      "name": "LeadGens reports"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1340,
+        2620
+      ],
+      "id": "2565f16e-6a92-45c8-87f1-25916cc222ea",
+      "name": "OpenRouter Chat Model6",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "910144676881903646",
+          "mode": "id"
+        },
+        "content": "={{ $('Generate formating for AI').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        2300
+      ],
+      "id": "01b6c5d0-eb4d-429b-9613-6cf60de22aef",
+      "name": "Discord3",
+      "webhookId": "d8a80908-22b4-4aa8-851d-a54a1656a49d",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp-1219:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        2600
+      ],
+      "id": "72dfa070-2ae3-4f08-acd2-40b2d0461f01",
+      "name": "OpenRouter Chat Model7",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=At first, use date - {{ $json.date }}, than that {{ $json.report_text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "={{ $json.date }}\nStart message from \"AI summary\" title !!\nafter title write that:\nRead the provided {{ $json.report_text }}. Produce a concise, straightforward summary that captures the key objectives, activities, and outcomes from each section without using conversational language or meta commentary.\nremember, you create a summary of the work"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -1420,
+        2400
+      ],
+      "id": "7132ff0d-df85-4c10-b022-55a2ca75ea22",
+      "name": "Generate formating for AI"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Reformat the {{ $json.text }} below to be more visually appealing. Add headings, bullet points, emojis, and short paragraphs as needed. Insert blank lines to separate sections. Do not remove or alter any essential details. Return only the improved text, with no extra explanations or commentary. Use clear language and avoid repetition."
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -1020,
+        2400
+      ],
+      "id": "b12441ff-744a-4f16-9986-34e0bcc46026",
+      "name": "Refactoring AI"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4",
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 502554882,
+          "mode": "list",
+          "cachedResultName": "RC Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=502554882"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1980,
+        1980
+      ],
+      "id": "ae8ff50b-13c0-4743-b601-a1256d64be2d",
+      "name": "RC TeamLeads read Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "# RC REPORTS",
+        "height": 80,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        1860
+      ],
+      "id": "5264ea13-bb61-4c86-9feb-f33f4c3b984e",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const totals = { Create: 0, \"Sent Request\": 0, Connected: 0 };\n\nfor (const item of items) {\n  for (const line of item.json.output.split(\"\\n\")) {\n    const [key, value] = line.split(\":\");\n    totals[key.trim()] += parseInt(value.trim()) || 0;\n  }\n}\n\nreturn [{ json: totals }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -920,
+        980
+      ],
+      "id": "5a3adc24-68d6-4039-bb81-ceb34870b5f2",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4",
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2011925316,
+          "mode": "list",
+          "cachedResultName": "LeadGen Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=2011925316"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -240,
+        -240
+      ],
+      "id": "711754a0-a43f-4446-b5a4-8bcfb3016d28",
+      "name": "LG read Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\n// 1. Определяем «вчера» как промежуток с 00:00 до 23:59 предыдущего дня\nconst now = new Date();\nconst startYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 0, 0, 0, 0);\nconst endYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 23, 59, 59, 999);\n\nfor (const item of items) {\n  // Получаем строку даты из поля \"Date\"\n  const dateStr = item.json[\"Date\"] || \"\";\n  if (!dateStr) {\n    // Если дата не указана, пропускаем\n    continue;\n  }\n\n  // 2. Парсим дату в формате \"DD.MM.YYYY HH:MM\" или \"DD.MM.YYYY\"\n  // Разделяем дату и время (если время отсутствует, будет undefined)\n  const [datePart, timePart] = dateStr.split(\" \");\n  // Разделяем день, месяц, год\n  const [day, month, year] = datePart.split(\".\");\n  if (!day || !month || !year) {\n    // Если не получилось извлечь три части, пропускаем\n    continue;\n  }\n\n  let hours = 0;\n  let minutes = 0;\n  if (timePart) {\n    // Если есть время, разделяем часы и минуты\n    const [hh, mm] = timePart.split(\":\");\n    hours = parseInt(hh, 10) || 0;\n    minutes = parseInt(mm, 10) || 0;\n  }\n\n  // Создаём объект даты: year, month-1 (т.к. в JS месяцы с 0), day, hours, minutes\n  const itemDate = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), hours, minutes);\n\n  // Проверяем валидность\n  if (isNaN(itemDate.getTime())) {\n    // Дата некорректна\n    continue;\n  }\n\n  // 3. Фильтруем: берём только записи, попадающие во «вчера»\n  if (itemDate < startYesterday || itemDate > endYesterday) {\n    // Если дата вне диапазона, пропускаем\n    continue;\n  }\n\n  // 4. Анализируем текст отчёта\n  const reportText = item.json[\"Report text\"] || \"\";\n  const lines = reportText.split(\"\\n\").map(line => line.trim()).filter(line => line !== \"\");\n\n  // Если встречается \"Project:\" сразу помечаем как хороший отчёт (проект)\n  if (reportText.includes(\"Project:\")) {\n    item.json.formatOk = true;\n    item.json.normOk = true;\n    item.json.status = \"Project\";\n    item.json.companiesCount = null;\n    item.json.messagesCount = null;\n    \n    // Добавляем ID, если он есть в исходных данных\n    item.json.recordID = item.json[\"ID\"] || item.json[\"id\"] || null;\n    \n    results.push(item);\n    continue;\n  }\n\n  // Иначе начинаем проверять формат\n  let formatOk = true;\n  let normOk = true;\n  let status = null;\n  let companiesCount = null;\n  let messagesCount = null;\n\n  // 5. Ищем в тексте \"Full-Time\" или \"Part-Time\"\n  if (reportText.includes(\"Full-Time\")) {\n    status = \"Full-Time\";\n  } else if (reportText.includes(\"Part-Time\")) {\n    status = \"Part-Time\";\n  } else {\n    formatOk = false;\n  }\n\n  // 6. Ищем строку \"Creates companies:\" – допускаем разные варианты оформления\n  const lineCompanies = lines.find(l => /Creates(\\s*companies)?\\s*[:\\-]\\s*\\d+/i.test(l));\n  if (lineCompanies) {\n    const match = lineCompanies.match(/\\d+/);\n    if (match) {\n      companiesCount = parseInt(match[0], 10);\n    } else {\n      formatOk = false;\n    }\n  } else {\n    formatOk = false;\n  }\n\n  // 7. Ищем строку \"Messages to old connections:\" – допускаем разные варианты оформления\n  const lineMessages = lines.find(l => /Messages(\\s*(to\\s+old\\s+connections))?\\s*[:\\-]\\s*\\d+/i.test(l));\n  if (lineMessages) {\n    const match = lineMessages.match(/\\d+/);\n    if (match) {\n      messagesCount = parseInt(match[0], 10);\n    } else {\n      formatOk = false;\n    }\n  } else {\n    // Если строка не найдена, оставляем messagesCount = null (не обязательное поле)\n  }\n\n  // 8. Проверяем нормы, только если формат корректный\n  if (formatOk) {\n    if (status === \"Full-Time\") {\n      // Full-Time: 50–70 компаний, ≥60 сообщений (если messages указаны)\n      if (companiesCount < 50 || companiesCount > 70) normOk = false;\n      if (messagesCount !== null && messagesCount < 60) normOk = false;\n    } else if (status === \"Part-Time\") {\n      // Part-Time: 20–40 компаний, ≥30 сообщений (если messages указаны)\n      if (companiesCount < 20 || companiesCount > 40) normOk = false;\n      if (messagesCount !== null && messagesCount < 30) normOk = false;\n    }\n  }\n\n  // 9. Записываем результат в item.json\n  item.json.formatOk = formatOk;\n  item.json.normOk = normOk;\n  item.json.status = status;\n  item.json.companiesCount = companiesCount;\n  item.json.messagesCount = messagesCount;\n  \n  // Добавляем ID из исходных данных\n  item.json.recordID = item.json[\"Name\"];\n\n\n\n  results.push(item);\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        -240
+      ],
+      "id": "4823e9bc-1656-43fd-858f-0a2031ac6905",
+      "name": "LeadGens reports1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1960,
+        980
+      ],
+      "id": "6115a154-79f4-494d-8c7b-a7e781da0a88",
+      "name": "Schedule Trigger1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "910144676881903646",
+          "mode": "id"
+        },
+        "content": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        980
+      ],
+      "id": "ec15e0a9-5ac9-40f9-89e4-b8d6e36068e7",
+      "name": "Discord4",
+      "webhookId": "092e2785-ece6-4b18-b209-139aa5bc8696",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\n// 1. Определяем «вчера» как промежуток с 00:00 до 23:59 предыдущего дня\nconst now = new Date();\nconst startYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 0, 0, 0, 0);\nconst endYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 23, 59, 59, 999);\n\nfor (const item of items) {\n  // Получаем строку даты из поля \"Date\"\n  const dateStr = item.json[\"Date\"] || \"\";\n  if (!dateStr) {\n    // Если дата не указана, пропускаем\n    continue;\n  }\n\n  // 2. Парсим дату в формате \"DD.MM.YYYY HH:MM\" или \"DD.MM.YYYY\"\n  // Разделяем дату и время (если время отсутствует, будет undefined)\n  const [datePart, timePart] = dateStr.split(\" \");\n  // Разделяем день, месяц, год\n  const [day, month, year] = datePart.split(\".\");\n  if (!day || !month || !year) {\n    // Если не получилось извлечь три части, пропускаем\n    continue;\n  }\n\n  let hours = 0;\n  let minutes = 0;\n  if (timePart) {\n    // Если есть время, разделяем часы и минуты\n    const [hh, mm] = timePart.split(\":\");\n    hours = parseInt(hh, 10) || 0;\n    minutes = parseInt(mm, 10) || 0;\n  }\n\n  // Создаём объект даты: year, month-1 (т.к. в JS месяцы с 0), day, hours, minutes\n  const itemDate = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), hours, minutes);\n\n  // Проверяем валидность\n  if (isNaN(itemDate.getTime())) {\n    // Дата некорректна\n    continue;\n  }\n\n  // 3. Фильтруем: берём только записи, попадающие во «вчера»\n  if (itemDate < startYesterday || itemDate > endYesterday) {\n    // Если дата вне диапазона, пропускаем\n    continue;\n  }\n\n  // 4. Анализируем текст отчёта\n  const reportText = item.json[\"Report text\"] || \"\";\n  const lines = reportText.split(\"\\n\").map(line => line.trim()).filter(line => line !== \"\");\n\n  // Если встречается \"Project:\" сразу помечаем как хороший отчёт (проект)\n  if (reportText.includes(\"Project:\")) {\n    item.json.formatOk = true;\n    item.json.normOk = true;\n    item.json.status = \"Project\";\n    item.json.companiesCount = null;\n    item.json.messagesCount = null;\n    \n    // Добавляем ID, если он есть в исходных данных\n    item.json.recordID = item.json[\"ID\"] || item.json[\"id\"] || null;\n    \n    results.push(item);\n    continue;\n  }\n\n  // Иначе начинаем проверять формат\n  let formatOk = true;\n  let normOk = true;\n  let status = null;\n  let companiesCount = null;\n  let messagesCount = null;\n\n  // 5. Ищем в тексте \"Full-Time\" или \"Part-Time\"\n  if (reportText.includes(\"Full-Time\")) {\n    status = \"Full-Time\";\n  } else if (reportText.includes(\"Part-Time\")) {\n    status = \"Part-Time\";\n  } else {\n    formatOk = false;\n  }\n\n  // 6. Ищем строку \"Creates companies:\" – допускаем разные варианты оформления\n  const lineCompanies = lines.find(l => /Creates(\\s*companies)?\\s*[:\\-]\\s*\\d+/i.test(l));\n  if (lineCompanies) {\n    const match = lineCompanies.match(/\\d+/);\n    if (match) {\n      companiesCount = parseInt(match[0], 10);\n    } else {\n      formatOk = false;\n    }\n  } else {\n    formatOk = false;\n  }\n\n  // 7. Ищем строку \"Messages to old connections:\" – допускаем разные варианты оформления\n  const lineMessages = lines.find(l => /Messages(\\s*(to\\s+old\\s+connections))?\\s*[:\\-]\\s*\\d+/i.test(l));\n  if (lineMessages) {\n    const match = lineMessages.match(/\\d+/);\n    if (match) {\n      messagesCount = parseInt(match[0], 10);\n    } else {\n      formatOk = false;\n    }\n  } else {\n    // Если строка не найдена, оставляем messagesCount = null (не обязательное поле)\n  }\n\n  // 8. Проверяем нормы, только если формат корректный\n  if (formatOk) {\n    if (status === \"Full-Time\") {\n      // Full-Time: 50–70 компаний, ≥60 сообщений (если messages указаны)\n      if (companiesCount < 50 || companiesCount > 70) normOk = false;\n      if (messagesCount !== null && messagesCount < 60) normOk = false;\n    } else if (status === \"Part-Time\") {\n      // Part-Time: 20–40 компаний, ≥30 сообщений (если messages указаны)\n      if (companiesCount < 20 || companiesCount > 40) normOk = false;\n      if (messagesCount !== null && messagesCount < 30) normOk = false;\n    }\n  }\n\n  // 9. Записываем результат в item.json\n  item.json.formatOk = formatOk;\n  item.json.normOk = normOk;\n  item.json.status = status;\n  item.json.companiesCount = companiesCount;\n  item.json.messagesCount = messagesCount;\n  \n  // Добавляем ID из исходных данных\n  item.json.recordID = item.json[\"Name\"];\n\n\n\n  results.push(item);\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1500,
+        980
+      ],
+      "id": "1037526e-b0c2-4210-8b6f-024488bf58b7",
+      "name": "LeadGens Summarise reports"
+    },
+    {
+      "parameters": {
+        "content": "# AI REPORTS",
+        "height": 80,
+        "width": 560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        2280
+      ],
+      "id": "a3b9b7e7-3dcc-4674-83a6-111d87159ca8",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Вычисляем вчерашнюю дату в формате DD.MM.YYYY\nconst today = new Date();\nconst yesterday = new Date(today);\nyesterday.setDate(yesterday.getDate() - 1);\nconst targetDate = `${String(yesterday.getDate()).padStart(2, '0')}.${String(yesterday.getMonth() + 1).padStart(2, '0')}.${yesterday.getFullYear()}`;\n\n// 2) Оставляем только записи за вчерашний день\nconst filtered = items.filter(item =>\n  item.json.Date?.trim().startsWith(targetDate)\n);\n\n// 3) Сортируем по времени\nfiltered.sort((a, b) => {\n  const toMinutes = dateStr => {\n    const [, time = '00:00'] = dateStr.split(' ');\n    const [h, m] = time.split(':').map(Number);\n    return h * 60 + m;\n  };\n  return toMinutes(a.json.Date) - toMinutes(b.json.Date);\n});\n\n// 4) Объединяем тексты\nconst report_text = filtered\n  .map(item => item.json[\"Report text\"]?.trim() || '')\n  .filter(Boolean)\n  .join('\\n\\n');\n\n// 5) Возвращаем итог\nreturn [{ json: { date: targetDate, report_text: report_text || null } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1740,
+        2400
+      ],
+      "id": "93a0b31b-bdb2-4c45-bd76-192d761754c8",
+      "name": "AI find yesterdays reports"
+    },
+    {
+      "parameters": {
+        "content": "# НАДО ПРОВЕРИТЬ",
+        "height": 80,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        2400
+      ],
+      "id": "f910843b-2b8b-4cc6-8022-51168c5f0a92",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# НАДО ПРОВЕРИТЬ",
+        "height": 80,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        1000
+      ],
+      "id": "e52132b9-25b2-455c-90bb-c4f9b5f9913c",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4",
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2011925316,
+          "mode": "list",
+          "cachedResultName": "LeadGen Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=2011925316"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        -1060,
+        1140
+      ],
+      "id": "7e7f828f-b9ad-42a2-be0d-bcd9180b8dad",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4",
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2011925316,
+          "mode": "list",
+          "cachedResultName": "LeadGen Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=2011925316"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1720,
+        980
+      ],
+      "id": "dcb740ed-3723-4b76-8842-591dd43b2272",
+      "name": "LG read Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4",
+          "mode": "list",
+          "cachedResultName": "Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "AI Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1980,
+        2400
+      ],
+      "id": "00f20880-b9ea-4c2d-9552-a8a74e5ecf2b",
+      "name": "AI read Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "910144676881903646",
+          "mode": "id"
+        },
+        "content": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1500,
+        1040
+      ],
+      "id": "4fd379c5-de33-485c-9183-e8b839be63c3",
+      "name": "Discord5",
+      "webhookId": "d8a80908-22b4-4aa8-851d-a54a1656a49d",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "910144676881903646",
+          "mode": "id"
+        },
+        "content": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1580,
+        1120
+      ],
+      "id": "ee6edd22-7eb7-44d8-bed1-b645343ca9de",
+      "name": "Discord6",
+      "webhookId": "d8a80908-22b4-4aa8-851d-a54a1656a49d",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "732684838422970400",
+          "mode": "id"
+        },
+        "content": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        1180
+      ],
+      "id": "2d3d49e6-8943-400b-9fef-91fe0139e0ad",
+      "name": "Discord7",
+      "webhookId": "ecd15c34-dbbf-46f6-a1a4-6fe419a60868",
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG read Sheets": {
+      "main": [
+        [
+          {
+            "node": "LeadGens reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Discord incorrect quota or report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Discord full quota and correct reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "LG read Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord incorrect quota or report": {
+      "main": [
+        [
+          {
+            "node": "Add reports to spreadsheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord full quota and correct reports": {
+      "main": [
+        [
+          {
+            "node": "Add reports to spreadsheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Add reports to spreadsheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG TeamLeads read Sheets": {
+      "main": [
+        [
+          {
+            "node": "LG TeamLeads find yesterdays reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate formating for teamleads",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Refactoring teamleads",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Leadgens summary reports",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate formating for teamleads": {
+      "main": [
+        [
+          {
+            "node": "Refactoring teamleads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refactoring teamleads": {
+      "main": [
+        [
+          {
+            "node": "Discord1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leadgens summary reports": {
+      "main": [
+        [
+          {
+            "node": "Discord4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate formating for RC",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate formating for RC": {
+      "main": [
+        [
+          {
+            "node": "Refactoring RC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Refactoring RC",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refactoring RC": {
+      "main": [
+        [
+          {
+            "node": "Discord2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RC find yesterdays reports": {
+      "main": [
+        [
+          {
+            "node": "RC summarize all reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RC summarize all reports": {
+      "main": [
+        [
+          {
+            "node": "Generate formating for RC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG TeamLeads find yesterdays reports": {
+      "main": [
+        [
+          {
+            "node": "Generate formating for teamleads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LeadGens reports": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate formating for AI",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Refactoring AI",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate formating for AI": {
+      "main": [
+        [
+          {
+            "node": "Refactoring AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refactoring AI": {
+      "main": [
+        [
+          {
+            "node": "Discord3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RC TeamLeads read Sheets": {
+      "main": [
+        [
+          {
+            "node": "RC find yesterdays reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Leadgens summary reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG read Sheets1": {
+      "main": [
+        [
+          {
+            "node": "LeadGens reports1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "LG read Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LeadGens Summarise reports": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI find yesterdays reports": {
+      "main": [
+        [
+          {
+            "node": "Generate formating for AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG read Sheets2": {
+      "main": [
+        [
+          {
+            "node": "LeadGens Summarise reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI read Sheets": {
+      "main": [
+        [
+          {
+            "node": "AI find yesterdays reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "deb9386c-8a6b-45fd-89fd-ee17fcc5b22d",
+  "triggerCount": 1,
+  "tags": []
+}

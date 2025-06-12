@@ -1,0 +1,96 @@
+{
+  "createdAt": "2025-06-11T11:15:12.413Z",
+  "updatedAt": "2025-06-11T11:15:17.746Z",
+  "id": "CG3TUsBMzjkyZ6up",
+  "name": "GetOnboardingFile_Best_Practices_for_Prompt_Writing",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "b6a48197-7776-45fb-9cec-88c976971b57",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        -60
+      ],
+      "id": "a1719bbb-47e6-488f-b1ce-7426fb6deee8",
+      "name": "Webhook",
+      "webhookId": "b6a48197-7776-45fb-9cec-88c976971b57"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1SWrpxi5jfVL79ftSA1u3PZL_wuzcfYFsA_5g02Kuet0/view"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -60
+      ],
+      "id": "9ea406c0-000b-4503-8336-a1d834ce1ad9",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        300,
+        -60
+      ],
+      "id": "bf2c634a-e4e5-466a-b88f-78884ad03194",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "44423b09-d081-4ad3-94c8-d9981e6cf7e1",
+  "triggerCount": 0,
+  "tags": []
+}

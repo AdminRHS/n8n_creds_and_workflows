@@ -1,0 +1,109 @@
+{
+  "createdAt": "2025-06-11T11:46:41.934Z",
+  "updatedAt": "2025-06-11T11:46:48.901Z",
+  "id": "9C32weAZuIg9z138",
+  "name": "Set_Up_Import_-_GET",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "GetOnboardingHooks",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        -140
+      ],
+      "id": "1bfd0009-51c0-4a76-97d0-7de0aa3422c6",
+      "name": "Webhook",
+      "webhookId": "7c251051-cc66-4751-98f6-70cd3be7a3c3"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1t6UxAyhrQazJ19qRcBj57xyFYcloO6gVQ2sbx_SD9mI",
+          "mode": "list",
+          "cachedResultName": "Mega Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t6UxAyhrQazJ19qRcBj57xyFYcloO6gVQ2sbx_SD9mI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1422831539,
+          "mode": "list",
+          "cachedResultName": "Onboarding",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t6UxAyhrQazJ19qRcBj57xyFYcloO6gVQ2sbx_SD9mI/edit#gid=1422831539"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -40,
+        -140
+      ],
+      "id": "1e1935c1-ccf2-4415-a879-ed5a8ec6a295",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"ImportSettingsWebhookGet\": \"{{ $json.ImportSettingsWebhookGet }}\",\n  \"ExportSettingsWebhookPost\": \"{{ $json.ExportSettingsWebhookPost }}\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        180,
+        -140
+      ],
+      "id": "3d4f0540-9c31-44bb-a8fd-35741c403bcf",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "2c389128-a348-43fc-ac0a-c524b68ade74",
+  "triggerCount": 0,
+  "tags": []
+}

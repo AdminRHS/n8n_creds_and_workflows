@@ -1,0 +1,291 @@
+{
+  "createdAt": "2025-06-11T11:49:20.671Z",
+  "updatedAt": "2025-06-11T13:26:03.606Z",
+  "id": "GZkSTBCLZEgoPUib",
+  "name": "RH_Lead_Notifier",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "=after:{{ $now.toFormat('yyyy/MM/dd') }} before:{{ $now.plus({ days: 1 }).toFormat('yyyy/MM/dd') }}",
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1380,
+        80
+      ],
+      "id": "73b184a7-f14d-46f8-9777-6c33094efba9",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wTEB6C3AxAZvheBn",
+          "name": "Admin Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Вытащи ссылку на сообщение в линкедин из этого письма. Оно находится в кнопке. Напиши только линк по ссылке. \n\n\n{{ $('Gmail Trigger').item.json.html }}\n\n\nИтоговый результат - чисто ссылка в маркдаун формате с текстом \"Open\" и линком, который открывался бы, если бы нажимали на эту кнопку в сообщении. ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -580,
+        -20
+      ],
+      "id": "370468ce-1b2d-4d75-8bb7-2081e2bd215e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        360
+      ],
+      "id": "ac6e84c3-bca6-484d-be0f-856d3f60dfef",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1347111996553953280",
+          "mode": "list",
+          "cachedResultName": "ai-reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1347111996553953280"
+        },
+        "content": "=You have 1 message from your lead. \n\n{{ $json.output }} 🚪\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        -60
+      ],
+      "id": "4362e1b0-99a2-4ad3-9681-4dc4709b2b99",
+      "name": "Discord",
+      "webhookId": "f025ca74-fe01-4d0c-82dc-eae2112aa327",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "RH Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Проверь, является ли это сообщение уведомлением о том, что пришло новое сообщение в линкедин. Если да, то выведи true, если нет - false. Больше ничего не пиши, отвечай только одним словом\n\n {{ $json.html }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1240,
+        80
+      ],
+      "id": "dca458ae-51f3-4395-9186-309be982324e",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1220,
+        280
+      ],
+      "id": "ee6527a9-e52d-402b-a088-76513de8864c",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "28d01dcf-10b1-4aa4-bae9-bce7525e488e",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -880,
+        80
+      ],
+      "id": "a54c979f-5de3-4ca7-8e93-a3ab92536027",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        -60
+      ],
+      "id": "8360058f-a1d7-4f49-9456-c44a6a0cb823",
+      "name": "Gmail",
+      "webhookId": "8dd87591-726b-4504-b8e0-7955caf82cac",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wTEB6C3AxAZvheBn",
+          "name": "Admin Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ad354ab4-9b29-4b05-ae46-6437374e582b",
+  "triggerCount": 0,
+  "tags": []
+}

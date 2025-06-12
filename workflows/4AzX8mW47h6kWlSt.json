@@ -1,0 +1,1209 @@
+{
+  "createdAt": "2025-06-11T11:40:23.278Z",
+  "updatedAt": "2025-06-11T11:41:02.172Z",
+  "id": "4AzX8mW47h6kWlSt",
+  "name": "Parse_Company_Links_-_social_networks",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=я маю ці лінки {{ $json.Links }}:\n1. кожен з цих лінків підставляється у https://r.jina.ai/https://example.com замість example.com підставляти ту, яка знаходиться тут {{ $json.Links }}\n2. в output не повинно бути нічого про example, або дублікатів\n3. пиши тільки (лінку) не писати символи ``` та \\n, тільки готове посилання",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -220,
+        -120
+      ],
+      "id": "a300789f-5d46-4d99-b413-07fe1ee9b4e0",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.Links }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        120,
+        0
+      ],
+      "id": "f099b6ad-e5f4-47d3-9060-d88a99ccb1ae",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Jx0vSsCIPeBZxsdxJIyt7bvauxDbqF7XTFhuiTKcH7c/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Jx0vSsCIPeBZxsdxJIyt7bvauxDbqF7XTFhuiTKcH7c/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -440,
+        240
+      ],
+      "id": "c48cb10c-9d1a-4f47-adf8-c5b02179e961",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        0
+      ],
+      "id": "2d5f71fa-da42-40df-9710-14a5da232576",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        240
+      ],
+      "id": "de89c402-9891-42fd-8799-5e5561543928",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "content": "# Генерація лінків",
+        "height": 80,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        140
+      ],
+      "id": "9faa92af-2974-4d57-a0a0-ec7c65ef1e20",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=А тепер видай усю інформацію звідси ( {{ $json.data }} ) в форматі JSON, яку я скажу, а саме, знайди посилання на: facebook, instagram, twitter, whatsapp та telegram. Якщо якогось посилання немає, не додавай її в json. не пиши ``` ```",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        700,
+        240
+      ],
+      "id": "36931fcc-e008-47ba-abda-52ede26037e4",
+      "name": "AI Agent2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.data }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        840,
+        480
+      ],
+      "id": "c99b04c2-c6ff-4bff-a920-4308a9518344",
+      "name": "Window Buffer Memory2"
+    },
+    {
+      "parameters": {
+        "content": "# Дістаємо необхідну інфу",
+        "height": 120,
+        "width": 340
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        660,
+        100
+      ],
+      "id": "beaf4fef-c43a-4bd3-9360-e79673bce099",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "jsCode": "if (!items.length) {\n  throw new Error(\"Нет входных данных\");\n}\n\n// Забираем входные данные\nconst input = items[0].json;\n\n// Если нет поля output, ничего распарсить не получится\nif (!input.output) {\n  return [\n    {\n      json: {\n        error: \"Поле 'output' не найдено во входном JSON\",\n        inputData: input\n      }\n    }\n  ];\n}\n\n// 1. Забираем строку из поля output\nlet rawOutput = input.output;\n\n// 2. Удаляем обёртку в стиле Markdown, если она есть\n//    Например, если строка начинается с ```json\\n и заканчивается \\n```.\nrawOutput = rawOutput\n  .replace(/^```json\\s*/i, \"\") // удаляем ```json с начала\n  .replace(/```$/i, \"\")        // удаляем ``` в конце (если на отдельной строке)\n\n// 3. Теперь пробуем распарсить эту строку как JSON\nlet parsedData;\ntry {\n  parsedData = JSON.parse(rawOutput);\n} catch (error) {\n  return [\n    {\n      json: {\n        error: `Не удалось распарсить содержимое 'output' как JSON: ${error.message}`,\n        rawOutput\n      }\n    }\n  ];\n}\n\n// 4. Проверяем нужные поля\nconst platforms = [\"facebook\", \"instagram\", \"twitter\", \"whatsapp\", \"telegram\"];\nconst outputs = [];\n\nfor (const platform of platforms) {\n  if (parsedData[platform]) {\n    outputs.push({\n      json: {\n        platform,\n        url: parsedData[platform]\n      }\n    });\n  }\n}\n\n// Если ни одного поля не найдено, возвращаем сообщение\nif (outputs.length === 0) {\n  outputs.push({\n    json: {\n      error: \"Ни одно из полей (facebook, instagram, twitter, whatsapp, telegram) не найдено во вложенном JSON\",\n      parsedData\n    }\n  });\n}\n\n// Возвращаем массив результатов\nreturn outputs;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        240
+      ],
+      "id": "eeca5b56-9fee-4b1f-8a8e-66fa149303b7",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro-exp-03-25:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        700,
+        480
+      ],
+      "id": "4785760e-d563-407e-a041-cad31e6f694f",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const combinedData = items.map(item => item.json.data).join(\"\\n\");\n\n// Возвращаем один объект, в котором поле \"data\" содержит объединённую информацию.\nreturn [\n  {\n    json: {\n      data: combinedData\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        240
+      ],
+      "id": "95a29400-f317-4685-bbc9-906ff157cb94",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Jx0vSsCIPeBZxsdxJIyt7bvauxDbqF7XTFhuiTKcH7c/edit?gid=1901477440#gid=1901477440",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1901477440,
+          "mode": "list",
+          "cachedResultName": "Sheet2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Jx0vSsCIPeBZxsdxJIyt7bvauxDbqF7XTFhuiTKcH7c/edit#gid=1901477440"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Links social network": "={{ $json.url }}",
+            "platform": "={{ $json.platform }}"
+          },
+          "matchingColumns": [
+            "Links social network"
+          ],
+          "schema": [
+            {
+              "id": "platform",
+              "displayName": "platform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Links social network",
+              "displayName": "Links social network",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1340,
+        240
+      ],
+      "id": "cd93028d-4a73-4327-9175-04ceb1362a3f",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"link\": \"{{ 'https://r.jina.ai/' + $json.Links }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -140,
+        240
+      ],
+      "id": "95d126f3-41e7-4fcc-b8da-f75d1608b8b4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        1560
+      ],
+      "id": "f41539ab-ebc3-493a-bb7e-cbcd9ad24d3e",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://crm-s.com/api/v1/get-leads-public?global_company_name=Remote%20Helpers&page=2&per_page=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -880,
+        1560
+      ],
+      "id": "b7a8d589-08c4-4e0d-957e-9bdbebb904f5",
+      "name": "Get JSON from CRM"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Я имею список компаний\n{{ $json.text }}\nОн спарсенный из этого json. {{ $('Stringify code').item.json.result }}\n\nТвоя задача: написать список адресов сайтов этих компаний. Напиши только результат. Верни мне только адреса сайтов, без названий компаний.\n\nНе возвращай https://www.rh-s.com/ "
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        40,
+        1560
+      ],
+      "id": "adf9b215-dd7c-4416-8d60-313046dd168d",
+      "name": "Получить сайты компаний"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Для каких из этих компаний есть пустые поля в пунктах социальная сеть, e-mail и телефон? Напиши только названия компаний. Каждая с новой строчки, напиши только результат, своих комментариев не пиши. \n<DoNotWrite>\nClaude: можете мне рассказать больше о ваших методах определения компаний, у которых отсутствуют телефонные данные? Я хотел бы лучше понять ваш процесс анализа.\n</DoNotWrite>\n\nОриентируйся на контекст:\n\n{{ $json.result }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -400,
+        1560
+      ],
+      "id": "b05873ad-cd95-48a8-a78e-36bff3479138",
+      "name": "Получить название компаний"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Предположим, входная строка находится в поле \"links\" первого элемента\nconst inputString = $input.first().json.text;\n\n// Разбиваем строку по символу новой строки и фильтруем пустые строки\nconst linksArray = inputString.split('\\n').filter(link => link.trim() !== '');\n\n// Создаем отдельный айтем для каждой ссылки\nconst newItems = linksArray.map(link => ({\n\tjson: { link: link }\n}));\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        1560
+      ],
+      "id": "dd8728aa-49e5-4e05-9342-e6643040a2f9",
+      "name": "Разбить сайты компании на строки"
+    },
+    {
+      "parameters": {
+        "url": "=https://r.jina.ai/{{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        1560
+      ],
+      "id": "8923c0c4-1f09-4c82-989e-ed2fdacd2a5e",
+      "name": "Главную страницу"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}\nСписок ссылок на все разделы этого сайта. Мне верни только список ссылок без твоих комментариев, списком без форматирования, где каждая ссылка начинается с новой строчки. \nВерни мне только ссылки на основные разделы сайта, в которых потенциально может содержаться информация о социальных сетях. Страницу с контактами напиши на первом месте. \n\nНе возвращай https://r.jina.ai/"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        920,
+        1560
+      ],
+      "id": "e4e1e5dd-968f-475d-babd-9f40b7cc35e3",
+      "name": "Найти ссылки на все разделы"
+    },
+    {
+      "parameters": {
+        "url": "=https://r.jina.ai/{{ $json.link }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-target-selector",
+              "value": "body, footer"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1720,
+        1280
+      ],
+      "id": "064f8c1c-e7eb-44f1-8810-480413d5e1be",
+      "name": "Следующие страницы",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Предположим, входная строка находится в поле \"links\" первого элемента\nconst inputString = $input.first().json.text;\n\n// Разбиваем строку по символу новой строки и фильтруем пустые строки\nconst linksArray = inputString.split('\\n').filter(link => link.trim() !== '');\n\n// Создаем отдельный айтем для каждой ссылки\nconst newItems = linksArray.map(link => ({\n\tjson: { link: link }\n}));\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        1560
+      ],
+      "id": "70c6cd11-8587-4e19-8f4d-d4cd1037593a",
+      "name": "Разбить страницы сайта компании на строки"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        940,
+        1720
+      ],
+      "id": "fd721ad2-3116-4de8-8234-8277a4b950e1",
+      "name": "OpenRouter Chat Model4",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        1780
+      ],
+      "id": "31a023f6-952f-4d81-8bc5-bff50df605e6",
+      "name": "OpenRouter Chat Model5",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        0,
+        1780
+      ],
+      "id": "bc2109cd-e0b7-499c-b7ec-8283a4f73505",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Найди в этом тексте {{ $json.data }} телефоны компании. Если телефон отсутствует, верни одно слово null. Если телефон есть, верни только телефон без остального текста.\nЕсли телефонов несколько, верни каждый телефон с новой строки без форматирования. "
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        2500,
+        1120
+      ],
+      "id": "13c2d274-acdf-4bd9-83e0-1f14641f4703",
+      "name": "Достать телефон со всех разделов"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        1220
+      ],
+      "id": "cbb69188-ea04-4eaf-8639-24e42ef5123d",
+      "name": "OpenRouter Chat Model6",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2280,
+        1100
+      ],
+      "id": "14f01c02-3deb-45fe-a0b3-2fb839879bb0",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "46954662-af20-4eb9-bb8c-b6ec30b1cd81",
+              "leftValue": "={{ $json.text }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2840,
+        1120
+      ],
+      "id": "15ba8c52-e8df-4057-933d-7353de5573ef",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2280,
+        1360
+      ],
+      "id": "dc79a939-be42-47c0-a04a-df3bcc5a7069",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "46954662-af20-4eb9-bb8c-b6ec30b1cd81",
+              "leftValue": "={{ $json.text }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2840,
+        1380
+      ],
+      "id": "ae1b5fd4-f471-447e-b9b7-1f06a91c1f5a",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        1480
+      ],
+      "id": "9dc8d053-3625-49ed-9d36-6120fe262e67",
+      "name": "OpenRouter Chat Model7",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Найди в этом тексте {{ $json.data }} e-mails компании. Если e-mails отсутствуют, верни одно слово null. Если e-mails есть, верни только e-mails без остального текста.\nЕсли e-mails несколько, верни каждую социальную сеть с новой строки без форматирования. "
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        2500,
+        1380
+      ],
+      "id": "4379a9f7-beb4-4e63-b60f-b555e8e46b0c",
+      "name": "Достать почты со всех разделов"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.parsera.org/v1/extract",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"url\": \"{{ $json.link }}\",\n    \"attributes\": {\n        \"LinkedIn\": \"need to find link to companies linkedin account\",\n        \"Twitter\": \"need to find link to companies twitter account\",\n        \"Instagram\": \"need to find link to companies instagram account\",\n        \"Facebook\": \"need to find link to companies facebook account\"\n    }\n}",
+        "options": {
+          "timeout": 900000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1740,
+        1680
+      ],
+      "id": "bf7f1ee3-e237-4b93-8a4a-c1e0704d1132",
+      "name": "Следующие страницы1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SY2duFo5Q5EVG5xR",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входные данные (они должны быть в виде массива)\nlet items = $input.all();\n\n// Если вдруг items не массив, то оборачиваем в массив\nif (!Array.isArray(items)) {\n\titems = [items];\n}\n\nconst newItems = items.map(item => {\n\treturn {\n\t\tjson: {\n\t\t\t// Преобразуем объект JSON в строку\n\t\t\tresult: JSON.stringify(item.json)\n\t\t}\n\t};\n});\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -660,
+        1560
+      ],
+      "id": "25dda230-e828-4dcf-a090-7b9a2705d1ad",
+      "name": "Stringify code"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Текст ошибки для удаления поля message\nconst errorMsg = \"No data was found. Check website and attribute descriptions. If issue persists, contact us at contact@parsera.org.\";\n\n// Обрабатываем входящие элементы\nconst newItems = items\n  .map(item => {\n    // Если значение поля message соответствует заданной строке, удаляем его\n    if (item.json.message === errorMsg) {\n      delete item.json.message;\n    }\n    return item;\n  })\n  // Фильтруем элементы\n  .filter(item => {\n    // Фильтрация по полю data:\n    const data = item.json.data;\n    if (data === null || data === undefined) return false;\n    if (Array.isArray(data) && data.length === 0) return false;\n    \n    // Фильтрация по содержимому \"cookiepedia.co.uk\":\n    // Если в любом из значений объекта встречается нужная подстрока, элемент не проходит фильтр.\n    const jsonString = JSON.stringify(item.json);\n    if (jsonString.includes(\"cookiepedia.co.uk\")) {\n      return false;\n    }\n    \n    return true;\n  });\n\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2840,
+        1680
+      ],
+      "id": "c85669c6-acb5-4130-8a58-de91730c3e4d",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        940
+      ],
+      "id": "45b20c4d-f0c1-4919-81fe-9c0314fc3890",
+      "name": "OpenRouter Chat Model8",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2280,
+        820
+      ],
+      "id": "8d72be3d-a12e-406a-99b1-6c15181b9642",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "46954662-af20-4eb9-bb8c-b6ec30b1cd81",
+              "leftValue": "={{ $json.text }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2840,
+        840
+      ],
+      "id": "00c48ca6-3eeb-4ebc-8ad8-b48d7c57e03e",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Найди в этом тексте {{ $json.data }} год основания компании. Если год основания отсутствует, верни одно слово null. Если год основания есть, верни только год основания без остального текста."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        2500,
+        840
+      ],
+      "id": "24ead912-4480-4407-adcc-49e951f07dd0",
+      "name": "Достать год основания"
+    }
+  ],
+  "connections": {
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get JSON from CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get JSON from CRM": {
+      "main": [
+        [
+          {
+            "node": "Stringify code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Получить сайты компаний": {
+      "main": [
+        [
+          {
+            "node": "Разбить сайты компании на строки",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Получить название компаний": {
+      "main": [
+        [
+          {
+            "node": "Получить сайты компаний",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Разбить сайты компании на строки": {
+      "main": [
+        [
+          {
+            "node": "Главную страницу",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Главную страницу": {
+      "main": [
+        [
+          {
+            "node": "Найти ссылки на все разделы",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Найти ссылки на все разделы": {
+      "main": [
+        [
+          {
+            "node": "Разбить страницы сайта компании на строки",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Следующие страницы": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Разбить страницы сайта компании на строки": {
+      "main": [
+        [
+          {
+            "node": "Следующие страницы",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Следующие страницы1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Найти ссылки на все разделы",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Получить название компаний",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Получить сайты компаний",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Достать телефон со всех разделов": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Достать телефон со всех разделов",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Достать телефон со всех разделов",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Достать почты со всех разделов",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Достать почты со всех разделов",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Достать почты со всех разделов": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stringify code": {
+      "main": [
+        [
+          {
+            "node": "Получить название компаний",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Следующие страницы1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Достать год основания",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Достать год основания",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Достать год основания": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "271a8dc6-27d6-43da-a7e2-729aa3460b68",
+  "triggerCount": 0,
+  "tags": []
+}

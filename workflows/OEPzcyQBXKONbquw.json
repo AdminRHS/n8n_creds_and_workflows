@@ -1,0 +1,1624 @@
+{
+  "createdAt": "2025-06-10T11:45:13.363Z",
+  "updatedAt": "2025-06-11T08:09:11.178Z",
+  "id": "OEPzcyQBXKONbquw",
+  "name": "LinkedIn huge workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3800,
+        220
+      ],
+      "id": "460791bd-ec4a-4cfa-a7ce-94fc19818ec6",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getOutput",
+        "agentId": "7686463827442196",
+        "additionalFields": {
+          "prevContainerId": "={{ $json['id'] }}",
+          "prevStatus": "finished"
+        }
+      },
+      "type": "n8n-nodes-base.phantombuster",
+      "typeVersion": 1,
+      "position": [
+        -2880,
+        200
+      ],
+      "id": "fbe5cd8e-6732-41f5-9c10-8a45c1e88535",
+      "name": "Get Messages"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5a35e160-c4de-4b8c-aafd-0d8aa6098838",
+              "leftValue": "={{ $json.isLastMessageFromMe }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -2700,
+        200
+      ],
+      "id": "54a580ca-16d0-4699-b356-ae5f4dbcfd66",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "message",
+              "separateBy": " "
+            }
+          ]
+        },
+        "fieldsToSplitBy": "linkedInUrls[0]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        -2520,
+        200
+      ],
+      "id": "28ab316b-a12c-452a-9dfe-598bd2e64cde",
+      "name": "Group Messages by Profile"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Prompt Input').item.json.prompt }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        860,
+        0
+      ],
+      "id": "1d5c4e32-41c2-4cba-b4a7-d78e4c70052e",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        900,
+        220
+      ],
+      "id": "de82a73f-7a03-4341-86e4-5cea435527af",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "14126d5a-44dc-465d-b9c4-3ea9e1509adf",
+              "leftValue": "={{ $json['status'] }}",
+              "rightValue": "finished",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3080,
+        220
+      ],
+      "id": "f042d7a9-cb33-4959-b51a-eb3dea250106",
+      "name": "isFinished"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -3380,
+        220
+      ],
+      "id": "05df0a1f-fecb-4119-b9d4-4e0208bc9e78",
+      "name": "Wait",
+      "webhookId": "484ff652-d1c7-4537-ae53-66eb004a8968"
+    },
+    {
+      "parameters": {
+        "url": "https://api.phantombuster.com/api/v2/containers/fetch",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $json['id'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3220,
+        220
+      ],
+      "id": "6288d7f1-d3b6-4c1a-b870-6c414ca8fedd",
+      "name": "Get Container"
+    },
+    {
+      "parameters": {
+        "agentId": "7686463827442196",
+        "additionalFields": {
+          "argumentsUi": {
+            "argumentValues": [
+              {
+                "key": "sessionCookie",
+                "value": "AQEDATvD88sAETvQAAABluj2tvwAAAGXDQM6_E4AlJFRkUemenkmEMYA0FD7bsbgf6Y8XYra5I51Z8S76qzzdnk1Ij8Le68zeOxkpLcA8v0aAnFSLY9Jfihf2pEMNRBwtvtTUs78V6fUphXd41ZDf7Qt"
+              },
+              {
+                "key": "inboxFilter",
+                "value": "unread"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.phantombuster",
+      "typeVersion": 1,
+      "position": [
+        -3620,
+        220
+      ],
+      "id": "046d657d-156a-4f8b-a186-a8dd447aa90b",
+      "name": "Launch Inbox Scraping"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2080,
+        200
+      ],
+      "id": "53e622ca-0a01-4531-99ed-e20b89e38aad",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "agentId": "8865699973762482",
+        "additionalFields": {
+          "argumentsUi": {
+            "argumentValues": [
+              {
+                "key": "sessionCookie",
+                "value": "AQEDATvD88sAETvQAAABluj2tvwAAAGXDQM6_E4AlJFRkUemenkmEMYA0FD7bsbgf6Y8XYra5I51Z8S76qzzdnk1Ij8Le68zeOxkpLcA8v0aAnFSLY9Jfihf2pEMNRBwtvtTUs78V6fUphXd41ZDf7Qt"
+              },
+              {
+                "key": "=numberOfAddsPerLaunch",
+                "value": "={{parseInt(200)}}"
+              },
+              {
+                "key": "enrichWithCompanyData",
+                "value": "={{Boolean(true)}}"
+              },
+              {
+                "key": "spreadsheetUrl",
+                "value": "https://docs.google.com/spreadsheets/d/1DwplI0PZs_o2XjuVqVMFZyMOSW5n4vJKDsG9EZI3bYQ/edit?usp=sharing"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.phantombuster",
+      "typeVersion": 1,
+      "position": [
+        -1640,
+        300
+      ],
+      "id": "71c31b44-2bbb-454b-8927-51f9f15bacc2",
+      "name": "Launch Profile Scraping"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1400,
+        300
+      ],
+      "id": "4fddea3e-98f8-487e-b5ce-611234e41379",
+      "name": "Wait1",
+      "webhookId": "11402507-8322-48ce-8028-f8969695a33d"
+    },
+    {
+      "parameters": {
+        "url": "https://api.phantombuster.com/api/v2/containers/fetch",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $json['id'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1220,
+        300
+      ],
+      "id": "048b5b47-31cb-4838-b189-3f73edcd45a7",
+      "name": "Get Container2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "14126d5a-44dc-465d-b9c4-3ea9e1509adf",
+              "leftValue": "={{ $json['status'] }}",
+              "rightValue": "finished",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1040,
+        300
+      ],
+      "id": "730d830c-e941-4bee-957c-7dee147b7eaf",
+      "name": "isFinished2"
+    },
+    {
+      "parameters": {
+        "operation": "getOutput",
+        "agentId": "8865699973762482",
+        "additionalFields": {
+          "prevContainerId": "={{ $json['id'] }}",
+          "prevStatus": "finished"
+        }
+      },
+      "type": "n8n-nodes-base.phantombuster",
+      "typeVersion": 1,
+      "position": [
+        -840,
+        280
+      ],
+      "id": "5da5b3a6-d64e-444e-b429-5e58ad53bbf1",
+      "name": "Get Profiles",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// Access the profile data from the PhantomBuster response\nconst profileData = $('Filter3').first().json; // Directly use $json to access the data\n\n// Create a new object with all required and available fields\nconst result = {\n  fullName: profileData.firstName + \" \" + profileData.lastName,\n  jobTitle: profileData.linkedinJobTitle,\n  companyIndustry: profileData.companyIndustry,\n  companyName: profileData.companyName,\n  location: profileData.location,\n  schoolName: profileData.linkedinPreviousSchoolName,\n  specialties: profileData.linkedinSkillsLabel,\n  industry: profileData.companyIndustry,\n  profileUrl: profileData.linkedinProfileUrl,\n  linkedinProfileId: profileData.linkedinProfileId,\n  linkedinHeadline: profileData.linkedinHeadline,\n  linkedinFollowersCount: profileData.linkedinFollowersCount,\n  linkedinConnectionsCount: profileData.linkedinConnectionsCount,\n  linkedinIsHiringBadge: profileData.linkedinIsHiringBadge,\n  linkedinIsOpenToWorkBadge: profileData.linkedinIsOpenToWorkBadge,\n  linkedinPreviousCompanyName: profileData.linkedinPreviousCompanyName,\n  linkedinPreviousJobTitle: profileData.linkedinPreviousJobTitle,\n  linkedinPreviousJobDescription: profileData.linkedinPreviousJobDescription,\n  linkedinSchoolDegree: profileData.linkedinSchoolDegree,\n  linkedinSchoolDescription: profileData.linkedinSchoolDescription,\n  concatenatedMessage: $('Loop Over Items').first().json.concatenated_message\n};\n\n// Create a personalized prompt for the lead with sentiment analysis on the concatenated messages\nconst prompt = `\nYou will analyze the following concatenated messages exchanged with the lead to determine the sentiment and interest level.\n\nMessages:\n${result.concatenatedMessage}\n\nFirst, perform sentiment analysis on these messages to decide if the client is interested. Look for positive replies or engagement indicating interest.\n\nIf the client is not interested, replies negatively, or the reply is about something else and not in the scope of being interested/not interested, respond ONLY with:\n\"Client is not interested.\"\n\nIf the client is interested, proceed to create a personalized presentation based on the lead's profile:\n\n- **Full Name**: ${result.fullName}\n- **Job Title**: ${result.jobTitle}\n- **Industry**: ${result.companyIndustry}\n- **Company**: ${result.companyName}\n- **Location**: ${result.location}\n- **Education**: ${result.schoolName}\n- **Skills**: ${result.specialties}\n- **Industry**: ${result.industry}\n- **LinkedIn Profile**: ${result.profileUrl}\n- **LinkedIn Headline**: ${result.linkedinHeadline}\n- **LinkedIn Followers Count**: ${result.linkedinFollowersCount}\n- **LinkedIn Connections Count**: ${result.linkedinConnectionsCount}\n- **Hiring Badge**: ${result.linkedinIsHiringBadge}\n- **Open to Work Badge**: ${result.linkedinIsOpenToWorkBadge}\n- **Previous Company**: ${result.linkedinPreviousCompanyName}\n- **Previous Job Title**: ${result.linkedinPreviousJobTitle}\n- **Previous Job Description**: ${result.linkedinPreviousJobDescription}\n- **School Degree**: ${result.linkedinSchoolDegree}\n- **School Description**: ${result.linkedinSchoolDescription}\n\nThe presentation should focus on:\n1. The lead's role and pain points (e.g., challenges they face in their industry).\n2. How our product/solution can help them based on their job title and industry.\n3. Relevant case studies that match their company size or industry.\n4. A clear call to action.\n`;\n\n// Return the structured prompt along with the profile data and concatenated messages\nreturn [{\n  json: {\n    prompt: prompt,\n    data: result // Include the result object with the profile data and concatenated messages\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "0bfca1e9-5ddc-43ad-9358-b7abc9c3471a",
+      "name": "Prompt Input"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1DwplI0PZs_o2XjuVqVMFZyMOSW5n4vJKDsG9EZI3bYQ/edit?gid=804934023#gid=804934023",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 804934023,
+          "mode": "list",
+          "cachedResultName": "ScrapedInbox",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_Zrz0uHelmf7FsYGJGJddoM11uQMtyr8OfMxuu7UW00/edit#gid=804934023"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Messages": "={{ $json.concatenated_message }}",
+            "Client LinkedIn URL": "={{ $json.linkedInUrls0 }}",
+            "Our LinkedIn URL": "null"
+          },
+          "matchingColumns": [
+            "LinkedIn URL"
+          ],
+          "schema": [
+            {
+              "id": "Client LinkedIn URL",
+              "displayName": "Client LinkedIn URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Messages",
+              "displayName": "Messages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Our LinkedIn URL",
+              "displayName": "Our LinkedIn URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1840,
+        300
+      ],
+      "id": "5b9ccafc-0e84-44ec-bbe7-f512cbe5539c",
+      "name": "ScrapedInboxAdd",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.opencagedata.com/geocode/v1/json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "aa51f902b37141bd82a54380514a6d94"
+            },
+            {
+              "name": "q",
+              "value": "={{ $('Filter3').item.json.location }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ea97f2a9-7f1a-438f-a5c6-31cfbb2e6713",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const countries = [\n  \"Ukraine\", \"Belarus\", \"Russia\", \"India\", \"Nigeria\", \"UAE\", \"Malaysia\", \"Philippines\", \n  \"Egypt\", \"Turkey\", \"Pakistan\", \"Kazakhstan\", \"Uzbekistan\", \"Turkmenistan\", \"Kyrgyzstan\", \n  \"Tajikistan\", \"Armenia\", \"Azerbaijan\", \"Moldova\", \"Georgia\", \"Bulgaria\", \"Serbia\", \"Macedonia\", \n  \"Montenegro\", \"Bosnia and Herzegovina\", \"Albania\", \"Kosovo\", \"Central Asian countries\", \n  \"African countries\", \"Ghana\", \"Kenya\", \"South Africa\", \"Angola\", \"Uganda\", \"Tanzania\", \n  \"Ethiopia\", \"Congo\", \"Ivory Coast\", \"Zimbabwe\", \"Mozambique\", \"Cameroon\", \"Sudan\", \"Malawi\"\n];\n\nconst industries = [\n  \"Abrasives & Nonmetallic Minerals Manufacturing\",\n  \"Coal Mining\", \"Metal Ore Mining\", \"Mining\", \"Nonmetallic Mineral Mining\", \"Primary Metal Manufacturing\",\n  \"Accommodation\", \"Bars, Taverns, & Nightclubs\", \"Bed-and-Breakfasts, Hostels, Homestays\", \"Hospitality\",\n  \"Sightseeing Transportation\", \"Travel Arrangements\", \"Accounting\", \"Agriculture, Construction, Mining Machinery Manufacturing\",\n  \"Architectural & Structural Metal Manufacturing\", \"Engines & Power Transmission Equipment Manufacturing\",\n  \"Commercial & Service Industry Machinery Manufacturing\", \"Construction Hardware Manufacturing\", \"Cutlery & Handtool Manufacturing\",\n  \"Fabricated Metal Products\", \"Machinery Manufacturing\", \"Metal Treatments\", \"Metal Valve, Ball, & Roller Manufacturing\",\n  \"Metalworking Machinery Manufacturing\", \"Spring & Wire Product Manufacturing\", \"Transportation Equipment Manufacturing\",\n  \"Turned Products & Fastener Manufacturing\", \"Air, Water, & Waste Program Management\", \"Conservation Programs\",\n  \"Environmental Quality Programs\", \"Environmental Services\", \"Waste Treatment & Disposal\", \"Alternative Dispute Resolution\",\n  \"Legal Services\", \"Trusts & Estates\", \"Animal Feed Manufacturing\", \"Farming\", \"Farming, Ranching, Forestry\", \"Forestry & Logging\",\n  \"Horticulture\", \"Architecture & Planning\", \"Community Development & Urban Planning\", \"Landscaping Services\", \"Computers & Electronics Manufacturing\",\n  \"Audio & Video Equipment Manufacturing\", \"Baked Goods Manufacturing\", \"Food & Beverage Manufacturing\", \"Fruit & Vegetable Preserves Manufacturing\",\n  \"Meat Products Manufacturing\", \"Seafood Product Manufacturing\", \"Sugar & Confectionery Product Manufacturing\", \"Beverage Manufacturing\",\n  \"Breweries\", \"Food & Beverage Services\", \"Book & Periodical Publishing\", \"Book Publishing\", \"Periodical Publishing\", \"Sheet Music Publishing\",\n  \"Building Construction\", \"Building Equipment Contractors\", \"Building Finishing Contractors\", \"Building Structure & Exterior Contractors\",\n  \"Construction\", \"Highway, Street, & Bridge Construction\", \"Nonresidential Building Construction\", \"Residential Building Construction\",\n  \"Specialty Trade Contractors\", \"Utility System Construction\", \"Cable & Satellite Programming\", \"Radio & Television Broadcasting\",\n  \"Broadcast Media Production & Distribution\", \"Claims Adjusting, Actuarial Services\", \"Insurance\", \"Insurance & Employee Benefit Funds\",\n  \"Insurance Carriers\", \"Insurance Agencies & Brokerages\", \"Communications Equipment Manufacturing\", \"Media & Telecommunications\",\n  \"Satellite Telecommunications\", \"Telecommunications\", \"Telecommunications Carriers\", \"Civic & Social Organizations\", \"Community Services\",\n  \"Housing & Community Development\", \"Housing Programs\", \"Industry Associations\", \"Public Assistance Programs\", \"Computer Games\",\n  \"Computer Hardware Manufacturing\", \"Computer Networking Products\", \"E-Learning Providers\", \"International Trade & Development\",\n  \"Economic Programs\", \"Education\", \"Fine Arts Schools\", \"Language Schools\", \"Secretarial Schools\", \"Space Research & Technology\",\n  \"Education Administration Programs\", \"Electric Power Transmission, Control, & Distribution\", \"Steam & Air-Conditioning Supply\",\n  \"Utilities\", \"Utilities Administration\", \"Water Supply & Irrigation Systems\", \"Water, Waste, Steam, & Air Conditioning Services\",\n  \"Executive Offices\", \"Office Administration\", \"Investment Management\", \"Funds & Trusts\", \"Holding Companies\", \"Investment Advice\",\n  \"Pension Funds\", \"Securities & Commodity Exchanges\", \"Furniture & Home Furnishings Manufacturing\", \"Household & Institutional Furniture Manufacturing\",\n  \"Mattress & Blinds Manufacturing\", \"Golf Courses & Country Clubs\", \"Recreational Facilities\", \"Skiing Facilities\", \"Spectator Sports\",\n  \"Sports & Recreation Instruction\", \"Sports Teams & Clubs\", \"Ground Passenger Transportation\", \"School & Employee Bus Services\",\n  \"Interurban & Rural Bus Services\", \"Pipeline Transportation\", \"Rail Transportation\", \"Shuttles & Special Needs Transportation Services\",\n  \"Taxi & Limousine Services\", \"Transportation Programs\", \"Truck Transportation\", \"Urban Transit Services\", \"Leasing Non-residential Real Estate\",\n  \"Leasing Residential Real Estate\", \"Real Estate & Equipment Rental Services\", \"Subdivision of Land\", \"Maritime Transportation\", \"Mental Health Care\",\n  \"Mobile Food Services\", \"Restaurants\", \"Mobile Gaming Apps\", \"Motor Vehicle Manufacturing\", \"Motor Vehicle Parts Manufacturing\", \"Pharmaceutical Manufacturing\",\n  \"Security & Investigations\", \"Security Guards & Patrol Services\", \"Security Systems Services\", \"Think Tanks\", \"Translation & Localization\",\n  \"Venture Capital & Private Equity Principals\", \"Wood Product Manufacturing\", \"Judiciary\", \"Ambulance Services\", \"Optometrists\", \"Ranching & Fisheries\",\n  \"Ranching\", \"Artificial Rubber & Synthetic Fiber Manufacturing\", \"Plastics & Rubber Product Manufacturing\", \"Plastics Manufacturing\", \"Rubber Products Manufacturing\",\n  \"Artists & Writers\", \"Child Day Care Services\", \"Individual & Family Services\", \"Services for the Elderly & Disabled\", \"Vocational Rehabilitation Services\",\n  \"Circuses & Magic Shows\", \"Dance Companies\", \"Musicians\", \"Performing Arts\", \"Clay & Refractory Products Manufacturing\", \"Glass Product Manufacturing\",\n  \"Glass, Ceramics & Concrete Manufacturing\", \"Lime & Gypsum Products Manufacturing\", \"Consumer Goods Rental\", \"Correctional Institutions\", \"Emergency & Relief Services\",\n  \"Fire Protection\", \"Postal Services\", \"Public Safety\", \"Dairy Product Manufacturing\", \"Dentists\", \"Distilleries\", \"Wineries\", \"Economic Programs\",\n  \"Electronic & Precision Equipment Maintenance\", \"Household Appliance Manufacturing\", \"Magnetic & Optical Media Manufacturing\", \"Fisheries\", \"Fundraising\",\n  \"Hotels & Motels\", \"International Affairs\", \"Legislative Office\", \"Movies & Sound Recording\", \"Newspaper Publishing\", \"Outsourcing & Offshoring Consulting\",\n  \"Packaging & Containers Manufacturing\", \"Paper & Forest Product Manufacturing\", \"Personal Care Product Manufacturing\", \"Primary & Secondary Education\",\n  \"Printing Services\", \"Retail Groceries\", \"Sporting Goods Manufacturing\", \"Tobacco Manufacturing\", \"Veterinary Services\", \"Wholesale Import & Export\",\n  \"Wireless Services\", \"Wood Product Manufacturing\", \"Writing & Editing\", \"Warehousing & Storage\", \"Philanthropy\", \"Social Networking Platforms\",\n  \"Mechanical Or Industrial Engineering\", \"Data Infrastructure and Analytics\", \"IT System Testing and Evaluation\", \"Capital Markets\", \"Nanotechnology Research\",\n  \"Internet Marketplace Platforms\", \"Investment Banking\", \"Animation & Post-production\", \"Semiconductor Manufacturing\", \"Renewable Energy Semiconductor Manufacturing\"\n];\n\nconst profile_country = $input.first().json.results[1].components\nconst profile_industry = $('Filter3').first().json.companyIndustry\n  \nreturn [{\n  json: {\n    profile_country,\n    countries,\n    profile_industry,\n    industries\n  }\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ],
+      "id": "a783308b-37b2-4e57-9d75-14599845a62f",
+      "name": "Return Countries&Industries"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bb9e20a7-c68b-4ce8-bda0-888ff6f66124",
+              "leftValue": "error",
+              "rightValue": "={{ $json.error }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -640,
+        280
+      ],
+      "id": "b72eed84-7d8a-4305-9737-21e887dff002",
+      "name": "Filter3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6d3f65e2-ef60-4c25-85fd-0ec73d60647a",
+              "leftValue": "={{ $json.countries }}",
+              "rightValue": "={{ $json.profile_country.country }}",
+              "operator": {
+                "type": "array",
+                "operation": "notContains",
+                "rightType": "any"
+              }
+            },
+            {
+              "id": "715b2e61-3d71-4063-b36c-18f408695605",
+              "leftValue": "={{ $json.industries }}",
+              "rightValue": "={{ $json.profile_industry }}",
+              "operator": {
+                "type": "array",
+                "operation": "notContains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        0
+      ],
+      "id": "e62e8e88-697a-484d-bff1-76214d74efcd",
+      "name": "If (Country&Industry)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// In a Function node, assuming your input is an array of items with\n// item.json.linkedInUrls0 and item.json.concatenated_message\n\nreturn items.map(item => {\n  const cleaned = item.json.concatenated_message\n    // replace all newline characters with a space\n    .replace(/(\\r\\n|\\n|\\r)/g, ' ')\n    // collapse multiple spaces into one\n    .replace(/\\s+/g, ' ')\n    .trim();\n\n  return {\n    json: {\n      ...item.json,\n      concatenated_message: cleaned\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2300,
+        200
+      ],
+      "id": "132bab17-dc3a-40ff-9f9b-be9f99bd2244",
+      "name": "Clean Messages"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1DwplI0PZs_o2XjuVqVMFZyMOSW5n4vJKDsG9EZI3bYQ/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 304601867,
+          "mode": "list",
+          "cachedResultName": "ScrapedProfile",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DwplI0PZs_o2XjuVqVMFZyMOSW5n4vJKDsG9EZI3bYQ/edit#gid=304601867"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ourLinkedInUrl",
+              "displayName": "ourLinkedInUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "clientProfileURL",
+              "displayName": "clientProfileURL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "concatenated_message",
+              "displayName": "concatenated_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "companyName",
+              "displayName": "companyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinFollowersCount",
+              "displayName": "linkedinFollowersCount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinHeadline",
+              "displayName": "linkedinHeadline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinIsHiringBadge",
+              "displayName": "linkedinIsHiringBadge",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinIsOpenToWorkBadge",
+              "displayName": "linkedinIsOpenToWorkBadge",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinJobDateRange",
+              "displayName": "linkedinJobDateRange",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinJobTitle",
+              "displayName": "linkedinJobTitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousJobDateRange",
+              "displayName": "linkedinPreviousJobDateRange",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousJobLocation",
+              "displayName": "linkedinPreviousJobLocation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousJobTitle",
+              "displayName": "linkedinPreviousJobTitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinProfileId",
+              "displayName": "linkedinProfileId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinProfileSlug",
+              "displayName": "linkedinProfileSlug",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinProfileUrl",
+              "displayName": "linkedinProfileUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinProfileUrn",
+              "displayName": "linkedinProfileUrn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "previousCompanyName",
+              "displayName": "previousCompanyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "connectionDegree",
+              "displayName": "connectionDegree",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "refreshedAt",
+              "displayName": "refreshedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "mutualConnectionsUrl",
+              "displayName": "mutualConnectionsUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "connectionsUrl",
+              "displayName": "connectionsUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinConnectionsCount",
+              "displayName": "linkedinConnectionsCount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "scraperProfileId",
+              "displayName": "scraperProfileId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "scraperFullName",
+              "displayName": "scraperFullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "companyIndustry",
+              "displayName": "companyIndustry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyUrl",
+              "displayName": "linkedinCompanyUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanySlug",
+              "displayName": "linkedinCompanySlug",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinDescription",
+              "displayName": "linkedinDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinJobDescription",
+              "displayName": "linkedinJobDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinJobLocation",
+              "displayName": "linkedinJobLocation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinSchoolUrl",
+              "displayName": "linkedinSchoolUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinSchoolCompanySlug",
+              "displayName": "linkedinSchoolCompanySlug",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinSchoolName",
+              "displayName": "linkedinSchoolName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinSkillsLabel",
+              "displayName": "linkedinSkillsLabel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyName",
+              "displayName": "linkedinCompanyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyDescription",
+              "displayName": "linkedinCompanyDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyTagline",
+              "displayName": "linkedinCompanyTagline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyFollowerCount",
+              "displayName": "linkedinCompanyFollowerCount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyWebsite",
+              "displayName": "linkedinCompanyWebsite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyEmployeesCount",
+              "displayName": "linkedinCompanyEmployeesCount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanySize",
+              "displayName": "linkedinCompanySize",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyHeadquarter",
+              "displayName": "linkedinCompanyHeadquarter",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyIndustry",
+              "displayName": "linkedinCompanyIndustry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanyFounded",
+              "displayName": "linkedinCompanyFounded",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinCompanySpecialities",
+              "displayName": "linkedinCompanySpecialities",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousCompanySlug",
+              "displayName": "linkedinPreviousCompanySlug",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousJobDescription",
+              "displayName": "linkedinPreviousJobDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousSchoolUrl",
+              "displayName": "linkedinPreviousSchoolUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousSchoolCompanySlug",
+              "displayName": "linkedinPreviousSchoolCompanySlug",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousSchoolDateRange",
+              "displayName": "linkedinPreviousSchoolDateRange",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousSchoolDegree",
+              "displayName": "linkedinPreviousSchoolDegree",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousSchoolDescription",
+              "displayName": "linkedinPreviousSchoolDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinPreviousSchoolName",
+              "displayName": "linkedinPreviousSchoolName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinSchoolDateRange",
+              "displayName": "linkedinSchoolDateRange",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinSchoolDegree",
+              "displayName": "linkedinSchoolDegree",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "linkedinSchoolDescription",
+              "displayName": "linkedinSchoolDescription",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -240,
+        280
+      ],
+      "id": "5f900536-5379-41a9-84ed-46b42f4298b8",
+      "name": "ScrapedProfileAdd",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1_Zrz0uHelmf7FsYGJGJddoM11uQMtyr8OfMxuu7UW00/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 804934023,
+          "mode": "list",
+          "cachedResultName": "ScrapedInbox",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_Zrz0uHelmf7FsYGJGJddoM11uQMtyr8OfMxuu7UW00/edit#gid=804934023"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1180,
+        0
+      ],
+      "id": "8be45e0c-e569-4a32-9408-d3fbd05089f2",
+      "name": "ScrapedInboxDelete2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1DwplI0PZs_o2XjuVqVMFZyMOSW5n4vJKDsG9EZI3bYQ/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 804934023,
+          "mode": "list",
+          "cachedResultName": "ScrapedInbox",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DwplI0PZs_o2XjuVqVMFZyMOSW5n4vJKDsG9EZI3bYQ/edit#gid=804934023"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -20,
+        280
+      ],
+      "id": "4d9f2663-e8fa-4214-821f-276977154010",
+      "name": "ScrapedInboxDelete",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  // grab the first cleaned message from the \"Clean Messages\" node\n  const cleanMsg = $('ScrapedInboxAdd').first().json.Messages;\n  \n  // Destructure the original object and keep only the required fields\n  const {\n    firstName,\n    lastName,\n    companyName,\n    linkedinHeadline,\n    linkedinIsHiringBadge,\n    linkedinJobDateRange,\n    linkedinJobTitle,\n    linkedinPreviousJobLocation,\n    linkedinProfileUrl,\n    location,\n    refreshedAt,\n    mutualConnectionsUrl,\n    scraperFullName,\n    companyIndustry,\n    linkedinCompanyUrl,\n    linkedinDescription,\n    linkedinJobDescription,\n    linkedinJobLocation,\n    linkedinCompanyDescription,\n    linkedinCompanyTagline,\n    linkedinCompanyWebsite,\n    linkedinCompanyEmployeesCount,\n    linkedinCompanyHeadquarter,\n    linkedinCompanyIndustry,\n    linkedinCompanyFounded,\n    linkedinCompanySpecialities,\n    ...rest\n  } = item.json;\n\n  return {\n    json: {\n      firstName,\n      lastName,\n      concatenated_message: cleanMsg, // message from \"Clean Messages\"\n      companyName,\n      linkedinHeadline,\n      linkedinIsHiringBadge,\n      linkedinJobDateRange,\n      linkedinJobTitle,\n      linkedinPreviousJobLocation,\n      linkedinProfileUrl,\n      location,\n      refreshedAt,\n      mutualConnectionsUrl,\n      scraperFullName,\n      companyIndustry,\n      linkedinCompanyUrl,\n      linkedinDescription,\n      linkedinJobDescription,\n      linkedinJobLocation,\n      linkedinCompanyDescription,\n      linkedinCompanyTagline,\n      linkedinCompanyWebsite,\n      linkedinCompanyEmployeesCount,\n      linkedinCompanyHeadquarter,\n      linkedinCompanyIndustry,\n      linkedinCompanyFounded,\n      linkedinCompanySpecialities,\n      ...rest // This ensures that other fields from the original item are included, if necessary\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        280
+      ],
+      "id": "0684113f-d60f-4ed9-81e8-ea738cb5d1ff",
+      "name": "Return Profile + Message Info"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Launch Inbox Scraping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Messages": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Group Messages by Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Group Messages by Profile": {
+      "main": [
+        [
+          {
+            "node": "Clean Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "ScrapedInboxDelete2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "isFinished": {
+      "main": [
+        [
+          {
+            "node": "Get Messages",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Container": {
+      "main": [
+        [
+          {
+            "node": "isFinished",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Launch Inbox Scraping": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "ScrapedInboxAdd",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Launch Profile Scraping": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Get Container2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Container2": {
+      "main": [
+        [
+          {
+            "node": "isFinished2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "isFinished2": {
+      "main": [
+        [
+          {
+            "node": "Get Profiles",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Profiles": {
+      "main": [
+        [
+          {
+            "node": "Filter3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Input": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ScrapedInboxAdd": {
+      "main": [
+        [
+          {
+            "node": "Launch Profile Scraping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Return Countries&Industries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Return Countries&Industries": {
+      "main": [
+        [
+          {
+            "node": "If (Country&Industry)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter3": {
+      "main": [
+        [
+          {
+            "node": "Return Profile + Message Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If (Country&Industry)": {
+      "main": [
+        [
+          {
+            "node": "Prompt Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Messages": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ScrapedProfileAdd": {
+      "main": [
+        [
+          {
+            "node": "ScrapedInboxDelete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ScrapedInboxDelete": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Return Profile + Message Info": {
+      "main": [
+        [
+          {
+            "node": "ScrapedProfileAdd",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "e8a7233c-e764-4e7b-9595-80726630a984",
+  "triggerCount": 0,
+  "tags": []
+}

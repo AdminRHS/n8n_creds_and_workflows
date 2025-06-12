@@ -1,0 +1,486 @@
+{
+  "createdAt": "2025-06-11T11:38:48.970Z",
+  "updatedAt": "2025-06-11T11:39:03.789Z",
+  "id": "T476DTM4Dax1xNc5",
+  "name": "Parse_Company_Links",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        -180
+      ],
+      "id": "d0f6df3d-451b-4a9e-90f8-f32291dc677d",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://crm-s.com/api/v1/get-leads-public?global_company_name=Remote%20Helpers&page=2&per_page=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -40,
+        -180
+      ],
+      "id": "1a2d9c9c-c3cb-4f1c-b922-8dea97b0f573",
+      "name": "Get JSON from CRM"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входные данные (они должны быть в виде массива)\nlet items = $input.all();\n\n// Если вдруг items не массив, то оборачиваем в массив\nif (!Array.isArray(items)) {\n\titems = [items];\n}\n\nconst newItems = items.map(item => {\n\treturn {\n\t\tjson: {\n\t\t\t// Преобразуем объект JSON в строку\n\t\t\tresult: JSON.stringify(item.json)\n\t\t}\n\t};\n});\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        -180
+      ],
+      "id": "1db9563e-b31d-4678-a75a-e4dac553b5ee",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        520,
+        20
+      ],
+      "id": "36dc0cb8-cc24-4fac-a28f-022cd8b05360",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Я имею список компаний\n{{ $json.text }}\nОн спарсенный из этого json. {{ $('Code').item.json.result }}\n\n\nТвоя задача: написать список адресов сайтов этих компаний. Напиши только результат. Верни мне только адреса сайтов, без названий компаний."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        880,
+        -180
+      ],
+      "id": "2ae72c68-5410-4d43-bb1a-e563fbe55807",
+      "name": "Получить сайты компаний"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Для каких из этих компаний отсутствуют данные о телефонах? Напиши только названия компаний. Каждая с новой строчки, напиши только результат, своих комментариев не пиши. \n<DoNotWrite>\nClaude: можете мне рассказать больше о ваших методах определения компаний, у которых отсутствуют телефонные данные? Я хотел бы лучше понять ваш процесс анализа.\n</DoNotWrite>\n\nОриентируйся на контекст:\n\n{{ $json.result }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        440,
+        -180
+      ],
+      "id": "b1967320-9cd0-49c7-b9ae-ca946e9e7d08",
+      "name": "Получить название компаний"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Предположим, входная строка находится в поле \"links\" первого элемента\nconst inputString = $input.first().json.text;\n\n// Разбиваем строку по символу новой строки\nconst linksArray = inputString.split('\\n');\n\n// Создаем отдельный айтем для каждой ссылки\nconst newItems = linksArray.map(link => ({\n\tjson: { link: link }\n}));\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -180
+      ],
+      "id": "2caf02f5-5140-4eb2-838d-fd4d4f808bae",
+      "name": "Разбить сайты компании на строки"
+    },
+    {
+      "parameters": {
+        "url": "=https://r.jina.ai/{{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1500,
+        -180
+      ],
+      "id": "f96ec754-5eb2-406c-90fb-b3cf4136f808",
+      "name": "Главную страницу"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}\nСписок ссылок на все разделы этого сайта. Мне верни только список ссылок без твоих комментариев, списком без форматирования, где каждая ссылка начинается с новой строчки. \nВерни мне только ссылки на основные разделы сайта, в которых потенциально может содержаться информация о телефонах. Страницу с контактами напиши на первом месте. "
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        1760,
+        -180
+      ],
+      "id": "32c849f8-94e6-4fad-ad92-20be0a6f9036",
+      "name": "Найти ссылки на все разделы"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        -20
+      ],
+      "id": "b763873e-f49f-4752-a76d-a130689ed4e3",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://r.jina.ai/{{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2540,
+        -180
+      ],
+      "id": "f962ff33-7b96-4cc0-84a1-706beb252521",
+      "name": "Следующие страницы"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Предположим, входная строка находится в поле \"links\" первого элемента\nconst inputString = $input.first().json.text;\n\n// Разбиваем строку по символу новой строки\nconst linksArray = inputString.split('\\n');\n\n// Создаем отдельный айтем для каждой ссылки\nconst newItems = linksArray.map(link => ({\n\tjson: { link: link }\n}));\n\nreturn newItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        -180
+      ],
+      "id": "ff4ac2cd-86de-4556-b642-59d8f392681d",
+      "name": "Разбить страницы сайта компании на строки"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-3.7-sonnet",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        60
+      ],
+      "id": "512c3567-3bf0-43fa-a2e5-1365f09884ee",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}\n\nНайди в этом тексте телефоны компании. Если телефон отсутствует, верни одно слово null. Если телефон есть, верни только телефон без остального текста.\nЕсли телефонов несколько, верни каждый телефон с новой строки без форматирования. "
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        2940,
+        -100
+      ],
+      "id": "9307d0b4-21c9-4443-a6c8-7da44f9ad26a",
+      "name": "Достать телефон со всех разделов"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2760,
+        -180
+      ],
+      "id": "42464db0-a0c9-4c01-a001-6574a61f110c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "46954662-af20-4eb9-bb8c-b6ec30b1cd81",
+              "leftValue": "={{ $json.text }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3260,
+        0
+      ],
+      "id": "b4f14449-e738-4843-a348-557ceb2f9d94",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        860,
+        40
+      ],
+      "id": "85b9ec7c-3e78-4fed-a2e7-9129921fc0c5",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get JSON from CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get JSON from CRM": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Получить название компаний",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Получить название компаний",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Получить сайты компаний": {
+      "main": [
+        [
+          {
+            "node": "Разбить сайты компании на строки",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Получить название компаний": {
+      "main": [
+        [
+          {
+            "node": "Получить сайты компаний",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Разбить сайты компании на строки": {
+      "main": [
+        [
+          {
+            "node": "Главную страницу",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Главную страницу": {
+      "main": [
+        [
+          {
+            "node": "Найти ссылки на все разделы",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Найти ссылки на все разделы",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Найти ссылки на все разделы": {
+      "main": [
+        [
+          {
+            "node": "Разбить страницы сайта компании на строки",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Разбить страницы сайта компании на строки": {
+      "main": [
+        [
+          {
+            "node": "Следующие страницы",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Следующие страницы": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Достать телефон со всех разделов",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Достать телефон со всех разделов",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Достать телефон со всех разделов": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Получить сайты компаний",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "9cf3b091-4d44-481e-b81d-9d5159ab6641",
+  "triggerCount": 0,
+  "tags": []
+}

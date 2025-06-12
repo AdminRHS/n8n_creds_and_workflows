@@ -1,0 +1,167 @@
+{
+  "createdAt": "2025-06-11T07:54:26.911Z",
+  "updatedAt": "2025-06-11T13:44:41.941Z",
+  "id": "TvBEEaFhxlya1QWa",
+  "name": "Nabroski",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -280
+      ],
+      "id": "5f72898b-4b72-42a4-a4cd-5d078ddbee1e"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "name": "Get Gmail Messages",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [
+        600,
+        -280
+      ],
+      "id": "a1eb6914-af13-474e-998f-428f680dc745",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sv4epLX3dUAhBbno",
+          "name": "Sales Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": "",
+        "additionalFields": {}
+      },
+      "name": "Get Calendar Events",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [
+        620,
+        -40
+      ],
+      "id": "3a19cd41-404b-4a65-8161-9cb08b9edbf8",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "lmaohrn9G1cLylHj",
+          "name": "Sales Google Calendar"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "// Merge logic placeholder, do actual join by date/thread/your logic\nreturn items;"
+      },
+      "name": "Merge Calendar + Gmail",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -180
+      ],
+      "id": "a0f5ba4c-ad22-4c6d-a2db-4d91ad30be96"
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ json: {\n  prompt: `You are a senior sales analyst. Analyze the meeting context and transcript in English.\\nExtract and structure key data for CRM and top-management review. Always strictly follow this format (leave blank if not discussed):\\n\\nCompany Name:\\nCompany Website:\\nContact Person:\\nSpeciality:\\nCountry-Location:\\nTarget Audience:\\nCompany Info:\\nComment:\\nPosition Requirements:\\n- Position:\\n- Responsibilities:\\n- Skills/Tools:\\n\\nSources:\\n- Calendar Title: ${$json[\"calendar_title\"]}\\n- Calendar Description: ${$json[\"calendar_description\"]}\\n- Transcript: ${$json[\"transcript\"]}\\n\\nRules:\\n- Use only information from provided text.\\n- Be concise, clear, and factual.\\n- No extra explanations, only structured output as above.`\n}}];"
+      },
+      "name": "Build LLM Prompt",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        -180
+      ],
+      "id": "a1e9319b-c167-429c-a232-6f97fb4c3741"
+    },
+    {
+      "parameters": {},
+      "name": "OpenRouter GPT-4.1",
+      "type": "n8n-nodes-base.openai",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        -180
+      ],
+      "id": "4052bc68-91c5-445d-a30a-04fa06148293"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Парсимо LLM output у поля для Google Sheet\nconst text = $json[\"text\"] || $json[\"response\"] || \"\";\nfunction extract(label) {\n  const m = text.match(new RegExp(label+\": *(.*?)(\\n|$)\", \"i\"));\n  return m ? m[1].trim() : \"\";\n}\nreturn [{\n  json: {\n    message_id: $json[\"messageId\"] || \"\",\n    date: $json[\"date\"] || \"\",\n    link: $json[\"link\"] || \"\",\n    transcript: $json[\"transcript\"] || \"\",\n    title: $json[\"calendar_title\"] || \"\",\n    description: $json[\"calendar_description\"] || \"\",\n    call_type: $json[\"call_type\"] || \"\",\n    company_name: extract(\"Company Name\"),\n    website: extract(\"Company Website\"),\n    contact_person: extract(\"Contact Person\"),\n    speciality: extract(\"Speciality\"),\n    country_location: extract(\"Country-Location\"),\n    target_audience: extract(\"Target Audience\"),\n    company_info: extract(\"Company Info\"),\n    comment: extract(\"Comment\"),\n    position_requirements: extract(\"Position Requirements\")\n  }\n}];"
+      },
+      "name": "Parse LLM Output",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        -180
+      ],
+      "id": "887c9bee-d1ed-4a3c-b7b2-ddf108274f33"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "sheetId": "Sales Google Sheets",
+        "range": "Sheet1!A1",
+        "options": {}
+      },
+      "name": "Write to Google Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        -300
+      ],
+      "id": "e9f9f831-bd85-49a8-bec5-c1b022a9e002"
+    },
+    {
+      "parameters": {
+        "fileContent": "={{$json.text || $json.response}}",
+        "parents": [
+          "YOUR_GOOGLE_DRIVE_FOLDER_ID"
+        ],
+        "options": {}
+      },
+      "name": "Save to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        -20
+      ],
+      "id": "86f7477a-7c35-4bbf-bb7c-4eda20ac55d8"
+    },
+    {
+      "parameters": {
+        "webhookUri": "YOUR_DISCORD_WEBHOOK_URL",
+        "options": {}
+      },
+      "name": "Send to Discord",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        180
+      ],
+      "id": "6e2bf27f-e090-43ef-a679-e9c0a0c3bde0"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "f6ed0c22-5d5b-4bde-8822-047461a4d5d6",
+  "triggerCount": 0,
+  "tags": []
+}

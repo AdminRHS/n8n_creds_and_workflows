@@ -1,0 +1,128 @@
+{
+  "createdAt": "2025-06-11T11:46:55.409Z",
+  "updatedAt": "2025-06-11T11:47:04.168Z",
+  "id": "ZSnhQfQDiNz06K0B",
+  "name": "Set_Up_Import_-_POST",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "SaveWebhooks",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        -140
+      ],
+      "id": "56f6a923-6f11-4e33-b224-8a6a20c8c9d6",
+      "name": "Webhook",
+      "webhookId": "19d0ae5a-eec7-46a9-869c-1d14bb34b4e0"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1t6UxAyhrQazJ19qRcBj57xyFYcloO6gVQ2sbx_SD9mI",
+          "mode": "list",
+          "cachedResultName": "Mega Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t6UxAyhrQazJ19qRcBj57xyFYcloO6gVQ2sbx_SD9mI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1422831539,
+          "mode": "list",
+          "cachedResultName": "Onboarding",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1t6UxAyhrQazJ19qRcBj57xyFYcloO6gVQ2sbx_SD9mI/edit#gid=1422831539"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "2",
+            "ImportSettingsWebhookGet": "={{ $json.body.webhookSettings.importUrl }}",
+            "ExportSettingsWebhookPost": "={{ $json.body.webhookSettings.exportUrl }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "ImportSettingsWebhookGet",
+              "displayName": "ImportSettingsWebhookGet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ExportSettingsWebhookPost",
+              "displayName": "ExportSettingsWebhookPost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -60,
+        -140
+      ],
+      "id": "670ab776-adc5-41ab-a04d-bcc8fad32638",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "4c8282da-cfb8-4c4a-8105-1dde7a4ebdc5",
+  "triggerCount": 0,
+  "tags": []
+}

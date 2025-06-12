@@ -1,0 +1,4338 @@
+{
+  "createdAt": "2025-06-10T08:21:32.610Z",
+  "updatedAt": "2025-06-11T08:09:22.548Z",
+  "id": "DvVqcq6r3gAi73h0",
+  "name": "Sales summary another calls",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        4060,
+        1520
+      ],
+      "id": "340bacdc-5203-4e21-bb8e-2cd4fcbf6ecc",
+      "name": "OpenRouter Chat Model1"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        980,
+        1200
+      ],
+      "id": "ddd5de6f-39de-4b41-bd12-cecf2afae0ca",
+      "name": "OpenRouter Chat Model2"
+    },
+    {
+      "parameters": {
+        "content": "# Sales Workflow\n# This workflow automates data processing from various sources, including Gmail, Google Calendar, Google Sheets, and Google Docs. It gathers information \n# from emails, calendar events, and documents, processes it using a language model (LLM), then updates Google Sheets and sends a message to Discord.\n",
+        "height": 1900,
+        "width": 7020,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -40
+      ],
+      "id": "ec3e0f75-ebe0-4ab7-ad8a-422e3fefbfa6",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        4060,
+        1680
+      ],
+      "id": "05300619-6b11-4c72-807a-75d97706d82c",
+      "name": "OpenRouter Chat Model3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=find in the Call Transcription information, about Immediate Requirement, Professional Skills, Software, Responsibilities, Future Needs, Status by the position(s) (possible/impossible), Next Step, Next Contact Day and Planned Start Date.\n\n**If, and ONLY if, a specific piece of information for a field is DIRECTLY MENTIONED in the Call Transcription, then extract it and write it under the corresponding field in the template.**\n\n**If a field's information is NOT mentioned at all in the Call Transcription, then leave that entire field in the template COMPLETELY EMPTY.** This means you should write the field name followed by a colon, and then **immediately insert two newline characters (effectively leaving a blank line after the field name).  Do NOT write anything else like \"(None mentioned)\", \"(Not specified)\", or any explanatory text.  Just leave it blank.**\n\nExtract information **EXACTLY as it appears** in the following call transcription and fill in the report template below.  **Do not infer, assume, or add any information that is not explicitly present in the transcription.**\n\nSome remarks to guide you:\n* \"Software: \" - If there is **no mention** of any software in the transcription, leave this field **completely empty**.\n* \"Responsibilities: \" -  If responsibilities are mentioned, write them as bullet points using the exact wording from the transcription. If **no responsibilities are mentioned**, leave this field **completely empty**.\n* \"Future Needs: \" - If future needs are explicitly mentioned, extract them. If **no future needs are mentioned**, leave this field **completely empty**.\n* \"Status by the position(s) (possible/impossible): \" - If the status of the position is mentioned, extract it. If **no status is mentioned**, leave this field **completely empty**.\n* \"Next Contact Day: \" - If a next contact day is mentioned, extract it. If **no next contact day is mentioned**, leave this field **completely empty**.\n* \"Planned Start Date: \" - If a planned start date is mentioned, extract it. If **no planned start date is mentioned**, leave this field **completely empty**.\n\n\nCall Transcription:\n{{ $json['Extracred Text'] }}\n\nfill information here\n\nImmediate Requirement:\n\nProfessional Skills:\n\nSoftware:\n\nResponsibilities:\n\nFuture Needs:\n\nStatus by the position(s) (possible/impossible): \n\nNext Step:\n\nNext Contact Day:\n\nPlanned Start Date:\n\nFormat the answer exactly according to the template.  For fields with information, leave an empty line between the field name and the value (or the first bullet point for Responsibilities). For fields with NO information from the transcription, leave a **completely empty line** after the field name and colon."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        4200,
+        1700
+      ],
+      "id": "c0e7c4cd-0cd2-480a-948c-5dbbbefecb54",
+      "name": "Usefull information about client"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b533dfaa-055a-4ff3-8ee3-ec01e2648ade",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "Interview",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        160
+      ],
+      "id": "d24cea95-4845-4544-8a26-9a4a1b980f65",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b533dfaa-055a-4ff3-8ee3-ec01e2648ade",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "Second",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        320
+      ],
+      "id": "010e5771-a942-4e83-a1bd-1f524a85ce13",
+      "name": "If3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        160
+      ],
+      "id": "f8c5bfdc-829b-400c-a380-21af06aee75c",
+      "name": "If Formatted Data is empty ->"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        140
+      ],
+      "id": "8d30d6ea-404a-44be-9562-82be4903d4a8",
+      "name": "If meeting name contains Interview"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        300
+      ],
+      "id": "df7bccd0-10f0-42ca-96b5-8afa2f696866",
+      "name": "If meeting name contains Second call"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b533dfaa-055a-4ff3-8ee3-ec01e2648ade",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "follow up",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "98a2d381-11ee-4edd-af9c-37ec9757aa4a",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "Follow up",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "0b9e5032-cc14-4a21-9f9d-92bef23f01cc",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "follow-up",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "2fef4ca3-3ae6-4e0d-b3db-578d02889253",
+              "leftValue": "={{ $json.meetingName }}",
+              "rightValue": "Follow-up",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        480
+      ],
+      "id": "f756430a-d06f-4a87-ba41-29cf2f348ca9",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        460
+      ],
+      "id": "2fce9612-d4a0-4a6e-894c-916d04400f7a",
+      "name": "If meeting name contains follow up"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.summary }}",
+                    "rightValue": "follow up",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "fa8905e1-a499-4ba5-a254-57c771ae6d28"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "4b9b0468-16d2-4f17-9949-4640df767945",
+                    "leftValue": "={{ $json.summary }}",
+                    "rightValue": "Interview",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d4fbb5c1-8980-4629-818e-1eb70143bdc4",
+                    "leftValue": "={{ $json.summary }}",
+                    "rightValue": "Second Call",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "69caa1da-df63-4959-b5d7-30ace85c00d6",
+                    "leftValue": "={{ $json.summary }}",
+                    "rightValue": "Intro call",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2a4b0d0b-2baf-4ce6-a892-b872fa4a163b",
+                    "leftValue": "={{ $json.summary }}",
+                    "rightValue": "Introductory",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7bfbe3f1-6158-48ff-8068-b2aa5df03db7",
+                    "leftValue": "={{ $json.summary }}",
+                    "rightValue": "Kick off meeting",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "084fd611-db5d-47bd-90ea-2f9e1df21717",
+                    "leftValue": "={{ $json.meetingName }}",
+                    "rightValue": "Remote Helpers",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2200,
+        740
+      ],
+      "id": "5c69c17c-6715-45da-8175-4ed53a39ef2e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-4b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        4020,
+        100
+      ],
+      "id": "4fa75a6f-929c-4c39-9158-bc5a18ac7344",
+      "name": "OpenRouter Chat Model"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-4b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        4020,
+        220
+      ],
+      "id": "dfa00ee3-d9be-4729-b46c-2a25c9afc901",
+      "name": "OpenRouter Chat Model4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Примерный кусок кода, где мы объединяем тексты и параллельно\n// при помощи регулярного выражения извлекаем 'Company Name'\n\nconst combinedText = (items[0].json.text || '') + ' ' + (items[1].json.text || '');\n\n// Задаём регэксп (пример для \"Company Name: …\"), который ловит всё, что идет\n// после \"Company Name:\" до конца строки или до знака переноса/запятой и т.п.\n// В данном случае используем схему \"Company Name:\" + произвольный текст до конца строки.\nconst companyRegex = /Company\\s+Name:\\s*([^\\r\\n]+)/i;\n\n// Пытаемся найти совпадение\nconst match = combinedText.match(companyRegex);\n\n// Если совпадение найдено, берём группу (подмаску) №1, иначе пустая строка\nconst companyName = match && match[1] ? match[1].trim() : '';\n\nreturn [\n  {\n    json: {\n      // Полный текст, как раньше\n      text: combinedText,\n      // Добавляем отдельную колонку с именем компании\n      companyName: companyName,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4740,
+        120
+      ],
+      "id": "4f2a8de5-de98-46b4-b242-88287a8233e9",
+      "name": "Code9"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4520,
+        120
+      ],
+      "id": "d34b8ca8-93d1-416f-91cc-38e750b30659",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.text }}",
+        "name": "={{ $json.companyName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/folders/1Ehx183d_STnd3-vi-74T8AwFFXW2lPM8",
+          "mode": "url"
+        },
+        "options": {
+          "convertToGoogleDocument": true
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4980,
+        120
+      ],
+      "id": "fc08dd71-a477-46c2-9f2e-3a20f336d69d",
+      "name": "Google Drive1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем значение id из первого элемента входящих данных\nconst id = $input.first().json.id;\n\n// Формируем ссылку на Google Документ, подставляя id\nconst googleDocLink = `https://docs.google.com/document/d/${id}`;\n\n// Возвращаем объект с новым полем, содержащим ссылку на документ\nreturn [\n  {\n    json: {\n      id: id,\n      googleDocLink: googleDocLink,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5240,
+        120
+      ],
+      "id": "d74978f2-56d5-492e-b172-cf7939062ed2",
+      "name": "Code10"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "documentURL": "={{ $json.id }}"
+      },
+      "name": "Get Google Doc Metadata1",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [
+        5540,
+        120
+      ],
+      "id": "312a694f-bdbb-487c-b244-a3060efe4e0b"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items\nfor (const item of $input.all()) {\n  // Достаём documentId и формируем полную ссылку\n  const docId = item.json.documentId;\n  const googleDocLink = `https://docs.google.com/document/d/${docId}`;\n\n  // Достаём content и ищем в нём Company Name\n  const content = item.json.content || '';\n  // С помощью RegExp ищем строку: \"Company Name: ....\"\n  const companyNameMatch = content.match(/Company Name:\\s*(.*)/i);\n  const companyName = companyNameMatch ? companyNameMatch[1].trim() : 'Not found';\n\n  // Добавляем новые поля к исходным данным\n  item.json.googleDocLink = googleDocLink;\n  item.json.companyName = companyName;\n}\n\nreturn $input.all();\n"
+      },
+      "name": "Format Final Output1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5820,
+        120
+      ],
+      "id": "45ff4a44-7cb3-4868-b6ac-197f5cffa65b"
+    },
+    {
+      "parameters": {
+        "functionCode": "/**\n * Функция parseInput принимает входной текст, где каждая строка имеет формат \"Ключ: Значение\".\n * Обрабатываются только строки, ключ которых соответствует одному из заданных полей.\n *\n * Заданные поля (колонки):\n *   Company Website, Contact Person, Speciality, Country-Location,\n *   Target Audience, Company Info, Comment, Manager\n */\nfunction parseInput(input) {\n  const fields = [\n    'Company Website',\n    'Contact Person',\n    'Speciality',\n    'Country-Location',\n    'Target Audience',\n    'Company Info',\n    'Comment',\n    'Manager'\n  ];\n  \n  // Инициализируем объект, где каждому полю соответствует пустая строка по умолчанию.\n  let result = {};\n  fields.forEach(field => {\n    result[field] = '';\n  });\n  \n  // Регулярное выражение для поиска строк вида \"Ключ: Значение\"\n  const regex = /^([^:]+):\\s*(.*)$/gm;\n  let match;\n  while ((match = regex.exec(input)) !== null) {\n    const key = match[1].trim();\n    const value = match[2].trim();\n    \n    // Если ключ входит в список нужных полей, обновляем его значение\n    if (fields.includes(key)) {\n      result[key] = value;\n    }\n  }\n  \n  return result;\n}\n\n// Обработка динамического входного массива, где каждый элемент должен содержать свойство \"text\"\nconst newItems = items.map(item => {\n  // Если в элементе отсутствует свойство \"text\", возвращаем его без изменений\n  if (!item.json.text) return item;\n  \n  const parsedData = parseInput(item.json.text);\n  // Объединяем результат парсинга с остальными колонками исходного объекта.\n  const newJson = { ...item.json, ...parsedData };\n  \n  return { json: newJson };\n});\n\n// Возвращаем данные в формате, ожидаемом n8n: массив объектов с полем json\nreturn newItems;\n"
+      },
+      "name": "Follow Up. Extract Calendar Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2520,
+        100
+      ],
+      "id": "4c65182e-699a-4b9e-8c6f-81ddd1b003fc"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop through all input items and return only the modified summaries\nlet updatedItems = $input.all().map(item => {\n    // Get the summary and apply regex to modify it\n    let updatedSummary = item.json.summary.replace(/ - second call$/i, '');\n    updatedSummary = \"We are going to have one more call with \" + updatedSummary;\n\n    // Return only the modified summary for each item\n    return {\n        summary: updatedSummary\n    };\n});\n\n// Return the updated array of items with only the summary\nreturn updatedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        620
+      ],
+      "id": "06e1857d-7e59-4634-b75e-cdb83d5ddcf0",
+      "name": "Second Call"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Функция parseInput принимает входной текст, где каждая строка имеет формат \"Ключ: Значение\".\n * Обрабатываются только строки, ключ которых соответствует одному из заданных полей.\n *\n * Заданные поля (колонки):\n *   Company Website, Contact Person, Speciality, Country-Location,\n *   Target Audience, Company Info, Comment, Manager\n */\nfunction parseInput(input) {\n  const fields = [\n    'Contact Person',\n    'Manager'\n  ];\n  \n  // Инициализируем объект, где каждому полю соответствует пустая строка по умолчанию.\n  let result = {};\n  fields.forEach(field => {\n    result[field] = '';\n  });\n  \n  // Регулярное выражение для поиска строк вида \"Ключ: Значение\"\n  const regex = /^([^:]+):\\s*(.*)$/gm;\n  let match;\n  while ((match = regex.exec(input)) !== null) {\n    const key = match[1].trim();\n    const value = match[2].trim();\n    \n    // Если ключ входит в список нужных полей, обновляем его значение\n    if (fields.includes(key)) {\n      result[key] = value;\n    }\n  }\n  \n  return result;\n}\n\n// Обработка динамического входного массива, где каждый элемент должен содержать свойство \"text\"\nconst newItems = items.map(item => {\n  // Если в элементе отсутствует свойство \"text\", возвращаем его без изменений\n  if (!item.json.text) return item;\n  \n  const parsedData = parseInput(item.json.text);\n  // Объединяем результат парсинга с остальными колонками исходного объекта.\n  const newJson = { ...item.json, ...parsedData };\n  \n  return { json: newJson };\n});\n\n// Возвращаем данные в формате, ожидаемом n8n: массив объектов с полем json\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        400
+      ],
+      "id": "c2acba1a-aeec-4ed0-bfb5-a15c7bab7561",
+      "name": "Interview"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.start.dateTime }}",
+            "Company name": "={{ $json.summary }}",
+            "Message ID": "={{ $json.id }}",
+            "Extracted Link": "={{ $json.googleDocUrl }}",
+            "Only link": "={{ $json.documentId }}",
+            "Calendar description": "={{ $json.description }}",
+            "Manager": "={{ $json.Manager }}",
+            "Company Info": "={{ $json['Company Info'] }}",
+            "Contact person": "={{ $json['Contact Person'] }}",
+            "Company website": "={{ $json['Company Website'] }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calendar description",
+              "displayName": "Calendar description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact person",
+              "displayName": "Contact person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Speciality",
+              "displayName": "Speciality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Country-Location",
+              "displayName": "Country-Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target Audience",
+              "displayName": "Target Audience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company Info",
+              "displayName": "Company Info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Manager",
+              "displayName": "Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2760,
+        400
+      ],
+      "id": "737f68b4-6310-47cc-b2d7-a0ad1e6d048b",
+      "name": "Interview Sheet"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json[\"Only link\"] }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3080,
+        400
+      ],
+      "id": "3bfac54e-c3c3-42ef-9758-39ee93aaf973",
+      "name": "Interview Doc"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входящие элементы\nconst items = $input.all();\n\n// Создаем копию массива и разворачиваем его\nconst reversedItems = items.slice().reverse();\n\n// Возвращаем перевернутый массив\nreturn reversedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3380,
+        400
+      ],
+      "id": "69076dfd-685a-427b-b837-65f631cf7d69",
+      "name": "Interview reverse code"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Only link": "={{ $json.documentId }}",
+            "Extracred Text": "={{ $json.content }}"
+          },
+          "matchingColumns": [
+            "Only link"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3640,
+        400
+      ],
+      "id": "5b1bda22-a8e2-4f8b-b763-659cf4502285",
+      "name": "Interview Append"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-4b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        4020,
+        520
+      ],
+      "id": "1f1f7e7b-0329-4a50-b308-69074efa51a4",
+      "name": "OpenRouter Chat Model5"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3540,
+        940
+      ],
+      "id": "25e11d4b-52f1-4dd9-8b45-4c3bf1bb752e",
+      "name": "OpenRouter Chat Model6"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Функция parseInput принимает входной текст, где каждая строка имеет формат \"Ключ: Значение\".\n * Обрабатываются только строки, ключ которых соответствует одному из заданных полей.\n *\n * Заданные поля (колонки):\n *   Company Website, Contact Person, Speciality, Country-Location,\n *   Target Audience, Company Info, Comment, Manager\n */\nfunction parseInput(input) {\n  const fields = [\n    'Contact Person',\n    'Manager'\n  ];\n  \n  // Инициализируем объект, где каждому полю соответствует пустая строка по умолчанию.\n  let result = {};\n  fields.forEach(field => {\n    result[field] = '';\n  });\n  \n  // Регулярное выражение для поиска строк вида \"Ключ: Значение\"\n  const regex = /^([^:]+):\\s*(.*)$/gm;\n  let match;\n  while ((match = regex.exec(input)) !== null) {\n    const key = match[1].trim();\n    const value = match[2].trim();\n    \n    // Если ключ входит в список нужных полей, обновляем его значение\n    if (fields.includes(key)) {\n      result[key] = value;\n    }\n  }\n  \n  return result;\n}\n\n// Обработка динамического входного массива, где каждый элемент должен содержать свойство \"text\"\nconst newItems = items.map(item => {\n  // Если в элементе отсутствует свойство \"text\", возвращаем его без изменений\n  if (!item.json.text) return item;\n  \n  const parsedData = parseInput(item.json.text);\n  // Объединяем результат парсинга с остальными колонками исходного объекта.\n  const newJson = { ...item.json, ...parsedData };\n  \n  return { json: newJson };\n});\n\n// Возвращаем данные в формате, ожидаемом n8n: массив объектов с полем json\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        820
+      ],
+      "id": "caeae174-e882-4a60-8633-37550d43fe58",
+      "name": "Intro call"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.start.dateTime }}",
+            "Company name": "={{ $json.summary }}",
+            "Message ID": "={{ $json.id }}",
+            "Extracted Link": "={{ $json.googleDocUrl }}",
+            "Only link": "={{ $json.documentId }}",
+            "Calendar description": "={{ $json.description }}",
+            "Manager": "={{ $json.Manager }}",
+            "Company Info": "={{ $json['Company Info'] }}",
+            "Contact person": "={{ $json['Contact Person'] }}",
+            "Company website": "={{ $json['Company Website'] }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calendar description",
+              "displayName": "Calendar description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact person",
+              "displayName": "Contact person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Speciality",
+              "displayName": "Speciality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Country-Location",
+              "displayName": "Country-Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Target Audience",
+              "displayName": "Target Audience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company Info",
+              "displayName": "Company Info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Manager",
+              "displayName": "Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2760,
+        820
+      ],
+      "id": "b51b44e1-7d57-439a-bbb6-4afaad9eecbc",
+      "name": "Intro call Sheet"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json[\"Only link\"] }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2960,
+        740
+      ],
+      "id": "c71a1a4f-ba1f-40f7-9fc6-c24175824428",
+      "name": "Intro call Doc"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входящие элементы\nconst items = $input.all();\n\n// Создаем копию массива и разворачиваем его\nconst reversedItems = items.slice().reverse();\n\n// Возвращаем перевернутый массив\nreturn reversedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3380,
+        820
+      ],
+      "id": "820e207e-3a71-44ac-ad32-42dbd36fe260",
+      "name": "Intro call reverse code"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company name",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Company name\"] }}"
+            },
+            {
+              "lookupColumn": "Message ID",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Message ID\"] }}"
+            },
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json.Date }}"
+            },
+            {
+              "lookupColumn": "Only link",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Only link\"] }}"
+            },
+            {
+              "lookupColumn": "Extracted Link",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Extracted Link\"] }}"
+            },
+            {
+              "lookupColumn": "Calendar description",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Calendar description\"] }}"
+            },
+            {
+              "lookupColumn": "Company website",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Company website'] }}"
+            },
+            {
+              "lookupColumn": "Contact person",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Contact person'] }}"
+            },
+            {
+              "lookupColumn": "Speciality",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json.Speciality }}"
+            },
+            {
+              "lookupColumn": "Country-Location",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Country-Location'] }}"
+            },
+            {
+              "lookupColumn": "Target Audience",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Target Audience'] }}"
+            },
+            {
+              "lookupColumn": "Company Info",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Company Info'] }}"
+            },
+            {
+              "lookupColumn": "Comment",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json.Comment }}"
+            },
+            {
+              "lookupColumn": "Manager",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json.Manager }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3860,
+        400
+      ],
+      "id": "60d463ed-cd99-40ce-8b23-9def4012ab9e",
+      "name": "Interview Read",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Familiarize yourself with the list of employees and their roles who may be mentioned from our side in the transcription (they may not be):\n    * Sales Manager: Sona G, Niko K, Sabina H, Anastasia K\n    * Lead generator: Anna Bu, Anahit O, Evgeniya N, Firuza D, Irina Kl, Karina N, Liliia N, Mykhailo Ne, Olena A, Sofiya L, Yelyzaveta P\n    * Financial manager: Daria Y\n    * Front End Developer: Artem S, Maxim S\n    * Graphic Designer: Anastasiya P, Natalia L\n    * Illustrator: Vilhelm S\n    * PPC Specialist: Ekaterina E\n    * prompt engineer: Danylo I, Mykola S\n    * Recruiter: Anastasiya F, Ganna A, Sabina H\n    * UI UX designer: Kristina Y\n    * Video Editor: Dariya A, Svyatoslav Pod\n\nFind mentions of employee names from the list above in the transcription. Important: search specifically for full names or last names as listed and insert them into the appropriate fields.\nIn the Contact Person field, put the name from the call that is not found in the employee list I provided. If there is no information for any field, leave an empty line after \"example: \".\n\nExtract information from the following call transcription and fill in the report template below.\n\nWhat you need to add to the \"Candidates: \" - ours employees from list in the start of prompt\n\nafter \"During the introductory call, {{ $json['Contact person'] }}(or you can find name in transcribation ({{ $json['Calendar description'] }} but remember list of our employees)) \" you need to add correct information from Call Transcription ( {{ $json.content }} )\n\nafter \"The Sales team \" (it meands ours sales team) you need to add correct information from Call Transcription ( {{ $json.content }} )\n\nSome remarks to guide you:\n* \"Responsibilities: \" -  If responsibilities are mentioned, write them as bullet points using the exact wording from the transcription. If **no responsibilities are mentioned**, leave this field \n\nCall Transcription:\n{{ $json.content }}\n\nReport Template:\nWe had an intro call with {{ $json['Company name'] }}\n\nDuring the introductory call, {{ $json['Contact person'] }} ...\n\nThe sales team ...\n\nResponsibilities:\n\nFormat the answer exactly according to the template, leaving an **empty** line between the field and the value."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        3680,
+        720
+      ],
+      "id": "5ab6a16d-df32-4c48-9c50-fca8b5f830aa",
+      "name": "Intro Call Report"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Familiarize yourself with the list of employees and their roles who may be mentioned from our side in the transcription (they may not be):\n    * Sales Manager: Sona G, Niko K, Sabina H, Anastasia K\n    * Lead generator: Anna Bu, Anahit O, Evgeniya N, Firuza D, Irina Kl, Karina N, Liliia N, Mykhailo Ne, Olena A, Sofiya L, Yelyzaveta P\n    * Financial manager: Daria Y\n    * Front End Developer: Artem S, Maxim S\n    * Graphic Designer: Anastasiya P, Natalia L\n    * Illustrator: Vilhelm S\n    * PPC Specialist: Ekaterina E\n    * prompt engineer: Danylo I, Mykola S\n    * Recruiter: Anastasiya F, Ganna A, Sabina H\n    * UI UX designer: Kristina Y\n    * Video Editor: Dariya A, Svyatoslav Pod\n\nFind mentions of employee names from the list above in the transcription. Important: search specifically for full names or last names as listed and insert them into the appropriate fields.\nIn the Contact Person field, put the name from the call that is not found in the employee list I provided. If there is no information for any field, leave an empty line after \"example: \".\n\nExtract information from the following call transcription and fill in the report template below.\n\nWhat you need to add to the \"Candidates: \" - ours employees from list in the start of prompt\n\nafter \"During the interview call, {{ $json['Contact person'] }} from {{ $json['Company name'] }} \" you need to add correct information from Call Transcription ( {{ $json['Extracred Text'] }} )  \n\nCall Transcription:\n{{ $json['Extracred Text'] }}\n\nReport Template:\nWe had an interview call with {{ $json['Company name'] }}\n\nCandidates: \n\nDuring the interview call, {{ $json['Contact person'] }} from {{ $json['Company name'] }} ...\n\nThe client was engaged by the LG manager {{ $json['Manager'] }}\n\nFormat the answer exactly according to the template, leaving an **empty** line between the field and the value."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        4160,
+        400
+      ],
+      "id": "be6f6bf1-5e69-439f-a0ea-07402443784e",
+      "name": "Interview Report"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.start.dateTime }}",
+            "Company name": "={{ $json.summary }}",
+            "Message ID": "={{ $json.id }}",
+            "Extracted Link": "={{ $json.googleDocUrl }}",
+            "Only link": "={{ $json.documentId }}",
+            "Calendar description": "={{ $json.description }}",
+            "Manager": "={{ $json.Manager }}",
+            "Comment": "={{ $json.Comment }}",
+            "Company Info": "={{ $json['Company Info'] }}",
+            "Target Audience": "={{ $json['Target Audience'] }}",
+            "Country-Location": "={{ $json['Country-Location'] }}",
+            "Speciality": "={{ $json.Speciality }}",
+            "Contact person": "={{ $json['Contact Person'] }}",
+            "Company website": "={{ $json['Company Website'] }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calendar description",
+              "displayName": "Calendar description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact person",
+              "displayName": "Contact person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Speciality",
+              "displayName": "Speciality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Country-Location",
+              "displayName": "Country-Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Target Audience",
+              "displayName": "Target Audience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Info",
+              "displayName": "Company Info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Manager",
+              "displayName": "Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2760,
+        100
+      ],
+      "id": "72690ca8-5376-439e-b621-7242ffc9cb22",
+      "name": "Follow Up Sheet"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json[\"Only link\"] }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3080,
+        100
+      ],
+      "id": "df8df73d-ecb2-4bd5-b8e9-6b9bcb917cba",
+      "name": "Follow Up Doc"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входящие элементы\nconst items = $input.all();\n\n// Создаем копию массива и разворачиваем его\nconst reversedItems = items.slice().reverse();\n\n// Возвращаем перевернутый массив\nreturn reversedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3380,
+        100
+      ],
+      "id": "1636b172-6504-4d3b-8035-89ddca16cc35",
+      "name": "Follow Up reverse Code"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Only link": "={{ $json.documentId }}",
+            "Extracred Text": "={{ $json.content }}"
+          },
+          "matchingColumns": [
+            "Only link"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3640,
+        100
+      ],
+      "id": "cca6bccf-fbf0-45dd-b6da-fd749dda39d4",
+      "name": "Follow Up Append"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company name",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Company name\"] }}"
+            },
+            {
+              "lookupColumn": "Message ID",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Message ID\"] }}"
+            },
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json.Date }}"
+            },
+            {
+              "lookupColumn": "Only link",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Only link\"] }}"
+            },
+            {
+              "lookupColumn": "Extracted Link",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Extracted Link\"] }}"
+            },
+            {
+              "lookupColumn": "Calendar description",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json[\"Calendar description\"] }}"
+            },
+            {
+              "lookupColumn": "Company website",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Company website'] }}"
+            },
+            {
+              "lookupColumn": "Contact person",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Contact person'] }}"
+            },
+            {
+              "lookupColumn": "Speciality",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json.Speciality }}"
+            },
+            {
+              "lookupColumn": "Country-Location",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Country-Location'] }}"
+            },
+            {
+              "lookupColumn": "Target Audience",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Target Audience'] }}"
+            },
+            {
+              "lookupColumn": "Company Info",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json['Company Info'] }}"
+            },
+            {
+              "lookupColumn": "Comment",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json.Comment }}"
+            },
+            {
+              "lookupColumn": "Manager",
+              "lookupValue": "={{ $('Follow Up Sheet').item.json.Manager }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3860,
+        100
+      ],
+      "id": "018512a3-bc80-4a0f-bbf2-846d3f6cd8a6",
+      "name": "Follow Up Read",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Familiarize yourself with the list of employees and their roles who may be mentioned from our side in the transcription (they may not be):\n    * Sales Manager: Sona G, Niko K, Sabina H, Anastasia K\n    * Lead generator: Anna Bu, Anahit O, Evgeniya N, Firuza D, Irina Kl, Karina N, Liliia N, Mykhailo Ne, Olena A, Sofiya L, Yelyzaveta P\n    * Financial manager: Daria Y\n    * Front End Developer: Artem S, Maxim S\n    * Graphic Designer: Anastasiya P, Natalia L\n    * Illustrator: Vilhelm S\n    * PPC Specialist: Ekaterina E\n    * prompt engineer: Danylo I, Mykola S\n    * Recruiter: Anastasiya F, Ganna A, Sabina H\n    * UI UX designer: Kristina Y\n    * Video Editor: Dariya A, Svyatoslav Pod\n\nFind mentions of employee names from the list above in the transcription. Important: search specifically for full names or last names as listed and insert them into the appropriate fields.\nIn the Contact Person field, put the name from the call that is not found in the employee list I provided. If there is no information for any field, leave an empty line after \"example: \".\n\nExtract information from the following call transcription and fill in the report template below.\n\nWhat you need to add to the \"Comment: \" - Summarize the call that took place with a client using this call script. Write a paragraph emphasizing client's hiring needs - the position that he wants to fill. End the paragraph with the agreed future steps. Also, write separately the responsibilities and skills required for the position that the client wants to fill.\n\nCall Transcription:\n{{ $json['Extracred Text'] }}\n\nReport Template:\nCompany Name: {{ $json['Company name'] }}\n\nCompany Website: {{ $json['Company website'] }}\n\nContact Person: {{ $json['Contact person'] }}\n\nSpeciality: {{ $json.Speciality }}\n\nCountry-Location: {{ $json['Country-Location'] }}\n\nTarget Audience: {{ $json['Target Audience'] }}\n\nCompany Info: {{ $json['Company Info'] }}\n\nComment: \n\nFormat the answer exactly according to the template, leaving an **empty** line between the field and the value."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        4160,
+        -20
+      ],
+      "id": "ad745fe1-dfb2-489b-9b7d-ea5fccfd99d9",
+      "name": "Follow Up Report"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=find in the Call Transcription information, about Immediate Requirement, Professional Skills, Software, Responsibilities, Future Needs, Status by the position(s) (possible/impossible), Next Step, Next Contact Day and Planned Start Date.\n\n**If, and ONLY if, a specific piece of information for a field is DIRECTLY MENTIONED in the Call Transcription, then extract it and write it under the corresponding field in the template.**\n\n**If a field's information is NOT mentioned at all in the Call Transcription, then leave that entire field in the template COMPLETELY EMPTY.** This means you should write the field name followed by a colon, and then **immediately insert two newline characters (effectively leaving a blank line after the field name).  Do NOT write anything else like \"(None mentioned)\", \"(Not specified)\", or any explanatory text.  Just leave it blank.**\n\nExtract information **EXACTLY as it appears** in the following call transcription and fill in the report template below.  **Do not infer, assume, or add any information that is not explicitly present in the transcription.**\n\nSome remarks to guide you:\n* \"Software: \" - If there is **no mention** of any software in the transcription, leave this field **completely empty**.\n* \"Responsibilities: \" -  If responsibilities are mentioned, write them as bullet points using the exact wording from the transcription. If **no responsibilities are mentioned**, leave this field **completely empty**.\n* \"Future Needs: \" - If future needs are explicitly mentioned, extract them. If **no future needs are mentioned**, leave this field **completely empty**.\n* \"Status by the position(s) (possible/impossible): \" - If the status of the position is mentioned, extract it. If **no status is mentioned**, leave this field **completely empty**.\n* \"Next Contact Day: \" - If a next contact day is mentioned, extract it. If **no next contact day is mentioned**, leave this field **completely empty**.\n* \"Planned Start Date: \" - If a planned start date is mentioned, extract it. If **no planned start date is mentioned**, leave this field **completely empty**.\n\n\nCall Transcription:\n{{ $json['Extracred Text'] }}\n\nfill information here\n\nImmediate Requirement:\n\nProfessional Skills:\n\nSoftware:\n\nResponsibilities:\n\nFuture Needs:\n\nStatus by the position(s) (possible/impossible): \n\nNext Step:\n\nNext Contact Day:\n\nPlanned Start Date:\n\nFormat the answer exactly according to the template.  For fields with information, leave an empty line between the field name and the value (or the first bullet point for Responsibilities). For fields with NO information from the transcription, leave a **completely empty line** after the field name and colon."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        4160,
+        100
+      ],
+      "id": "2bc2a048-354e-4172-8609-a512bbc356d8",
+      "name": "Usefull information about Follow Up"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-4b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        4020,
+        1160
+      ],
+      "id": "b2298a81-b511-4ef5-be3a-baae8e86d411",
+      "name": "OpenRouter Chat Model7"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Функция parseInput принимает входной текст, где каждая строка имеет формат \"Ключ: Значение\".\n * Обрабатываются только строки, ключ которых соответствует одному из заданных полей.\n *\n * Заданные поля (колонки):\n *   Company Website, Contact Person, Speciality, Country-Location,\n *   Target Audience, Company Info, Comment, Manager\n */\nfunction parseInput(input) {\n  const fields = [\n    'Contact Person',\n    'Manager'\n  ];\n  \n  // Инициализируем объект, где каждому полю соответствует пустая строка по умолчанию.\n  let result = {};\n  fields.forEach(field => {\n    result[field] = '';\n  });\n  \n  // Регулярное выражение для поиска строк вида \"Ключ: Значение\"\n  const regex = /^([^:]+):\\s*(.*)$/gm;\n  let match;\n  while ((match = regex.exec(input)) !== null) {\n    const key = match[1].trim();\n    const value = match[2].trim();\n    \n    // Если ключ входит в список нужных полей, обновляем его значение\n    if (fields.includes(key)) {\n      result[key] = value;\n    }\n  }\n  \n  return result;\n}\n\n// Обработка динамического входного массива, где каждый элемент должен содержать свойство \"text\"\nconst newItems = items.map(item => {\n  // Если в элементе отсутствует свойство \"text\", возвращаем его без изменений\n  if (!item.json.text) return item;\n  \n  const parsedData = parseInput(item.json.text);\n  // Объединяем результат парсинга с остальными колонками исходного объекта.\n  const newJson = { ...item.json, ...parsedData };\n  \n  return { json: newJson };\n});\n\n// Возвращаем данные в формате, ожидаемом n8n: массив объектов с полем json\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        1040
+      ],
+      "id": "b6326376-76ca-4418-89d2-eea277d7b10c",
+      "name": "Intorductory call"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.start.dateTime }}",
+            "Company name": "={{ $json.summary }}",
+            "Message ID": "={{ $json.id }}",
+            "Extracted Link": "={{ $json.googleDocUrl }}",
+            "Only link": "={{ $json.documentId }}",
+            "Calendar description": "={{ $json.description }}",
+            "Manager": "={{ $json.Manager }}",
+            "Comment": "={{ $json.Comment }}",
+            "Company Info": "={{ $json['Company Info'] }}",
+            "Target Audience": "={{ $json['Target Audience'] }}",
+            "Country-Location": "={{ $json['Country-Location'] }}",
+            "Speciality": "={{ $json.Speciality }}",
+            "Contact person": "={{ $json['Contact Person'] }}",
+            "Company website": "={{ $json['Company Website'] }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calendar description",
+              "displayName": "Calendar description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact person",
+              "displayName": "Contact person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Speciality",
+              "displayName": "Speciality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Country-Location",
+              "displayName": "Country-Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Target Audience",
+              "displayName": "Target Audience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Info",
+              "displayName": "Company Info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Manager",
+              "displayName": "Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2760,
+        1040
+      ],
+      "id": "a4ec6727-b85d-4188-b853-3d28df653471",
+      "name": "Intorductory Sheet"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json[\"Only link\"] }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3080,
+        1040
+      ],
+      "id": "96fb851b-737d-4604-a75e-43d42196a5e5",
+      "name": "Intorductory Doc"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входящие элементы\nconst items = $input.all();\n\n// Создаем копию массива и разворачиваем его\nconst reversedItems = items.slice().reverse();\n\n// Возвращаем перевернутый массив\nreturn reversedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3380,
+        1040
+      ],
+      "id": "700a0cdc-12ce-44d1-bbbb-20c94a5a1f04",
+      "name": "Intorductory reverse Code"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Only link": "={{ $json.documentId }}",
+            "Extracred Text": "={{ $json.content }}"
+          },
+          "matchingColumns": [
+            "Only link"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3640,
+        1040
+      ],
+      "id": "35b9af90-d988-428a-8a36-16ba14f466c2",
+      "name": "Intorductory Append"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company name",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Company name\"] }}"
+            },
+            {
+              "lookupColumn": "Message ID",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Message ID\"] }}"
+            },
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json.Date }}"
+            },
+            {
+              "lookupColumn": "Only link",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Only link\"] }}"
+            },
+            {
+              "lookupColumn": "Extracted Link",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Extracted Link\"] }}"
+            },
+            {
+              "lookupColumn": "Calendar description",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Calendar description\"] }}"
+            },
+            {
+              "lookupColumn": "Company website",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Company website'] }}"
+            },
+            {
+              "lookupColumn": "Contact person",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Contact person'] }}"
+            },
+            {
+              "lookupColumn": "Speciality",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json.Speciality }}"
+            },
+            {
+              "lookupColumn": "Country-Location",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Country-Location'] }}"
+            },
+            {
+              "lookupColumn": "Target Audience",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Target Audience'] }}"
+            },
+            {
+              "lookupColumn": "Company Info",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Company Info'] }}"
+            },
+            {
+              "lookupColumn": "Comment",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json.Comment }}"
+            },
+            {
+              "lookupColumn": "Manager",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json.Manager }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3860,
+        1040
+      ],
+      "id": "83a237bf-9014-4d36-ac04-e5a96f1ca303",
+      "name": "Intorductory Read",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Familiarize yourself with the list of employees and their roles who may be mentioned from our side in the transcription (they may not be):\n    * Sales Manager: Sona G, Niko K, Sabina H, Anastasia K\n    * Lead generator: Anna Bu, Anahit O, Evgeniya N, Firuza D, Irina Kl, Karina N, Liliia N, Mykhailo Ne, Olena A, Sofiya L, Yelyzaveta P\n    * Financial manager: Daria Y\n    * Front End Developer: Artem S, Maxim S\n    * Graphic Designer: Anastasiya P, Natalia L\n    * Illustrator: Vilhelm S\n    * PPC Specialist: Ekaterina E\n    * prompt engineer: Danylo I, Mykola S\n    * Recruiter: Anastasiya F, Ganna A, Sabina H\n    * UI UX designer: Kristina Y\n    * Video Editor: Dariya A, Svyatoslav Pod\n\nFind mentions of employee names from the list above in the transcription. Important: search specifically for full names or last names as listed and insert them into the appropriate fields.\nIn the Contact Person field, put the name from the call that is not found in the employee list I provided. If there is no information for any field, leave an empty line after \"example: \".\n\nExtract information from the following call transcription and fill in the report template below.\n\nWhat you need to add to the \"Comment: \" - Summarize the call that took place with a client using this call script. Write a paragraph emphasizing client's hiring needs - the position that he wants to fill. End the paragraph with the agreed future steps. Also, write separately the responsibilities and skills required for the position that the client wants to fill.\n\n\"Main Responsibilities: \" -  If responsibilities are mentioned, write them as bullet points using the exact wording from the transcription. If **no responsibilities are mentioned**, leave this field \n\n\"Candidates: \" - ours employees from list in the start of prompt\n\nCall Transcription:\n{{ $json['Extracred Text'] }}\n\nReport Template:\nWe had a second interview call with {{ $json['Company name'] }}\n\nCandidates: \n\nMain Responsibilities: \n\nComment: \n\nThe client was engaged by the LG manager {{ $json['Manager'] }}\n\nFormat the answer exactly according to the template, leaving an **empty** line between the field and the value."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        4160,
+        1040
+      ],
+      "id": "fc0f38ca-57f5-43b5-b6a6-4cbe37e19137",
+      "name": "Intorductory Report"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Функция parseInput принимает входной текст, где каждая строка имеет формат \"Ключ: Значение\".\n * Обрабатываются только строки, ключ которых соответствует одному из заданных полей.\n *\n * Заданные поля (колонки):\n *   Company Website, Contact Person, Speciality, Country-Location,\n *   Target Audience, Company Info, Comment, Manager\n */\nfunction parseInput(input) {\n  const fields = [\n    'Contact Person',\n    'Manager'\n  ];\n  \n  // Инициализируем объект, где каждому полю соответствует пустая строка по умолчанию.\n  let result = {};\n  fields.forEach(field => {\n    result[field] = '';\n  });\n  \n  // Регулярное выражение для поиска строк вида \"Ключ: Значение\"\n  const regex = /^([^:]+):\\s*(.*)$/gm;\n  let match;\n  while ((match = regex.exec(input)) !== null) {\n    const key = match[1].trim();\n    const value = match[2].trim();\n    \n    // Если ключ входит в список нужных полей, обновляем его значение\n    if (fields.includes(key)) {\n      result[key] = value;\n    }\n  }\n  \n  return result;\n}\n\n// Обработка динамического входного массива, где каждый элемент должен содержать свойство \"text\"\nconst newItems = items.map(item => {\n  // Если в элементе отсутствует свойство \"text\", возвращаем его без изменений\n  if (!item.json.text) return item;\n  \n  const parsedData = parseInput(item.json.text);\n  // Объединяем результат парсинга с остальными колонками исходного объекта.\n  const newJson = { ...item.json, ...parsedData };\n  \n  return { json: newJson };\n});\n\n// Возвращаем данные в формате, ожидаемом n8n: массив объектов с полем json\nreturn newItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2520,
+        1260
+      ],
+      "id": "06bc8006-fca4-47fc-8bff-c35fd8dea5c6",
+      "name": "Kick off call"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-4b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        4020,
+        1380
+      ],
+      "id": "b7df898b-d5fe-43e2-acad-0517b458efed",
+      "name": "OpenRouter Chat Model8"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.start.dateTime }}",
+            "Company name": "={{ $json.summary }}",
+            "Message ID": "={{ $json.id }}",
+            "Extracted Link": "={{ $json.googleDocUrl }}",
+            "Only link": "={{ $json.documentId }}",
+            "Calendar description": "={{ $json.description }}",
+            "Manager": "={{ $json.Manager }}",
+            "Comment": "={{ $json.Comment }}",
+            "Company Info": "={{ $json['Company Info'] }}",
+            "Target Audience": "={{ $json['Target Audience'] }}",
+            "Country-Location": "={{ $json['Country-Location'] }}",
+            "Speciality": "={{ $json.Speciality }}",
+            "Contact person": "={{ $json['Contact Person'] }}",
+            "Company website": "={{ $json['Company Website'] }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calendar description",
+              "displayName": "Calendar description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact person",
+              "displayName": "Contact person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Speciality",
+              "displayName": "Speciality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Country-Location",
+              "displayName": "Country-Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Target Audience",
+              "displayName": "Target Audience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Info",
+              "displayName": "Company Info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Manager",
+              "displayName": "Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2760,
+        1260
+      ],
+      "id": "ab81207e-79c5-42d2-b61b-01a5b15eaf63",
+      "name": "Kick off Sheet"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json[\"Only link\"] }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3080,
+        1260
+      ],
+      "id": "fa35aaeb-f241-451c-813c-31a63a9e1d10",
+      "name": "Kick off Doc"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входящие элементы\nconst items = $input.all();\n\n// Создаем копию массива и разворачиваем его\nconst reversedItems = items.slice().reverse();\n\n// Возвращаем перевернутый массив\nreturn reversedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3380,
+        1260
+      ],
+      "id": "e0b5cd37-772f-4082-862b-79b834bde43c",
+      "name": "Kick off reverse Code"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Only link": "={{ $json.documentId }}",
+            "Extracred Text": "={{ $json.content }}"
+          },
+          "matchingColumns": [
+            "Only link"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3640,
+        1260
+      ],
+      "id": "a3dcb9d6-d701-435e-a733-daad43a404a1",
+      "name": "Kick off Append"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company name",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Company name\"] }}"
+            },
+            {
+              "lookupColumn": "Message ID",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Message ID\"] }}"
+            },
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json.Date }}"
+            },
+            {
+              "lookupColumn": "Only link",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Only link\"] }}"
+            },
+            {
+              "lookupColumn": "Extracted Link",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Extracted Link\"] }}"
+            },
+            {
+              "lookupColumn": "Calendar description",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json[\"Calendar description\"] }}"
+            },
+            {
+              "lookupColumn": "Company website",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Company website'] }}"
+            },
+            {
+              "lookupColumn": "Contact person",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Contact person'] }}"
+            },
+            {
+              "lookupColumn": "Speciality",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json.Speciality }}"
+            },
+            {
+              "lookupColumn": "Country-Location",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Country-Location'] }}"
+            },
+            {
+              "lookupColumn": "Target Audience",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Target Audience'] }}"
+            },
+            {
+              "lookupColumn": "Company Info",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json['Company Info'] }}"
+            },
+            {
+              "lookupColumn": "Comment",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json.Comment }}"
+            },
+            {
+              "lookupColumn": "Manager",
+              "lookupValue": "={{ $('Intorductory Sheet').item.json.Manager }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3860,
+        1260
+      ],
+      "id": "e6e43ea9-41d8-45b7-99ad-5186ac0c12f6",
+      "name": "Kick off Read",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Familiarize yourself with the list of employees and their roles who may be mentioned from our side in the transcription (they may not be):\n    * Sales Manager: Sona G, Niko K, Sabina H, Anastasia K\n    * Lead generator: Anna Bu, Anahit O, Evgeniya N, Firuza D, Irina Kl, Karina N, Liliia N, Mykhailo Ne, Olena A, Sofiya L, Yelyzaveta P\n    * Financial manager: Daria Y\n    * Front End Developer: Artem S, Maxim S\n    * Graphic Designer: Anastasiya P, Natalia L\n    * Illustrator: Vilhelm S\n    * PPC Specialist: Ekaterina E\n    * prompt engineer: Danylo I, Mykola S\n    * Recruiter: Anastasiya F, Ganna A, Sabina H\n    * UI UX designer: Kristina Y\n    * Video Editor: Dariya A, Svyatoslav Pod\n\nFind mentions of employee names from the list above in the transcription. Important: search specifically for full names or last names as listed and insert them into the appropriate fields.\nIn the Contact Person field, put the name from the call that is not found in the employee list I provided. If there is no information for any field, leave an empty line after \"example: \".\n\nExtract information from the following call transcription and fill in the report template below.\n\nWhat you need to add to the \"Comment: \" - Summarize the call that took place with a client using this call script. Write a paragraph emphasizing client's hiring needs - the position that he wants to fill. End the paragraph with the agreed future steps. Also, write separately the responsibilities and skills required for the position that the client wants to fill.\n\n\"The call focused on... \" here you need write what about call was? mention {{ $json['Contact person'] }} and what he requested. Next step\n\n\"Candidates: \" - ours employees from list in the start of prompt\n\nCall Transcription:\n{{ $json['Extracred Text'] }}\n\nReport Template:\nWe had a kick off meeting with {{ $json['Company name'] }}\n\nThe call focused on...\n\n{{ $json['Contact person'] }} also mentioned...\n\nFormat the answer exactly according to the template, leaving an **empty** line between the field and the value."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        4160,
+        1260
+      ],
+      "id": "acb6918a-8153-4100-b568-fc365f0a1d30",
+      "name": "Kick off Report"
+    },
+    {
+      "parameters": {
+        "functionCode": "/**\n * Функция parseInput принимает входной текст, где каждая строка имеет формат \"Ключ: Значение\".\n * Обрабатываются только строки, ключ которых соответствует одному из заданных полей.\n *\n * Заданные поля (колонки):\n *   Company Website, Contact Person, Speciality, Country-Location,\n *   Target Audience, Company Info, Comment, Manager\n */\nfunction parseInput(input) {\n  const fields = [\n    'Company Website',\n    'Contact Person',\n    'Speciality',\n    'Country-Location',\n    'Target Audience',\n    'Company Info',\n    'Comment',\n    'Manager'\n  ];\n  \n  // Инициализируем объект, где каждому полю соответствует пустая строка по умолчанию.\n  let result = {};\n  fields.forEach(field => {\n    result[field] = '';\n  });\n  \n  // Регулярное выражение для поиска строк вида \"Ключ: Значение\"\n  const regex = /^([^:]+):\\s*(.*)$/gm;\n  let match;\n  while ((match = regex.exec(input)) !== null) {\n    const key = match[1].trim();\n    const value = match[2].trim();\n    \n    // Если ключ входит в список нужных полей, обновляем его значение\n    if (fields.includes(key)) {\n      result[key] = value;\n    }\n  }\n  \n  return result;\n}\n\n// Обработка динамического входного массива, где каждый элемент должен содержать свойство \"text\"\nconst newItems = items.map(item => {\n  // Если в элементе отсутствует свойство \"text\", возвращаем его без изменений\n  if (!item.json.text) return item;\n  \n  const parsedData = parseInput(item.json.text);\n  // Объединяем результат парсинга с остальными колонками исходного объекта.\n  const newJson = { ...item.json, ...parsedData };\n  \n  return { json: newJson };\n});\n\n// Возвращаем данные в формате, ожидаемом n8n: массив объектов с полем json\nreturn newItems;\n"
+      },
+      "name": "LG call Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2520,
+        1540
+      ],
+      "id": "63c730c6-77a5-4302-8574-cec698c7d847"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.start.dateTime }}",
+            "Company name": "={{ $json.summary }}",
+            "Message ID": "={{ $json.id }}",
+            "Extracted Link": "={{ $json.googleDocUrl }}",
+            "Only link": "={{ $json.documentId }}",
+            "Calendar description": "={{ $json.description }}",
+            "Manager": "={{ $json.Manager }}",
+            "Comment": "={{ $json.Comment }}",
+            "Company Info": "={{ $json['Company Info'] }}",
+            "Target Audience": "={{ $json['Target Audience'] }}",
+            "Country-Location": "={{ $json['Country-Location'] }}",
+            "Speciality": "={{ $json.Speciality }}",
+            "Contact person": "={{ $json['Contact Person'] }}",
+            "Company website": "={{ $json['Company Website'] }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Calendar description",
+              "displayName": "Calendar description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact person",
+              "displayName": "Contact person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Speciality",
+              "displayName": "Speciality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Country-Location",
+              "displayName": "Country-Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Target Audience",
+              "displayName": "Target Audience",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company Info",
+              "displayName": "Company Info",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Manager",
+              "displayName": "Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2760,
+        1540
+      ],
+      "id": "1ad8caa8-e182-46bd-b046-36f09d312113",
+      "name": "LG call Sheet"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json[\"Only link\"] }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3080,
+        1540
+      ],
+      "id": "3455959c-e360-4398-9c41-7066b91a2b4f",
+      "name": "LG call Doc"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входящие элементы\nconst items = $input.all();\n\n// Создаем копию массива и разворачиваем его\nconst reversedItems = items.slice().reverse();\n\n// Возвращаем перевернутый массив\nreturn reversedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3380,
+        1540
+      ],
+      "id": "c83d71d9-f143-47c8-b89f-4c2be330cb6c",
+      "name": "LG call reverse Code"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Only link": "={{ $json.documentId }}",
+            "Extracred Text": "={{ $json.content }}"
+          },
+          "matchingColumns": [
+            "Only link"
+          ],
+          "schema": [
+            {
+              "id": "Message ID",
+              "displayName": "Message ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Extracted Link",
+              "displayName": "Extracted Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Only link",
+              "displayName": "Only link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extracred Text",
+              "displayName": "Extracred Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3640,
+        1540
+      ],
+      "id": "5f185d71-3237-41c4-883c-3d6c1b1d3b3e",
+      "name": "LG call Append"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q",
+          "mode": "list",
+          "cachedResultName": "Processed Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Emails",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Nk3nPUBoHUEAJCNT3Cx0Vn0Rcopy7znSixDwEufZa8Q/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Company name",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Company name\"] }}"
+            },
+            {
+              "lookupColumn": "Message ID",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Message ID\"] }}"
+            },
+            {
+              "lookupColumn": "Date",
+              "lookupValue": "={{ $('LG call Sheet').item.json.Date }}"
+            },
+            {
+              "lookupColumn": "Only link",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Only link\"] }}"
+            },
+            {
+              "lookupColumn": "Extracted Link",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Extracted Link\"] }}"
+            },
+            {
+              "lookupColumn": "Calendar description",
+              "lookupValue": "={{ $('LG call Sheet').item.json[\"Calendar description\"] }}"
+            },
+            {
+              "lookupColumn": "Company website",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Company website'] }}"
+            },
+            {
+              "lookupColumn": "Contact person",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Contact person'] }}"
+            },
+            {
+              "lookupColumn": "Speciality",
+              "lookupValue": "={{ $('LG call Sheet').item.json.Speciality }}"
+            },
+            {
+              "lookupColumn": "Country-Location",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Country-Location'] }}"
+            },
+            {
+              "lookupColumn": "Target Audience",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Target Audience'] }}"
+            },
+            {
+              "lookupColumn": "Company Info",
+              "lookupValue": "={{ $('LG call Sheet').item.json['Company Info'] }}"
+            },
+            {
+              "lookupColumn": "Comment",
+              "lookupValue": "={{ $('LG call Sheet').item.json.Comment }}"
+            },
+            {
+              "lookupColumn": "Manager",
+              "lookupValue": "={{ $('LG call Sheet').item.json.Manager }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3860,
+        1540
+      ],
+      "id": "b1c3deaa-8d0a-4fad-8be3-fe15d74dbad6",
+      "name": "LG call Read",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Familiarize yourself with the list of employees and their roles who may be mentioned from our side in the transcription (they may not be):\n    * Sales Manager: Sona G, Niko K, Sabina H, Anastasia K\n    * Lead generator: Anna Bu, Anahit O, Evgeniya N, Firuza D, Irina Kl, Karina N, Liliia N, Mykhailo Ne, Olena A, Sofiya L, Yelyzaveta P\n    * Financial manager: Daria Y\n    * Front End Developer: Artem S, Maxim S\n    * Graphic Designer: Anastasiya P, Natalia L\n    * Illustrator: Vilhelm S\n    * PPC Specialist: Ekaterina E\n    * prompt engineer: Danylo I, Mykola S\n    * Recruiter: Anastasiya F, Ganna A, Sabina H\n    * UI UX designer: Kristina Y\n    * Video Editor: Dariya A, Svyatoslav Pod\n\nFind mentions of employee names from the list above in the transcription. Important: search specifically for full names or last names as listed and insert them into the appropriate fields.\nIn the Contact Person field, put the name from the call that is not found in the employee list I provided. If there is no information for any field, leave an empty line after \"example: \".\n\nExtract information from the following call transcription and fill in the report template below.\n\nWhat you need to add to the \"Comment: \" - Summarize the call that took place with a client using this call script. Write a paragraph emphasizing client's hiring needs - the position that he wants to fill. End the paragraph with the agreed future steps. Also, write separately the responsibilities and skills required for the position that the client wants to fill.\n\nCall Transcription:\n{{ $json['Extracred Text'] }}\n\nReport Template:\nCompany Name: {{ $json['Company name'] }}\n\nCompany Website: {{ $json['Company website'] }}\n\nContact Person: {{ $json['Contact person'] }}\n\nSpeciality: {{ $json.Speciality }}\n\nCountry-Location: {{ $json['Country-Location'] }}\n\nTarget Audience: {{ $json['Target Audience'] }}\n\nCompany Info: {{ $json['Company Info'] }}\n\nComment: \n\nFormat the answer exactly according to the template, leaving an **empty** line between the field and the value."
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        4200,
+        1560
+      ],
+      "id": "9f3b8b88-b115-4a30-a127-03a0c69cb4be",
+      "name": "LG call report"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Примерный кусок кода, где мы объединяем тексты и параллельно\n// при помощи регулярного выражения извлекаем 'Company Name'\n\nconst combinedText = (items[0].json.text || '') + ' ' + (items[1].json.text || '');\n\n// Задаём регэксп (пример для \"Company Name: …\"), который ловит всё, что идет\n// после \"Company Name:\" до конца строки или до знака переноса/запятой и т.п.\n// В данном случае используем схему \"Company Name:\" + произвольный текст до конца строки.\nconst companyRegex = /Company\\s+Name:\\s*([^\\r\\n]+)/i;\n\n// Пытаемся найти совпадение\nconst match = combinedText.match(companyRegex);\n\n// Если совпадение найдено, берём группу (подмаску) №1, иначе пустая строка\nconst companyName = match && match[1] ? match[1].trim() : '';\n\nreturn [\n  {\n    json: {\n      // Полный текст, как раньше\n      text: combinedText,\n      // Добавляем отдельную колонку с именем компании\n      companyName: companyName,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4940,
+        1560
+      ],
+      "id": "03986cec-a75c-40f1-bda4-9a31accdbb14",
+      "name": "Find Company name"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.text }}",
+        "name": "={{ $json.companyName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/folders/1Ehx183d_STnd3-vi-74T8AwFFXW2lPM8",
+          "mode": "url"
+        },
+        "options": {
+          "convertToGoogleDocument": true
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        5260,
+        1560
+      ],
+      "id": "5d790bd3-6b84-4d16-bdb3-0d24c9eb623b",
+      "name": "Add LG Call to Google Drive"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем значение id из первого элемента входящих данных\nconst id = $input.first().json.id;\n\n// Формируем ссылку на Google Документ, подставляя id\nconst googleDocLink = `https://docs.google.com/document/d/${id}`;\n\n// Возвращаем объект с новым полем, содержащим ссылку на документ\nreturn [\n  {\n    json: {\n      id: id,\n      googleDocLink: googleDocLink,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5500,
+        1560
+      ],
+      "id": "93fb110f-8dc0-42ef-9baf-44c375cd2333",
+      "name": "Add Full Link to the LG call"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "get",
+        "documentURL": "={{ $json.id }}"
+      },
+      "name": "Get LG call text for discord",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [
+        5800,
+        1560
+      ],
+      "id": "ca0490d3-6542-4087-88ba-e6120deaa801"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items\nfor (const item of $input.all()) {\n  // Достаём documentId и формируем полную ссылку\n  const docId = item.json.documentId;\n  const googleDocLink = `https://docs.google.com/document/d/${docId}`;\n\n  // Достаём content и ищем в нём Company Name\n  const content = item.json.content || '';\n  // С помощью RegExp ищем строку: \"Company Name: ....\"\n  const companyNameMatch = content.match(/Company Name:\\s*(.*)/i);\n  const companyName = companyNameMatch ? companyNameMatch[1].trim() : 'Not found';\n\n  // Добавляем новые поля к исходным данным\n  item.json.googleDocLink = googleDocLink;\n  item.json.companyName = companyName;\n}\n\nreturn $input.all();\n"
+      },
+      "name": "Format Final Output for discord",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6060,
+        1560
+      ],
+      "id": "cf57f703-3b1b-4446-b6f6-e57189d74fd4"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1372903833667375145",
+          "mode": "list",
+          "cachedResultName": "sales-bot",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1372903833667375145"
+        },
+        "content": "=Report after call with company {{ $json.companyName }}:\n{{ $json.googleDocLink }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        6340,
+        1560
+      ],
+      "id": "f568817a-362c-4adb-86e3-cf63cb8e8792",
+      "name": "LG call send to Sales Comment",
+      "webhookId": "0dd4c953-a86e-41eb-9258-01d9a011e87a"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4580,
+        1540
+      ],
+      "id": "9b64f073-d40c-481a-8154-cf54b1e9bb25",
+      "name": "Merge LLMs of LG call"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "formattedTime",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2000,
+        820
+      ],
+      "id": "e90470a7-f5cd-4a41-8989-a74c2642debb",
+      "name": "Merge Gmail-Calendar and LLM"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "formattedTime",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1720,
+        800
+      ],
+      "id": "5cf51d77-a18a-4760-9f8f-a5bdefdfb822",
+      "name": "Merge Gmail and Calendar"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * n8n Code Node Script: Обрабатывает МНОЖЕСТВО входных элементов (items).\n * Для КАЖДОГО элемента берет текст из item.json.text,\n * обрабатывает его как единый блок и извлекает время из его конца.\n * Возвращает массив, содержащий один обработанный объект для КАЖДОГО\n * успешно обработанного входного элемента.\n */\n\n// --- Выполнение скрипта в n8n ---\n\n// Массив для хранения результатов обработки КАЖДОГО элемента\nconst outputItems = [];\n\n// 1. Перебираем КАЖДЫЙ элемент (item), который пришел в узел Code\nfor (let itemIndex = 0; itemIndex < items.length; itemIndex++) {\n  const item = items[itemIndex]; // Текущий обрабатываемый элемент\n  console.log(`Обработка элемента ${itemIndex + 1} из ${items.length}`);\n\n  // 2. Проверяем, содержит ли ТЕКУЩИЙ элемент нужные данные\n  if (!item || !item.json || typeof item.json.text === 'undefined') {\n    console.warn(`Элемент ${itemIndex + 1} пропущен: данные отсутствуют или имеют неверный формат (ожидается item.json.text).`);\n    // Пропускаем этот элемент и переходим к следующему\n    continue;\n  }\n\n  // 3. Получаем текст для ТЕКУЩЕГО элемента и убираем пробелы\n  const inputText = String(item.json.text || \"\").trim();\n\n  if (!inputText) {\n    console.warn(`Элемент ${itemIndex + 1} пропущен: текст пуст после очистки пробелов.`);\n    continue; // Переходим к следующему элементу\n  }\n  // console.log(`Текст элемента ${itemIndex + 1} (фрагмент):`, inputText.substring(0, 200));\n\n  // 4. Обрабатываем текст ТЕКУЩЕГО элемента\n  let formattedTime = null;\n  let textContent = inputText; // По умолчанию текст - это весь inputText для этого элемента\n\n  // Ищем время ЧЧ:ММ в конце текста ТЕКУЩЕГО элемента\n  const timeRegex = /\\n\\s*(\\d{1,2}:\\d{2})\\s*$/;\n  const timeMatch = inputText.match(timeRegex);\n\n  if (timeMatch) {\n    // Если время найдено в конце текста этого элемента:\n    formattedTime = timeMatch[1]; // Извлекаем время ЧЧ:ММ\n    const timeStartIndex = inputText.lastIndexOf(timeMatch[0]); // Находим начало \"\\n...ЧЧ:ММ\"\n    // Текст - это всё ДО этой строки времени\n    textContent = inputText.substring(0, timeStartIndex).trim();\n    // console.log(`Элемент ${itemIndex + 1}: Найдено время '${formattedTime}'.`);\n  } else {\n    // Если время в конце текста этого элемента не найдено\n    // console.warn(`Элемент ${itemIndex + 1}: Время в конце текста не найдено.`);\n  }\n\n  // 5. Создаем выходной объект для ТЕКУЩЕГО элемента\n  //    Важно: создаем новый объект, чтобы не изменять исходный item напрямую\n  const outputItem = {\n    json: {\n      // Сначала копируем все существующие поля из json исходного элемента (если нужно)\n      // ...item.json,\n      // Затем добавляем/перезаписываем наши поля\n      text: textContent,\n      formattedTime: formattedTime\n    }\n    // Если нужно скопировать бинарные данные (файлы), раскомментируйте:\n    // binary: item.binary\n  };\n   // Если НЕ нужно копировать остальные поля из item.json, используйте только:\n   /*\n   const outputItem = {\n     json: {\n       text: textContent,\n       formattedTime: formattedTime\n     }\n   };\n   */\n\n\n  // 6. Добавляем обработанный объект в наш массив результатов\n  outputItems.push(outputItem);\n  console.log(`Элемент ${itemIndex + 1} успешно обработан.`);\n\n} // Конец цикла for по элементам (items)\n\n// 7. ЯВНО возвращаем МАССИВ со всеми обработанными элементами для n8n\nconsole.log(`Возвращаем ${outputItems.length} обработанных элементов в n8n.`);\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        1040
+      ],
+      "id": "0c333040-ead9-4110-9e2d-203b029ec174",
+      "name": "Parse data in Calendar bio"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Доставай из {{ $json.description }} следующие значения и выводи каждую информацию как отдельный столбик (поле) не пиши в табличном виде, пиши в формате название поля: название того что в ней\n\n\"Company Website\": extractField(description, \"Company Website\"), (НЕ ПИШИ rh-s.com, если другой ссылки нету - оставь пустоту)\n\"Contact Person\": extractField(description, \"Contact Person\"),\nSpeciality\": extractField(description, \"Speciality\"),\nCountry-Location\": extractField(description, \"Country-Location\"),\nTarget Audience\": extractField(description, \"Target Audience\"),\nCompany Info\": extractField(description, \"Company Info\"),\nComment\": extractField(description, \"Comment\"),\nManager\": extractField(description, \"Manager\") \nТакже с новой строки выводи и {{ $json.formattedTime }}\n\nПример \nCompany Website: example.com\n\n\n\n\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        1060,
+        1040
+      ],
+      "id": "e759971d-24b3-4f4a-ba0b-e1b56875dec7",
+      "name": "Description in Calendar"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Функция для округления времени до ближайшего полчасового интервала (с использованием UTC)\n// Если минуты меньше 30, округляем до :30, иначе до начала следующего часа\nfunction getHalfHourBlockUTC(dateString) {\n  const dateObj = new Date(dateString);\n  if (isNaN(dateObj.getTime())) return \"\";\n  let hours = dateObj.getUTCHours();\n  const minutes = dateObj.getUTCMinutes();\n  \n  if (minutes < 30) {\n    return `${String(hours).padStart(2, '0')}:30`;\n  } else {\n    hours = hours + 1;\n    if (hours === 24) {\n      hours = 0;\n    }\n    return `${String(hours).padStart(2, '0')}:00`;\n  }\n}\n\n// Этап 1. Получаем все входящие элементы и проводим обработку полей summary, description и end\nconst items = $input.all();\n\n// Проверяем, что items – массив\nif (!Array.isArray(items)) {\n  throw new Error(\"Ожидался массив входящих элементов\");\n}\n\nconst tempResults = items.map(item => {\n  // Если структура не соответствует ожиданиям, пропускаем элемент\n  if (!item || !item.json) return null;\n  \n  const jsonData = item.json;\n  \n  // Извлекаем поля summary и description, остальные поля сохраняем в restFields\n  const summary = jsonData.summary || \"\";\n  const description = jsonData.description || \"Нет описания\";\n  \n  // Очищаем поле summary: удаляем подстроку \"- Remote Helpers\" (без учета регистра)\n  let cleanedSummary = summary.replace(/-\\s*Remote\\s*Helpers\\s*/gi, \"\").trim();\n  \n  // Получаем оригинальное время окончания из jsonData.end\n  let originalEnd = \"\";\n  if (jsonData.end) {\n    originalEnd = jsonData.end.dateTime || jsonData.end.date || \"\";\n  }\n  \n  // Форматируем время окончания в формате HH:MM (округление до ближайшего полчасового интервала)\n  const formattedTime = originalEnd ? getHalfHourBlockUTC(originalEnd) : \"\";\n  \n  // Формируем итоговый объект.\n  // Сохраняем оригинальное время окончания (_originalEnd) для фильтрации и сортировки.\n  const finalData = {\n    ...jsonData,\n    summary: cleanedSummary,\n    description: description,\n    formattedTime: formattedTime,  // переименованное значение end\n    _originalEnd: originalEnd\n  };\n  \n  return { json: finalData };\n})\n// Фильтруем элементы, у которых не удалось сформировать объект\n.filter(item => item !== null);\n\n// Этап 2. Фильтрация дубликатов с использованием комбинации summary и округленного времени (UTC)\n// Используем _originalEnd для определения уникальности\nconst seenKeys = new Set();\nconst uniqueResults = tempResults.filter(item => {\n  const currentSummary = item.json.summary;\n  const originalEndTime = item.json._originalEnd;\n  \n  // Если время окончания задано, округляем его по UTC, иначе оставляем пустую строку\n  const normalizedTime = originalEndTime ? getHalfHourBlockUTC(originalEndTime) : \"\";\n  \n  // Если у события есть уникальный id, используем его; иначе – комбинацию summary и нормализованного времени\n  const uniqueId = item.json.id;\n  const dedupKey = uniqueId ? uniqueId : `${currentSummary}__${normalizedTime}`;\n  \n  if (seenKeys.has(dedupKey)) {\n    return false;\n  } else {\n    seenKeys.add(dedupKey);\n    return true;\n  }\n});\n\n// Этап 3. Сортировка по оригинальному времени окончания (используя _originalEnd)\nuniqueResults.sort((a, b) => {\n  const timeA = new Date(a.json._originalEnd);\n  const timeB = new Date(b.json._originalEnd);\n  return timeA - timeB;\n});\n\n// Инвертируем порядок элементов, чтобы вывод был снизу вверх\nuniqueResults.reverse();\n\n// Удаляем вспомогательное поле _originalEnd из финального вывода\nconst finalResults = uniqueResults.map(item => {\n  delete item.json._originalEnd;\n  return item;\n});\n\n// Возвращаем итоговый массив уникальных, отсортированных по времени окончания\nreturn finalResults;\n"
+      },
+      "name": "Format data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        340,
+        760
+      ],
+      "id": "0f35ffba-e159-4916-a35c-70c63e6b1da6"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "sales@rh-s.com",
+          "mode": "list",
+          "cachedResultName": "sales@rh-s.com"
+        },
+        "limit": 5,
+        "timeMin": "={{ $now.minus( {hours: 1, minutes: 30} ) }}",
+        "timeMax": "={{ $now }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        60,
+        740
+      ],
+      "id": "32b2e2ed-66b5-4320-9b1c-0f290cbaf467",
+      "name": "Find Calendar meetings from now to minus 2 hours"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5a742060-4452-4221-8d68-05aa654ef2e2",
+              "leftValue": "={{ $json.formattedTime }}",
+              "rightValue": "={{ $json.summary }}",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        840,
+        400
+      ],
+      "id": "e0c8cb3c-89be-48c0-abc6-f07f1a091dc0",
+      "name": "If formatted data empty - do nothing"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Функция для округления времени до ближайшего полчасового интервала (с использованием UTC)\n// Если минуты меньше 30, округляем до :30, иначе до начала следующего часа\nfunction getHalfHourBlockUTC(dateString) {\n  const dateObj = new Date(dateString);\n  if (isNaN(dateObj.getTime())) return \"\";\n  let hours = dateObj.getUTCHours();\n  const minutes = dateObj.getUTCMinutes();\n  \n  if (minutes < 30) {\n    return `${String(hours).padStart(2, '0')}:30`;\n  } else {\n    hours = hours + 1;\n    if (hours === 24) {\n      hours = 0;\n    }\n    return `${String(hours).padStart(2, '0')}:00`;\n  }\n}\n\n// Этап 1. Получаем все входящие элементы и проводим обработку полей summary, description и date\nconst items = $input.all();\n\n// Проверяем, что items – массив\nif (!Array.isArray(items)) {\n  throw new Error(\"Ожидался массив входящих элементов\");\n}\n\nconst tempResults = items.map(item => {\n  // Если структура не соответствует ожиданиям, пропускаем элемент\n  if (!item || !item.json) return null;\n  \n  const jsonData = item.json;\n  \n  // Извлекаем поля summary и description, остальные поля сохраняем в restFields\n  const summary = jsonData.summary || \"\";\n  const description = jsonData.description || \"Нет описания\";\n  \n  // Очищаем поле summary: удаляем подстроку \"- Remote Helpers\" (без учета регистра)\n  let cleanedSummary = summary.replace(/-\\s*Remote\\s*Helpers\\s*/gi, \"\").trim();\n  \n  // Получаем оригинальное время события из jsonData.date\n  const originalTime = jsonData.date || \"\";\n  \n  // Форматируем время в формате HH:MM (округление до ближайшего полчасового интервала)\n  const formattedTime = originalTime ? getHalfHourBlockUTC(originalTime) : \"\";\n  \n  // Формируем итоговый объект.\n  // Сохраняем оригинальное время (_originalTime) для фильтрации и сортировки.\n  const finalData = {\n    ...jsonData,\n    summary: cleanedSummary,\n    description: description,\n    formattedTime: formattedTime,  // добавленное поле с округленным временем\n    _originalTime: originalTime\n  };\n  \n  return { json: finalData };\n})\n// Фильтруем элементы, у которых не удалось сформировать объект\n.filter(item => item !== null);\n\n// Этап 2. Фильтрация дубликатов с использованием комбинации summary и округленного времени (UTC)\nconst seenKeys = new Set();\nconst uniqueResults = tempResults.filter(item => {\n  const currentSummary = item.json.summary;\n  const originalTimeValue = item.json._originalTime;\n  \n  // Если время события задано, округляем его по UTC, иначе оставляем пустую строку\n  const normalizedTime = originalTimeValue ? getHalfHourBlockUTC(originalTimeValue) : \"\";\n  \n  // Если у события есть уникальный id, используем его; иначе – комбинацию summary и нормализованного времени\n  const uniqueId = item.json.id;\n  const dedupKey = uniqueId ? uniqueId : `${currentSummary}__${normalizedTime}`;\n  \n  if (seenKeys.has(dedupKey)) {\n    return false;\n  } else {\n    seenKeys.add(dedupKey);\n    return true;\n  }\n});\n\n// Этап 3. Сортировка по оригинальному времени события (используя _originalTime)\nuniqueResults.sort((a, b) => {\n  const timeA = new Date(a.json._originalTime);\n  const timeB = new Date(b.json._originalTime);\n  return timeA - timeB;\n});\n\n// Этап 4. Фильтрация событий, оставляем только те, которые произошли в течение последнего часа\nconst oneHour = 60 * 60 * 1.5 * 1000; // 1 час в миллисекундах\nconst now = new Date();\n\nconst filteredResults = uniqueResults.filter(item => {\n  const eventTime = new Date(item.json.date);\n  // Проверяем, что событие уже прошло и разница между текущим временем и временем события не превышает 1 час\n  return eventTime <= now && (now - eventTime) <= oneHour;\n});\n\n// Удаляем вспомогательное поле _originalTime из финального вывода\nconst finalResults = filteredResults.map(item => {\n  delete item.json._originalTime;\n  return item;\n});\n\n// Возвращаем итоговый массив уникальных, отсортированных по времени события,\n// которые произошли в течение последнего часа\nreturn finalResults;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        400
+      ],
+      "id": "4954fd87-1333-4f6f-bc01-3d954f27acc3",
+      "name": "Messages that was from now to 1 hour ago"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входящие элементы\nconst items = $input.all();\n\n// Преобразуем каждый входящий элемент\nconst results = items.map(item => {\n  // Извлекаем необходимые поля\n  const subject = item.json.subject || \"\";\n  const date = item.json.headers?.date || item.json.date || \"\";\n  const messageId = item.json.id || \"\";\n  const html = item.json.html || \"\";\n  const text = item.json.text || \"\";\n\n  // Извлекаем ссылку на Google Документ из источника (используем html, а если его нет — text)\n  let googleDocUrl = null;\n  let documentId = null;\n  {\n    const sourceForDoc = html || text;\n    const docRegex = /(https:\\/\\/docs\\.google\\.com\\/document\\/d\\/[\\w-]+)/;\n    const docMatch = sourceForDoc.match(docRegex);\n    if (docMatch && docMatch[0]) {\n      googleDocUrl = docMatch[0];\n      // Удаляем \"/edit\" и параметры, если они присутствуют\n      googleDocUrl = googleDocUrl.split('/edit')[0].split('?')[0];\n      \n      // Извлекаем ID документа из URL\n      const idRegex = /\\/d\\/([\\w-]+)/;\n      const idMatch = googleDocUrl.match(idRegex);\n      documentId = idMatch && idMatch[1] ? idMatch[1] : null;\n    }\n  }\n\n  // Название встречи равно значению subject\n  const meetingName = subject;\n\n  // Форматируем дату в ISO-формат, если возможно\n  let formattedDate = date;\n  if (date) {\n    try {\n      formattedDate = new Date(date).toISOString();\n    } catch (e) {\n      // В случае ошибки оставляем исходное значение\n    }\n  }\n\n  // Собираем итоговый объект с извлечёнными данными\n  const extractedData = {\n    messageId: messageId,\n    date: formattedDate,\n    googleDocUrl: googleDocUrl,\n    documentId: documentId,\n    meetingName: meetingName // Извлекаем название встречи из subject\n  };\n\n  return { json: extractedData };\n});\n\n// Возвращаем массив объектов\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        400
+      ],
+      "id": "bd84f51e-f417-4a67-9a0b-3019432e0e18",
+      "name": "Extract useful data for scrapping and merging"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 10,
+        "simple": false,
+        "filters": {
+          "q": "",
+          "sender": "gemini-notes@google.com"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        60,
+        520
+      ],
+      "id": "dd795eea-fd73-41dc-81f7-754e92bb2e74",
+      "name": "Find Gmails from meetings-noreply",
+      "webhookId": "fd589834-de5f-4a43-9809-04de4bcc6b08",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sv4epLX3dUAhBbno",
+          "name": "Sales Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -220,
+        640
+      ],
+      "id": "3ece92f3-4298-46f3-91b1-dedc3614f49f",
+      "name": "1 Hour Trigger"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3180,
+        820
+      ],
+      "id": "49ce895d-a183-407f-be72-48bbdc3e8cc6",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1285235052615176263",
+          "mode": "id"
+        },
+        "content": "=Report after Intro call with company {{ $json.extractedText }}:\n{{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        4280,
+        780
+      ],
+      "id": "feaf06b6-81a9-43da-8d00-7bd1f9196db5",
+      "name": "Intro Call send to Sales Comment1",
+      "webhookId": "0dd4c953-a86e-41eb-9258-01d9a011e87a"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем входной текст (предположим, что данные находятся в поле 'content')\nconst inputText = $json.content;\n\n// Используем регулярное выражение для извлечения текста до \" - Intro call\"\nconst match = inputText.match(/^(.*?) - Intro call/);\n\n// Если совпадение найдено, возвращаем текст до \"- Intro call\"\nif (match) {\n  return [{ json: { extractedText: match[1].trim() } }];\n} else {\n  // Если совпадение не найдено, возвращаем сообщение об ошибке\n  return [{ json: { extractedText: \"Текст до '- Intro call' не найден\" } }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3740,
+        860
+      ],
+      "id": "e2aae458-09dd-41f3-83ee-c5c2faa066bc",
+      "name": "Intro call reverse code1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        4060,
+        780
+      ],
+      "id": "39b0e384-baba-4686-bb75-da9c0da66082",
+      "name": "Merge1"
+    }
+  ],
+  "connections": {
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LG call report",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Description in Calendar",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Usefull information about client",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Usefull information about client": {
+      "main": [
+        [
+          {
+            "node": "Merge LLMs of LG call",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "If meeting name contains Interview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "If meeting name contains Second call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If meeting name contains follow up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Follow Up. Extract Calendar Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Interview",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Second Call",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Intro call",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Intorductory call",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kick off call",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Follow Up Report",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Usefull information about Follow Up",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code9": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Code9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Code10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code10": {
+      "main": [
+        [
+          {
+            "node": "Get Google Doc Metadata1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Google Doc Metadata1": {
+      "main": [
+        [
+          {
+            "node": "Format Final Output1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interview Sheet": {
+      "main": [
+        [
+          {
+            "node": "Interview Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interview Doc": {
+      "main": [
+        [
+          {
+            "node": "Interview reverse code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interview reverse code": {
+      "main": [
+        [
+          {
+            "node": "Interview Append",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interview Append": {
+      "main": [
+        [
+          {
+            "node": "Interview Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Interview Report",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Intro Call Report",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intro call": {
+      "main": [
+        [
+          {
+            "node": "Intro call Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intro call Sheet": {
+      "main": [
+        [
+          {
+            "node": "Intro call Doc",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Intro call Doc": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intro call reverse code": {
+      "main": [
+        [
+          {
+            "node": "Intro Call Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Intro call reverse code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interview Read": {
+      "main": [
+        [
+          {
+            "node": "Interview Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intro Call Report": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow Up Sheet": {
+      "main": [
+        [
+          {
+            "node": "Follow Up Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow Up Doc": {
+      "main": [
+        [
+          {
+            "node": "Follow Up reverse Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow Up reverse Code": {
+      "main": [
+        [
+          {
+            "node": "Follow Up Append",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow Up Append": {
+      "main": [
+        [
+          {
+            "node": "Follow Up Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow Up Read": {
+      "main": [
+        [
+          {
+            "node": "Follow Up Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Usefull information about Follow Up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow Up Report": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Usefull information about Follow Up": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Intorductory Report",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intorductory Sheet": {
+      "main": [
+        [
+          {
+            "node": "Intorductory Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intorductory Doc": {
+      "main": [
+        [
+          {
+            "node": "Intorductory reverse Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intorductory reverse Code": {
+      "main": [
+        [
+          {
+            "node": "Intorductory Append",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intorductory Append": {
+      "main": [
+        [
+          {
+            "node": "Intorductory Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intorductory Read": {
+      "main": [
+        [
+          {
+            "node": "Intorductory Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Kick off Report",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kick off Sheet": {
+      "main": [
+        [
+          {
+            "node": "Kick off Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kick off Doc": {
+      "main": [
+        [
+          {
+            "node": "Kick off reverse Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kick off reverse Code": {
+      "main": [
+        [
+          {
+            "node": "Kick off Append",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kick off Append": {
+      "main": [
+        [
+          {
+            "node": "Kick off Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kick off Read": {
+      "main": [
+        [
+          {
+            "node": "Kick off Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Data": {
+      "main": [
+        [
+          {
+            "node": "LG call Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Sheet": {
+      "main": [
+        [
+          {
+            "node": "LG call Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Doc": {
+      "main": [
+        [
+          {
+            "node": "LG call reverse Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call reverse Code": {
+      "main": [
+        [
+          {
+            "node": "LG call Append",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Append": {
+      "main": [
+        [
+          {
+            "node": "LG call Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call Read": {
+      "main": [
+        [
+          {
+            "node": "LG call report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Usefull information about client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LG call report": {
+      "main": [
+        [
+          {
+            "node": "Merge LLMs of LG call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Company name": {
+      "main": [
+        [
+          {
+            "node": "Add LG Call to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add LG Call to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Add Full Link to the LG call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Full Link to the LG call": {
+      "main": [
+        [
+          {
+            "node": "Get LG call text for discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get LG call text for discord": {
+      "main": [
+        [
+          {
+            "node": "Format Final Output for discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Final Output for discord": {
+      "main": [
+        [
+          {
+            "node": "LG call send to Sales Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge LLMs of LG call": {
+      "main": [
+        [
+          {
+            "node": "Find Company name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Gmail-Calendar and LLM": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Gmail and Calendar": {
+      "main": [
+        [
+          {
+            "node": "Merge Gmail-Calendar and LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse data in Calendar bio": {
+      "main": [
+        [
+          {
+            "node": "Merge Gmail-Calendar and LLM",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Description in Calendar": {
+      "main": [
+        [
+          {
+            "node": "Parse data in Calendar bio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format data": {
+      "main": [
+        [
+          {
+            "node": "Description in Calendar",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Gmail and Calendar",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Find Calendar meetings from now to minus 2 hours": {
+      "main": [
+        [
+          {
+            "node": "Format data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If formatted data empty - do nothing": {
+      "main": [
+        [
+          {
+            "node": "If Formatted Data is empty ->",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge Gmail and Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Messages that was from now to 1 hour ago": {
+      "main": [
+        [
+          {
+            "node": "If formatted data empty - do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract useful data for scrapping and merging": {
+      "main": [
+        [
+          {
+            "node": "Messages that was from now to 1 hour ago",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Gmails from meetings-noreply": {
+      "main": [
+        [
+          {
+            "node": "Extract useful data for scrapping and merging",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1 Hour Trigger": {
+      "main": [
+        [
+          {
+            "node": "Find Gmails from meetings-noreply",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find Calendar meetings from now to minus 2 hours",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Intro call reverse code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intro call reverse code1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Intro Call send to Sales Comment1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "07c70e46-b5c0-41e9-a499-2201380c1d2c",
+  "triggerCount": 0,
+  "tags": []
+}

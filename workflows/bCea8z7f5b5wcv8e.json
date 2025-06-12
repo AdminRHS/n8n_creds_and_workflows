@@ -1,0 +1,96 @@
+{
+  "createdAt": "2025-06-11T11:16:23.747Z",
+  "updatedAt": "2025-06-11T11:16:29.191Z",
+  "id": "bCea8z7f5b5wcv8e",
+  "name": "GetOnboardingFile_Collect_job_requests__fill_in_CRM",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "CollectJobRequestsAndFillInCRM",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        -20
+      ],
+      "id": "45e8687d-dd31-4b2b-b27b-e31cf4d427c4",
+      "name": "Webhook",
+      "webhookId": "1e36741b-7099-44d6-8fdc-d6f15e3557b0"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1EFT3Vg6DpX244yx-vo5R_m6_MFyB8Xf8nODJ1ky8znc/edit?tab=t.0"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        -20
+      ],
+      "id": "ad26fa1f-f895-44b0-9a98-858fabfde145",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        180,
+        -20
+      ],
+      "id": "3ee3b93f-0823-456c-8468-09fc1d50c0d4",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "5728c643-1013-4957-af41-3072222d0e46",
+  "triggerCount": 0,
+  "tags": []
+}

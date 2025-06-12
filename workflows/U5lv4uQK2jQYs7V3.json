@@ -1,0 +1,435 @@
+{
+  "createdAt": "2025-06-11T11:54:33.733Z",
+  "updatedAt": "2025-06-11T11:54:56.816Z",
+  "id": "U5lv4uQK2jQYs7V3",
+  "name": "CRM_Reports",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        280
+      ],
+      "id": "7d0b5767-e00c-4c48-b8b8-466efb602411",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1h8_cYJf9t0UtPou9VuVMTIAwlWtpuiht61mAs6aIVeU/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 480682354,
+          "mode": "list",
+          "cachedResultName": "test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1h8_cYJf9t0UtPou9VuVMTIAwlWtpuiht61mAs6aIVeU/edit#gid=480682354"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -100,
+        -160
+      ],
+      "id": "ab38ba4f-de12-46cb-bb7e-178bc622afbf",
+      "name": "Test",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1h8_cYJf9t0UtPou9VuVMTIAwlWtpuiht61mAs6aIVeU/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 724349857,
+          "mode": "list",
+          "cachedResultName": "RH",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1h8_cYJf9t0UtPou9VuVMTIAwlWtpuiht61mAs6aIVeU/edit#gid=724349857"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        40,
+        280
+      ],
+      "id": "25427182-ea10-46ed-a224-591cf5f21496",
+      "name": "1600 reports",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        180,
+        520
+      ],
+      "id": "e0ad90b1-e57a-41bd-93e9-e27c06cdea56",
+      "name": "OpenRouter 4.1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        500
+      ],
+      "id": "9203c6fb-9ac4-4031-ad19-032cab6ac174",
+      "name": "OpenRouter 4.1 1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=В отчёте сотрудника описаны выполненные им задачи. \nОтчёт: \"{{ $json.Report }}\" \nВыдели из этого текста все задачи, которые сотрудник выполнил, и перечисли их отдельными пунктами (каждая задача с новой строки и начинается с тире). \nНе добавляй ничего лишнего, только список задач.\n\nВсе задачи должны быть на английском и не пиши ссылки на ютуб"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        320,
+        400
+      ],
+      "id": "ce3da250-d895-419f-ab22-26cdcb2218fd",
+      "name": "Basic LLM Chain6"
+    },
+    {
+      "parameters": {
+        "jsCode": "for (const item of items) {\n  // удаляем ненужные свойства\n  delete item.json.ID;\n  delete item.json.Company;\n  delete item.json.Status;\n  delete item.json.Date;\n  delete item.json.Report;\n}\n// возвращаем «очищенный» массив\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        300
+      ],
+      "id": "979561ae-ad49-4231-80c5-f7f673f56165",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        740,
+        300
+      ],
+      "id": "753a562a-09f0-476e-984c-f589c8ded565",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Собираем одну строку на каждый item\nconst lines = items.map(item => {\n  const emp  = item.json.Employee?.trim()   || \"\";\n  const prof = item.json.Profession?.trim() || \"\";\n  const txt  = item.json.text?.trim()       || \"\";\n  // Составляем: Employee|Profession|text|<конец строки>\n  return `${emp}|${prof}|${txt}|`;\n});\n\n// Соединяем все линии через перенос\nconst combined = lines.join('\\n\\n');\n\n// Возвращаем единичный item с полем allRows\nreturn [{\n  json: {\n    allRows: combined\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        300
+      ],
+      "id": "c38d8221-edda-401a-9422-39628dec62a3",
+      "name": "Code6"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Ты — фильтр, оставляющий только дедуплицированный список. Никакого повторения или описаний своих действий.\n\nНиже приведён список задач, выполненных разными сотрудниками:\n{{ $json.allRows }}\n\nНекоторые задачи в этом списке являются дубликатами по смыслу (хотя сформулированы по-разному). \nИзучи полностью текст, а затем удали дубликаты, особенно будь внимателен с Lead Generator, они все пишут sent request, create, messages old connection, connected, если ничего универсального нету в них - пропускай полностью его отчет и не выписывай. С остальными так же, если видишь что что то уже было такое же или очень похожее - не выписывай. Проанализируй задачи и удали из списка повторяющиеся по смыслу, оставив только одну формулировку каждой уникальной задачи.\n\nНе добавляй ничего лишнего от себя, но сохрани структуру, которую ты получил, а именно ФИО | Profession | - task\\n - task\\n... |\\n\\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        1540,
+        300
+      ],
+      "id": "b447d602-e97b-4f7a-96d8-bf5a77d3fb87",
+      "name": "Basic LLM Chain7"
+    },
+    {
+      "parameters": {
+        "jsCode": "const out = [];\n\n// получаем объединённый блок и заменяем literal \"\\n\" на реальные переводы\nlet raw = items[0].json.text || '';\nraw = raw.replace(/\\\\n/g, '\\n');\n\n// разбиваем на блоки по пустой строке\nconst blocks = raw.split(/\\n\\s*\\n/).filter(b => b.trim());\n\nfor (const block of blocks) {\n  const [header, ...taskLines] = block.split('\\n');\n  const [Employee, Profession] = header.split('|').map(s => s.trim());\n\n  // очищаем префиксы и формируем список тасков с дефисом\n  const text = taskLines\n    .map(l => l.replace(/^\\s*[-–]\\s*/, '').trim())  // убираем старые дефисы\n    .filter(Boolean)                                 // удаляем пустые\n    .map(l => `- ${l}`)                             // добавляем \"- \" перед каждым\n    .join('\\n');                                     // соединяем в один текст\n\n  out.push({ json: { Employee, Profession, text } });\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        300
+      ],
+      "id": "b5c80918-7770-45ad-83c3-c45e59316842",
+      "name": "Code7"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1h8_cYJf9t0UtPou9VuVMTIAwlWtpuiht61mAs6aIVeU",
+          "mode": "list",
+          "cachedResultName": "CRM_reports _25",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1h8_cYJf9t0UtPou9VuVMTIAwlWtpuiht61mAs6aIVeU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 349024210,
+          "mode": "list",
+          "cachedResultName": "RH test combine with professions",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1h8_cYJf9t0UtPou9VuVMTIAwlWtpuiht61mAs6aIVeU/edit#gid=349024210"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Employee": "={{ $json.Employee }}",
+            "Profession": "={{ $json.Profession }}",
+            "Report": "={{ $json.Task }}"
+          },
+          "matchingColumns": [
+            "Employee"
+          ],
+          "schema": [
+            {
+              "id": "Employee",
+              "displayName": "Employee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Profession",
+              "displayName": "Profession",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Report",
+              "displayName": "Report",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2380,
+        300
+      ],
+      "id": "4c949d0f-0415-43d9-8638-ff177e902c70",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const out = [];\n\nfor (const item of items) {\n  const emp  = item.json.Employee;\n  const prof = item.json.Profession;\n  // реальные переводы строк\n  const raw  = item.json.text.replace(/\\\\n/g, '\\n');\n  // разбиваем по строкам, чистим\n  const lines = raw\n    .split('\\n')\n    .map(l => l.trim())\n    .filter(l => l && l.startsWith('-'));  // только строки с \"- \"\n\n  // для каждой строки пушим новый item\n  for (const line of lines) {\n    // убираем \"- \" префикс\n    const task = line.replace(/^\\-\\s*/, '');\n    out.push({\n      json: {\n        Employee: emp,\n        Profession: prof,\n        Task: task\n      }\n    });\n  }\n}\n\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2140,
+        300
+      ],
+      "id": "8e728853-726a-4c75-b57b-89f6efeb1ad7",
+      "name": "Code8"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "1600 reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1600 reports": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Basic LLM Chain6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter 4.1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain6",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter 4.1 1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain7",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain6": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain7": {
+      "main": [
+        [
+          {
+            "node": "Code7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code7": {
+      "main": [
+        [
+          {
+            "node": "Code8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code8": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "138cd4fe-0538-4839-a197-11c2dc44e9f3",
+  "triggerCount": 0,
+  "tags": []
+}

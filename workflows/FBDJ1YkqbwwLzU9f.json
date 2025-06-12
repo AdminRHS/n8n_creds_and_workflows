@@ -1,0 +1,39 @@
+{
+  "createdAt": "2025-06-10T13:43:06.593Z",
+  "updatedAt": "2025-06-11T06:26:34.048Z",
+  "id": "FBDJ1YkqbwwLzU9f",
+  "name": "My workflow 2",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9c6e3f5d-e92f-4efc-9f00-3c18573b64c7",
+      "name": "When clicking ‘Test workflow’"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7fa0a1a4-bb6f-44dc-9594-01e996dccaf2",
+  "triggerCount": 0,
+  "tags": []
+}

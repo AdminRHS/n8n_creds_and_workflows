@@ -1,0 +1,441 @@
+{
+  "createdAt": "2025-06-11T11:39:12.922Z",
+  "updatedAt": "2025-06-11T11:39:45.260Z",
+  "id": "dinNrwIC01DkxVF0",
+  "name": "Parse_Company_Links_-_Test",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const results = {\n  home_response: $json[\"home\"].response,\n  work_response: $json[\"work\"].response,\n  agency_response: $json[\"agency\"].response,\n  b_corp_response: $json[\"b_corp\"].response,\n  archives_response: $json[\"archives\"].response,\n  contact_response: $json[\"contact\"].response\n};\n\nreturn {\n  json: results\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        -120
+      ],
+      "id": "dd5d39d3-2d8d-468b-866c-1c0796c1bedf",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=я маю ці лінки {{ $json.Links }}:\n1. кожен з цих лінків підставляється у https://r.jina.ai/https://example.com замість example.com підставляти ту, яка знаходиться тут {{ $json.Links }}\n2. в output не повинно бути нічого про example, або дублікатів\n3. пиши тільки (лінку) не писати символи ``` та \\n, тільки готове посилання",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        140,
+        100
+      ],
+      "id": "e9665055-e50d-4784-aa6c-d7f24545a385",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.Links }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        300
+      ],
+      "id": "acf4f281-ddff-469c-9d26-19b963719106",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Jx0vSsCIPeBZxsdxJIyt7bvauxDbqF7XTFhuiTKcH7c/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Jx0vSsCIPeBZxsdxJIyt7bvauxDbqF7XTFhuiTKcH7c/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -80,
+        100
+      ],
+      "id": "c81dfb87-9ca4-48a4-8ea6-0b70e226e232",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        80,
+        300
+      ],
+      "id": "48e9ad17-7f50-47bf-a5ea-6145ed498d68",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Системазуй інформацію {{ $json.data }} про компанію",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        780,
+        100
+      ],
+      "id": "ffe75cc8-8394-4ca1-93e6-b32f13d50729",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.data }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        900,
+        320
+      ],
+      "id": "b1b3a3cc-9fc4-43ff-9408-06cb35085f44",
+      "name": "Window Buffer Memory1"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        760,
+        320
+      ],
+      "id": "8e72182a-2ebe-4eb3-b18f-4c360361793f",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        540,
+        100
+      ],
+      "id": "1477d097-6687-459c-9712-22c90939e578",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "content": "# Генерація лінків",
+        "height": 80,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -20
+      ],
+      "id": "e2a2faaf-0baa-4543-a66d-fe1569d5272b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Систематизація\n",
+        "height": 80,
+        "width": 340
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        740,
+        0
+      ],
+      "id": "34845425-eaca-4649-b429-e3efe4fe80a3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=А тепер видай усю інформацію звідси {{ $json.output }} в форматі JSON, яку я скажу, а саме, знайди інформацію про: phone, email, facebook, instagram, twitter або X, Year Establishment Company, whatsapp та telegram. Якщо якоїсь інфи немає, не додавай її в json. {{ $json.output }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1380,
+        100
+      ],
+      "id": "f10dbe2c-7924-4d8c-8818-8ee992582ecf",
+      "name": "AI Agent2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.output }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1520,
+        320
+      ],
+      "id": "aa4acfd3-20a1-4773-b2bd-a2d7c69d3f5b",
+      "name": "Window Buffer Memory2"
+    },
+    {
+      "parameters": {
+        "content": "# Дістаємо необхідну інфу",
+        "height": 120,
+        "width": 340
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        -40
+      ],
+      "id": "57d531cd-8530-4734-9cc1-b4641f9dc3f2",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Допустимые ключи итогового объекта\nconst allowedKeys = [\n\t\"phone\",\n\t\"email\",\n\t\"facebook\",\n\t\"instagram\",\n\t\"twitter (x)\",\n\t\"year sstablishment company\",\n\t\"whatsapp\",\n\t\"viber\",\n\t\"telegram\"\n];\n\n// Поля, для которых значения собираем в массив (без дубликатов)\nconst arrayFields = [\"phone\", \"email\"];\n\n// Маппинг входных ключей на требуемые имена\nconst keyMapping = {\n\ttwitter: \"twitter (x)\"\n};\n\nlet merged = {};\n\n// Обрабатываем каждый из 6 (или более) входных items\nfor (const item of items) {\n  // Проверяем, что в элементе есть поле output\n  if (!item.json || !item.json.output) continue;\n  \n  // Извлекаем строку JSON, убираем обёртку \"\"\"json ... \"\"\"\n  let jsonStr = item.json.output;\n  jsonStr = jsonStr.replace(/^\"\"\"json\\s*/i, '').replace(/\\s*\"\"\"$/i, '').trim();\n  if (!jsonStr) continue;\n  \n  let data;\n  try {\n    data = JSON.parse(jsonStr);\n  } catch (err) {\n    // Если ошибка парсинга, пропускаем этот элемент\n    continue;\n  }\n  \n  // Проходим по каждому ключу в распарсеном объекте\n  for (const key in data) {\n    const finalKey = keyMapping[key] || key;\n    if (!allowedKeys.includes(finalKey)) continue;\n    \n    const value = data[key];\n    \n    // Если ключ для массива (phone, email)\n    if (arrayFields.includes(finalKey)) {\n      merged[finalKey] = merged[finalKey] || [];\n      if (Array.isArray(value)) {\n        merged[finalKey].push(...value);\n      } else {\n        merged[finalKey].push(value);\n      }\n      // Убираем дубликаты\n      merged[finalKey] = [...new Set(merged[finalKey])];\n    } else {\n      // Для остальных полей устанавливаем первое найденное значение\n      if (merged[finalKey] === undefined) {\n        merged[finalKey] = value;\n      }\n    }\n  }\n}\n\n// Возвращаем итоговый объект как массив из одного элемента (требование n8n)\nreturn [{ json: merged }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        100
+      ],
+      "id": "0aa9cd65-50b7-400d-a84e-78134e0f2374",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro-exp-03-25:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        320
+      ],
+      "id": "14a2a9fc-0e78-47b5-b456-8dfccd74a511",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем все входные элементы\nconst items = $input.all();\n\n// Извлекаем содержимое страницы (замените 'page' на нужное поле, если оно другое)\n// Каждая страница добавляется с переносом строки между ними.\nconst combinedText = items\n  .map(item => item.json?.page || \"\")  // замените 'page' на актуальное имя поля (например, 'text')\n  .join(\"\\n\");\n\n// Возвращаем объединённый результат\nreturn [{ json: { result: combinedText } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        220
+      ],
+      "id": "4729fcb6-ee45-4bbd-8e42-be82202cb4b6",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -300,
+        100
+      ],
+      "id": "a1cb2ff0-2713-4e6f-89d6-0baccf18491c",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "17a1fccd-a3ca-4db1-a41d-0a7ed7a4e869",
+  "triggerCount": 0,
+  "tags": []
+}

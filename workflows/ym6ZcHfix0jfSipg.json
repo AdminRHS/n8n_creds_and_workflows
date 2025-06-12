@@ -1,0 +1,518 @@
+{
+  "createdAt": "2025-06-11T09:32:27.866Z",
+  "updatedAt": "2025-06-12T13:03:08.815Z",
+  "id": "ym6ZcHfix0jfSipg",
+  "name": "CandidateHandler",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "CandidateRegistrationHandler",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -120,
+        -260
+      ],
+      "id": "75d19faa-15e5-4ad0-b27a-b980375c50bf",
+      "name": "Webhook",
+      "webhookId": "1848eab9-578a-462e-9e13-f7f09fab2fd4"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xRN6ZyKFft-D2-GvZrbIw2C75Bc6xAjZo-d7htws-WQ/edit?usp=drivesdk",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1852168000,
+          "mode": "list",
+          "cachedResultName": "Заявки",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xRN6ZyKFft-D2-GvZrbIw2C75Bc6xAjZo-d7htws-WQ/edit#gid=1852168000"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name Candidate": "={{ $json.body['Name Candidate'] }}",
+            "Source (звідки Ви про нас дізналися(ресурс)) ": "={{ $json.body['Source (звідки Ви про нас дізналися(ресурс))'] }}",
+            "Country (де Ви наразі проживаєте?)": "={{ $json.body['Country (де Ви наразі проживаєте?)'] }}",
+            "Channel Communication (де з Вами зв'язатися?)": "={{ $json.body['Channel Communication (де з Вами зв\\'язатися?)'] }}",
+            "Email ": "={{ $json.body.Email }}",
+            "phone": "={{ $json.body.phone }}",
+            "Нік телеграму, номер вайберу/ватсапу - залежно від Channel Communication": "={{ $json.body['Нік телеграму, номер вайберу/ватсапу - залежно від Channel Communication'] }}",
+            "Profession (на яку вакансію?)": "={{ $json.body['Profession (на яку вакансію?)'] }}",
+            "Language (всі мови, що знаєте)": "={{ $json.body['Language (всі мови, що знаєте)'] }}",
+            "Language level": "={{ $json.body['Language level'] }}",
+            "Портфоліо (одне посилання чи файл)": "={{ $json.body['Портфоліо (одне посилання чи файл)'] }}",
+            "Резюме (файл)": "={{ $json.webViewLink }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name Candidate",
+              "displayName": "Name Candidate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source (звідки Ви про нас дізналися(ресурс)) ",
+              "displayName": "Source (звідки Ви про нас дізналися(ресурс)) ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Country (де Ви наразі проживаєте?)",
+              "displayName": "Country (де Ви наразі проживаєте?)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Channel Communication (де з Вами зв'язатися?)",
+              "displayName": "Channel Communication (де з Вами зв'язатися?)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email ",
+              "displayName": "Email ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Нік телеграму, номер вайберу/ватсапу - залежно від Channel Communication",
+              "displayName": "Нік телеграму, номер вайберу/ватсапу - залежно від Channel Communication",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Profession (на яку вакансію?)",
+              "displayName": "Profession (на яку вакансію?)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Language (всі мови, що знаєте)",
+              "displayName": "Language (всі мови, що знаєте)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Language level",
+              "displayName": "Language level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Портфоліо (одне посилання чи файл)",
+              "displayName": "Портфоліо (одне посилання чи файл)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Резюме (файл)",
+              "displayName": "Резюме (файл)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1520,
+        -260
+      ],
+      "id": "e1ba5e6b-280e-48db-b492-6e8063e20f41",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "xpHJDIHXi8t7da3L",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "Резюме (файл)",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/u/0/folders/1z3eH1isycqW3caJBvsruy9An4NR4Jzvt",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        320,
+        -260
+      ],
+      "id": "f442f42b-ee73-490c-a694-6efac9cf48d8",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "jVT4dG2RhCHdz8JR",
+          "name": "HR Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6c3295e2-abba-4598-83ea-cfdc3b51608f",
+              "name": "body['Name Candidate']",
+              "value": "={{ $('Webhook').item.json.body['Name Candidate'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b49d72f4-6778-413f-b824-8701b67a52a3",
+              "name": "body['Source (звідки Ви про нас дізналися(ресурс))']",
+              "value": "={{ $('Webhook').item.json.body['Source (звідки Ви про нас дізналися(ресурс))'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ff02a3f4-d40d-4d56-9dfc-e9f74a344a7a",
+              "name": "body['Country (де Ви наразі проживаєте?)']",
+              "value": "={{ $('Webhook').item.json.body['Country (де Ви наразі проживаєте?)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f666e4e3-c557-4684-8fd9-791360632def",
+              "name": "body['Channel Communication (де з Вами зв\\'язатися?)']",
+              "value": "={{ $('Webhook').item.json.body['Channel Communication (де з Вами зв\\'язатися?)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9b06b036-7ef6-49d7-824e-8efbe60e39c5",
+              "name": "body.Email",
+              "value": "={{ $('Webhook').item.json.body.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "e57da801-a48f-45aa-873e-9c86862a9507",
+              "name": "body.phone",
+              "value": "='{{ $('Webhook').item.json.body.Phone }}",
+              "type": "string"
+            },
+            {
+              "id": "718954ba-9102-4ad9-8240-d94551c11888",
+              "name": "body['Нік телеграму, номер вайберу/ватсапу - залежно від Channel Communication']",
+              "value": "={{ $('Webhook').item.json.body['Нік телеграму, номер вайберу/ватсапу - залежно від Channel Communication'] }}",
+              "type": "string"
+            },
+            {
+              "id": "0f6e2a6c-f333-46fa-ac16-153f6eafe6bf",
+              "name": "body['Profession (на яку вакансію?)']",
+              "value": "={{ $('Webhook').item.json.body['Profession (на яку вакансію?)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "fc44bfde-2b17-46c8-9bd6-d58cdca22cb0",
+              "name": "body['Language (всі мови, що знаєте)']",
+              "value": "={{ $('Webhook').item.json.body['Language (всі мови, що знаєте)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7d0a0746-7937-4db9-84d6-00a46c9ff6c9",
+              "name": "body['Language level']",
+              "value": "={{ $('Webhook').item.json.body['Language level'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ef18a69b-ea2a-4be4-81ae-f7d26ca75cbc",
+              "name": "body['Портфоліо (одне посилання чи файл)']",
+              "value": "={{ $('Webhook').item.json.body['Портфоліо (одне посилання чи файл)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "45df8dbc-b4c0-41e3-ae7a-d4d077065e63",
+              "name": "webViewLink",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "34de7615-f928-4812-95db-61416e699de2",
+              "name": "webViewLink",
+              "value": "={{ $('Google Drive').item.json.webViewLink }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        -260
+      ],
+      "id": "c443ae38-e0fc-4f0d-84a0-8d91cd9b87e1",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $('Webhook').item.json.body['Name Candidate'] }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1GF-hJ4tCK15an4Pb66DC_UayZRDRPSwT",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        560,
+        -260
+      ],
+      "id": "b1188197-f263-4f64-907c-82a1338a87d5",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "5L3Cntf9CvMaPLC9",
+          "name": "Sales Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        780,
+        -260
+      ],
+      "id": "b9c8b885-35a1-4a5c-ae61-1d69c66a2df2",
+      "name": "Google Drive2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "5L3Cntf9CvMaPLC9",
+          "name": "Sales Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        -420
+      ],
+      "id": "bf340112-215e-4a06-a369-6fb98eca3415",
+      "name": "When chat message received",
+      "webhookId": "3c1cc368-a353-42a2-8484-3426a0dc1af8"
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1120,
+        -420
+      ],
+      "id": "252ea10e-64e4-464e-92f3-decafb9d0e20",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        -100
+      ],
+      "id": "7efb448d-b61f-4e19-a96b-f1d0279d5e0e",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "e83e03fb-e1ee-43a2-989e-b5f3861a93c8",
+  "triggerCount": 2,
+  "tags": []
+}

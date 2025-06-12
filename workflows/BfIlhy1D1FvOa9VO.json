@@ -1,0 +1,257 @@
+{
+  "createdAt": "2025-06-11T11:53:16.644Z",
+  "updatedAt": "2025-06-11T11:53:26.025Z",
+  "id": "BfIlhy1D1FvOa9VO",
+  "name": "Browser_Automation_Backend",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "BrowserUse",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1260,
+        60
+      ],
+      "id": "fb3f84fc-ef06-49d6-8faf-61eea5603d51",
+      "name": "Webhook",
+      "webhookId": "89d4ba04-5e2b-4664-b6aa-27b355440a77"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        240
+      ],
+      "id": "54a96de7-9ba6-4958-9685-a59f0cd41378",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "создать закладку",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "61b24097-c0ca-422a-b39f-579853a30166"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Создать закладку"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -600,
+        60
+      ],
+      "id": "96a81a3c-4c8c-4209-af10-11ca4e2c74d1",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        180
+      ],
+      "id": "47cf2b6a-9feb-4638-8a56-bb99b077bb2b",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"action\": \"create_bookmark\",\n  \"params\": {\n    \"title\": \"Название закладки\", \n    \"url\": \"https://example.com\", \n    \"folderName\": \"Моя папка\",\n    \"tags\": [\"важное\", \"работа\"]\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        140
+      ],
+      "id": "b84b3d42-7ab2-439a-bc8a-bb27f73c51e7",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Напиши действие, к которому относится запрос пользователя\n1. Создать закладку.\n2. Сделать скриншот.\n3. Показать историю.\n\n\n<action>\n{{ $json.body.message }}\n</action> \n\nНапиши конкретное действие, не изменяя его и не заключая в теги, в ловеркейсе",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1020,
+        60
+      ],
+      "id": "5ac49204-257e-409f-8c3d-3b783ee0e360",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=На основе пользовательского ввода, собери JSON для добавления закладки в Google Chrome. Напиши только результат, используя Google Chrome API и используя всегда по два тега, \n\nУчитывай то, что если данные не предоставляются, то создается закладка текущей страницы: название страницы также должно быть названием текущей страницы. То есть, той вкладки, которая открыта в браузере.\n\nВот образец\nЕсли данных нет, в поле url необходимо указывать плейсхолдер, который предусмотрен в апи Google Chrome. \n\n{\n  \"action\": \"create_bookmark\",\n  \"params\": {\n    \"title\": \"Название закладки\", \n    \"url\": \"https://example.com\", \n    \"folderName\": \"Моя папка\",\n    \"tags\": [\"важное\", \"работа\"]\n  }\n}\n\nА вот пользовательский ввод\n\n\n\n\n{\n  \"action\": \"create_bookmark\",\n  \"params\": {\n    \"title\": \"Название закладки\", \n    \"url\": \"https://example.com\", \n    \"folderName\": \"Моя папка\",\n    \"tags\": [\"важное\", \"работа\"]\n  }\n} \n\n\n{{ $('Webhook').item.json.body.message }}\n\n\nНельзя использовать следующие шаблоны url, используя текущий адрес открытой вкладки в качестве url. Клиент это должен сделать.\n\n<current tab url>\nhttps://example.com\nchrome://newtab/\n\nЗапрещено использовать указанные выше примеры плейсхолдеров URL, только %s\n\nДаже если в запросе пользователя url указан без https://, то нужно всегда делать с. Если пользователь прямо попросил писать без тега, то тогда выполняй это его указание. \n\nЕсли пользователь пишет название сайта словами (Например, гугл, фейсбук, линкедин и так далее), то нужно вставлять URL. ",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -340,
+        -100
+      ],
+      "id": "6bd7ef85-2332-4196-9cde-6e9f6a192492",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"action\": \"{{ $json.output.action }}\",\n  \"params\": {\n    \"title\": \"{{ $json.output.params.title }}\", \n    \"url\": \"{{ $json.output.params.url }}\", \n    \"folderName\": \"{{ $json.output.params.folderName }}\",\n    \"tags\": [\"{{ $json.output.params.tags[0] }}\", \"{{ $json.output.params.tags[1] }}\"]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        -100
+      ],
+      "id": "c73bba27-b47b-45c0-abcd-6c141d191d17",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "1ecf0fd6-dad5-415b-b81c-e1bbb3441e9a",
+  "triggerCount": 0,
+  "tags": []
+}

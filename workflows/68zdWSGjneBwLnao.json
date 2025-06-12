@@ -1,0 +1,1335 @@
+{
+  "createdAt": "2025-06-10T08:24:23.354Z",
+  "updatedAt": "2025-06-11T08:51:43.310Z",
+  "id": "68zdWSGjneBwLnao",
+  "name": "Practice Workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "Your data has been deleted",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        620,
+        -160
+      ],
+      "id": "be1dd6ed-151f-4c26-89ff-5518bdc6ef54",
+      "name": "Telegram",
+      "webhookId": "fd4f0a5c-ce07-4497-a1d6-fb6184c3fc19",
+      "credentials": {
+        "telegramApi": {
+          "id": "fXYVKArcroh4I9R8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "You are in db now!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        40,
+        320
+      ],
+      "id": "0f9b7a3c-8b09-4a7c-91b7-1ba686910e26",
+      "name": "Telegram1",
+      "webhookId": "fd4f0a5c-ce07-4497-a1d6-fb6184c3fc19",
+      "credentials": {
+        "telegramApi": {
+          "id": "fXYVKArcroh4I9R8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Commands: delete me, commands",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        620,
+        40
+      ],
+      "id": "09dff191-d032-4705-af0d-c18d07895b9e",
+      "name": "Telegram2",
+      "webhookId": "fd4f0a5c-ce07-4497-a1d6-fb6184c3fc19",
+      "credentials": {
+        "telegramApi": {
+          "id": "fXYVKArcroh4I9R8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ac93f374-b865-44f9-aef7-59fc2ccbf50f",
+              "leftValue": "={{ $('Telegram Trigger1').item.json.message.text }}",
+              "rightValue": "=delete me",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        200
+      ],
+      "id": "3eebed2b-ab51-4dfe-8ef1-17368e983da5",
+      "name": "If delete"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ac93f374-b865-44f9-aef7-59fc2ccbf50f",
+              "leftValue": "={{ $('Telegram Trigger1').item.json.message.text }}",
+              "rightValue": "=commands",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        280
+      ],
+      "id": "b30ffb76-cd99-43db-a7f3-0d9f0349ead5",
+      "name": "If show commands"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "=city name: {{ $json.name }}\ntemp C: {{ $json.main.temp }}\nwind speed: {{ $json.wind.speed }}\ndescritpion: {{ $json.weather[0].description }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1060,
+        460
+      ],
+      "id": "a169778f-7053-4d2a-899b-fda67fba0c5d",
+      "name": "Telegram3",
+      "webhookId": "fd4f0a5c-ce07-4497-a1d6-fb6184c3fc19",
+      "credentials": {
+        "telegramApi": {
+          "id": "fXYVKArcroh4I9R8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openweathermap.org/data/2.5/weather?q={{ $json.output }}&lang=ua&units=metric&appid=2dd1ad7d80290c4b0ed7ed219065d7e1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        280
+      ],
+      "id": "ed4daf9b-0501-41cb-a253-b6b2ad3e16f3",
+      "name": "HTTP Request1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "4774RvX2pec1xqP5",
+          "name": "Weaher API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1300,
+        260
+      ],
+      "id": "e7842045-a1eb-42db-a7f6-47747d93caa4",
+      "name": "Telegram Trigger1",
+      "webhookId": "5013fe82-55a1-4ed7-84c7-12c124dc1455",
+      "credentials": {
+        "telegramApi": {
+          "id": "fXYVKArcroh4I9R8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1JYy7b9iXUxjWdwGWXvkqvXC2BG6rR2iKmavmNfGTY80",
+          "mode": "list",
+          "cachedResultName": "Test_for_Sheets_Agent(n8n)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JYy7b9iXUxjWdwGWXvkqvXC2BG6rR2iKmavmNfGTY80/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JYy7b9iXUxjWdwGWXvkqvXC2BG6rR2iKmavmNfGTY80/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1080,
+        380
+      ],
+      "id": "6d283f20-6ab7-442e-b470-60c8590e45af",
+      "name": "Google Sheets",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kVEspmlkJWdAvnPw",
+          "name": "Google Sheets For Practice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "user_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -540,
+        220
+      ],
+      "id": "8ea02924-4585-4a57-adb5-85d7091fe887",
+      "name": "Merge1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1JYy7b9iXUxjWdwGWXvkqvXC2BG6rR2iKmavmNfGTY80",
+          "mode": "list",
+          "cachedResultName": "Test_for_Sheets_Agent(n8n)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JYy7b9iXUxjWdwGWXvkqvXC2BG6rR2iKmavmNfGTY80/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JYy7b9iXUxjWdwGWXvkqvXC2BG6rR2iKmavmNfGTY80/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $('Telegram Trigger1').item.json.message.from.id }}",
+            "user_name": "={{ $('Telegram Trigger1').item.json.message.from.username }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -160,
+        320
+      ],
+      "id": "b7d71262-5ae7-4e5e-857d-1c0c7559f0bc",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kVEspmlkJWdAvnPw",
+          "name": "Google Sheets For Practice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "1JYy7b9iXUxjWdwGWXvkqvXC2BG6rR2iKmavmNfGTY80",
+          "mode": "list",
+          "cachedResultName": "Test_for_Sheets_Agent(n8n)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JYy7b9iXUxjWdwGWXvkqvXC2BG6rR2iKmavmNfGTY80/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JYy7b9iXUxjWdwGWXvkqvXC2BG6rR2iKmavmNfGTY80/edit#gid=0"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        420,
+        -160
+      ],
+      "id": "19107090-f00f-48f2-93f3-150c6511d3ee",
+      "name": "Google Sheets3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kVEspmlkJWdAvnPw",
+          "name": "Google Sheets For Practice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### Simple bot that doing couple tasks\n### 1. Checking if user in google sheet, if its not than bot creates row in sheet with user id, user name \n### 2. Cheks the weather and return response in telegram bot if user asks about it (exmpl.user input \"weather in Odessa\")\n",
+        "height": 820,
+        "width": 2660
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1340,
+        -200
+      ],
+      "id": "25b527ad-8a12-49b7-b563-e04c2f9c67c3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sendTo": "uzunovoleksii@gmail.com",
+        "subject": "Wiki parsing data",
+        "emailType": "text",
+        "message": "={{ JSON.stringify($json.output, null, 4) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -480,
+        860
+      ],
+      "id": "c1577ad8-6083-4363-9ad6-992e427f238f",
+      "name": "Gmail",
+      "webhookId": "9e388c47-0d5b-4e80-b082-ca99a467b98a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7hgGA8acvEuVA2QX",
+          "name": "Gmail account Practice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -920,
+        1080
+      ],
+      "id": "e44f8731-30db-4aa3-bf04-956a77c482f3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "CwQUfjBSkmdY2ol9",
+          "name": "Google Gemini(PaLM) Api account (Practice)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://r.jina.ai/https://uk.wikipedia.org/wiki/%D0%93%D0%BE%D0%BB%D0%BE%D0%B2%D0%BD%D0%B0_%D1%81%D1%82%D0%BE%D1%80%D1%96%D0%BD%D0%BA%D0%B0",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1080,
+        860
+      ],
+      "id": "96b78fcb-af64-4195-a2c5-0cb74be0debd",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "4774RvX2pec1xqP5",
+          "name": "Weaher API"
+        },
+        "httpHeaderAuth": {
+          "id": "SY2duFo5Q5EVG5xR",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1300,
+        860
+      ],
+      "id": "98380972-daba-4f20-b65d-9937e027f01a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "text": "{{ $json.data }}",
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"Title\": \"title of the content\",\n    \"URL Source\": \"URL\",\n    \"Published time\":\"date and time\",\n    \"Markdown Content\": \"Markdown Content\",\n    \"content\": \"content\",\n    \"text\": \"text\"\n}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        860
+      ],
+      "id": "baa3285c-46a7-4b1c-9f8e-630e9ad49628",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "content": "## Simple scrapper\n - Needs credentials for **jina.ai** scrapper ai model\n - Needs to add google credentials for gemini ai model",
+        "height": 560,
+        "width": 1100,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1340,
+        700
+      ],
+      "id": "019d5516-0a98-4d80-b1ed-9f1939257ddb",
+      "name": "Sticky Note1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        880
+      ],
+      "id": "3ee75af4-3f9b-4363-865b-562a9840c7a3",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7hgGA8acvEuVA2QX",
+          "name": "Gmail account Practice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Write a reply to the following email, then add it as a draft to the email thread: \n<email>\nFrom: {{ $json.from.text }}\nSubject: {{ $json.subject }}\nMessage:  {{ $json.text }}\n</emal>",
+        "options": {
+          "systemMessage": "#Role\nYou respond on behalf of Oleksii Uzunov in conversations on the n8n.io website. You reflect his voice, technical experience, and communication habits. You speak as him, not as an assistant.\n\n#Style\n\nKeep replies short, clear, and practical.\n\nFocus on solving the issue or contributing value fast.\n\nBe relaxed, confident, and direct — no corporate tone.\n\nIf you suggest something, be specific and explain briefly why.\n\nUse code, links, or examples where helpful.\n\n#Constraints\n\nAvoid unnecessary politeness or filler like \"I hope this helps.\"\n\nDon’t introduce yourself or say “As an AI...” or “I think...”\n\nIf unsure, say “not sure” or ask for missing info.\n\nDon’t overexplain. One or two sentences is usually enough.\n\nUse markdown formatting when replying on forums or threads.\n\n#Examples\n<example>\nQ: How do I trigger a workflow only on weekdays?\nA: Use a cron node with 1-5 in the day-of-week field.\n</example>\nQ: My HTTP Request node is timing out.\nA: Check the URL manually. If it hangs, increase timeout or debug the endpoint.\n<example>\nQ: Can I pass data from one execution to another?\nA: Not directly — store it externally (e.g. Redis, DB) or use Webhook with a unique ID.\n</example>\n#My Data\nName: Oleksii Uzunov\nLocation: Izmail, Ukraine"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        220,
+        880
+      ],
+      "id": "ab24e856-7b8a-4c40-bfc1-6762df986323",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        100,
+        1100
+      ],
+      "id": "562c0401-5bb1-46ea-aaee-6c4c27c290af",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "CwQUfjBSkmdY2ol9",
+          "name": "Google Gemini(PaLM) Api account (Practice)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "{{ $fromAI('subject') }}",
+        "message": "{{ $fromAI('message') }}",
+        "options": {
+          "threadId": "{{ $json.threadId }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        540,
+        1100
+      ],
+      "id": "943a25e4-adca-47fd-ad55-a65c063658f0",
+      "name": "Gmail1",
+      "webhookId": "80e6b8a6-8de0-45fa-a697-80cb1bd7e507",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sv4epLX3dUAhBbno",
+          "name": "Sales Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Simple 'Answer to email' Agent, that creates reply draft(not sending!) for following email\n - Needs to add google credentials for gemini ai model",
+        "height": 560,
+        "width": 960,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        700
+      ],
+      "id": "4f296343-ee76-4a1f-b96b-b97b5d91e2ad",
+      "name": "Sticky Note2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1280,
+        1440
+      ],
+      "id": "382f08b7-de41-482b-9d4d-3b2cd6d279ee",
+      "name": "Telegram Trigger",
+      "webhookId": "79ca81ec-110e-4b03-88a7-a2208f15f842",
+      "credentials": {
+        "telegramApi": {
+          "id": "fXYVKArcroh4I9R8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=User message: {{ $json.message.text }}\nSystem: You have access to Google Sheets. When a user asks to retrieve or parse data from a spreadsheet, use the Google Sheets3 tool. It returns all the rows from the 'Parsing' spreadsheet. Answer briefly and specifically using this data. ",
+        "options": {
+          "systemMessage": "#Role\nYou are a survey response evaluator. Your task is to analyze and assess individual answers submitted via a Google Form. You will identify useful insights, summarize patterns, and highlight areas for improvement.\n\n#Style\nWrite in a concise, professional, and informative tone. Use bullet points or numbered lists where appropriate. Keep summaries short (1–3 sentences per question). Avoid unnecessary politeness or repetition.\n\n#Constraints\n\nDo not invent data. Only analyze what is provided.\n\nStay neutral — no emotional or subjective reactions.\n\nIf a response is too vague or incomplete, mark it as such.\n\nNo personal data should be assumed or fabricated.\n\nAvoid filler words like \"It seems that...\" or \"Maybe...\"\n\n#Examples\n\nQ: What could we improve?\nA:\n\nThe user mentioned a lack of detailed tutorials.\n\nFeedback is specific and actionable.\n\n\n[\n{\n\"Позначка часу\": \n\"03.06.2025 10:47:27\",\n\"What is your age group? \": \n\"25–34\",\n\" How satisfied are you with our service? \": \n\"Very satisfied\",\n\" Which features do you use the most? \": \n\"Feature A\",\n\" Would you be interested in future updates or offers? \": \n\"Yes\",\n\"Rating\": \n\"\"\n}\n]\n\nThe respondent expressed general satisfaction.\n\nNo concrete suggestions were given."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1040,
+        1440
+      ],
+      "id": "419c243d-844e-48ed-ae42-2d3ab6346ca4",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        1680
+      ],
+      "id": "a3162525-706c-41f9-845a-71bdea8e5d90",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "CwQUfjBSkmdY2ol9",
+          "name": "Google Gemini(PaLM) Api account (Practice)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1DuzLln_18I5RNTzVZpK5G4_gIUhGm3bK1yS2v4rxqrs",
+          "mode": "list",
+          "cachedResultName": "n8n workflows",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DuzLln_18I5RNTzVZpK5G4_gIUhGm3bK1yS2v4rxqrs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DuzLln_18I5RNTzVZpK5G4_gIUhGm3bK1yS2v4rxqrs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        -820,
+        1680
+      ],
+      "id": "8c2bbcc7-b1f2-48fb-b014-0c10674ce634",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kVEspmlkJWdAvnPw",
+          "name": "Google Sheets For Practice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -640,
+        1440
+      ],
+      "id": "8b094a32-00a1-4f86-9508-acb05df7ff84",
+      "name": "Telegram4",
+      "webhookId": "f7994a52-b59c-43df-bcad-444af8c3f55a",
+      "credentials": {
+        "telegramApi": {
+          "id": "fXYVKArcroh4I9R8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Simple AI Agent for analyze data from google sheets\n - Needs credentials for sheets\n - Needs credentials foro gemini\n",
+        "height": 520,
+        "width": 920,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1340,
+        1320
+      ],
+      "id": "e439bf9e-4a6f-4fcd-8826-c1d5a5d0bf02",
+      "name": "Sticky Note3",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -100,
+        1420
+      ],
+      "id": "a95ab368-c48e-4464-aeb7-fb4bf45d75f1",
+      "name": "Telegram Trigger2",
+      "webhookId": "79ca81ec-110e-4b03-88a7-a2208f15f842",
+      "credentials": {
+        "telegramApi": {
+          "id": "fXYVKArcroh4I9R8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Write a nice result:",
+        "options": {
+          "systemMessage": "#Role\nYou are a survey response evaluator. Your task is to analyze and assess individual answers submitted via a Google Form. You will identify useful insights, summarize patterns, and highlight areas for improvement.\n\n#Style\nWrite in a concise, professional, and informative tone. Use bullet points or numbered lists where appropriate. Keep summaries short (1–3 sentences per question). Avoid unnecessary politeness or repetition.\n\n#Constraints\n\nDo not invent data. Only analyze what is provided.\n\nStay neutral — no emotional or subjective reactions.\n\nIf a response is too vague or incomplete, mark it as such.\n\nNo personal data should be assumed or fabricated.\n\nAvoid filler words like \"It seems that...\" or \"Maybe...\"\n\n#Examples\n\nQ: What could we improve?\nA:\n\nThe user mentioned a lack of detailed tutorials.\n\nFeedback is specific and actionable.\n\n\n[\n{\n\"Позначка часу\": \n\"03.06.2025 10:47:27\",\n\"What is your age group? \": \n\"25–34\",\n\" How satisfied are you with our service? \": \n\"Very satisfied\",\n\" Which features do you use the most? \": \n\"Feature A\",\n\" Would you be interested in future updates or offers? \": \n\"Yes\",\n\"Rating\": \n\"\"\n}\n]\n\nThe respondent expressed general satisfaction.\n\nNo concrete suggestions were given."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        140,
+        1420
+      ],
+      "id": "ce704c36-f3f3-4a09-a009-e66f6f26f17d",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        1660
+      ],
+      "id": "82ac8cfb-654c-46cc-8416-90ba9a2ab722",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "CwQUfjBSkmdY2ol9",
+          "name": "Google Gemini(PaLM) Api account (Practice)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger2').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        540,
+        1420
+      ],
+      "id": "91c73a6c-b03c-4d40-8e47-ac2ad565558d",
+      "name": "Telegram5",
+      "webhookId": "f7994a52-b59c-43df-bcad-444af8c3f55a",
+      "credentials": {
+        "telegramApi": {
+          "id": "fXYVKArcroh4I9R8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Simple AI Agent for practice to chat with user\n - Needs gemini credentials",
+        "height": 500,
+        "width": 980,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -140,
+        1320
+      ],
+      "id": "ce8ff52d-8d1b-4530-9b76-ce7e964985d0",
+      "name": "Sticky Note4",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "66fbcfb0-cf7c-4823-8977-cef0d09f1878",
+              "name": "user_id",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -920,
+        140
+      ],
+      "id": "f368a9f1-eb05-4d13-be17-fbdc15a5dd89",
+      "name": "TG_user_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "de72d502-993a-45c0-b8c0-be944a9f3e15",
+              "name": "user_id",
+              "value": "={{ $json.user_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -860,
+        380
+      ],
+      "id": "f6014830-2c17-4de2-9848-888d84110aa1",
+      "name": "Sheet_user_id`s"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ac93f374-b865-44f9-aef7-59fc2ccbf50f",
+              "leftValue": "={{ $('TG_user_id').item.json.user_id }}",
+              "rightValue": "={{ $('Sheet_user_id`s').item.json.user_id }}",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        220
+      ],
+      "id": "4f13dc5b-2dd8-44d0-bbfc-2edad1bc393b",
+      "name": "If equal"
+    },
+    {
+      "parameters": {
+        "content": "## Getting Data\n - user_id, user_name from TG\n - user data from sheet",
+        "height": 580,
+        "width": 560,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1160,
+        -20
+      ],
+      "id": "9e568ab9-456b-4fd7-9db3-c38cb4fa4f26",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Cheking user\n - If True - user exist - than continue process in chain\n - If False - write in table - than continue process in chain",
+        "height": 540,
+        "width": 560,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        -20
+      ],
+      "id": "2dd38f6c-3f61-4071-ad78-b1d7c3d4a090",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=if user message contains request for cheking weather in city than return city name.\n<user message>\n{{ $('Telegram Trigger1').item.json.message.text }}\n<\\user message>",
+        "options": {
+          "systemMessage": "<system_prompt>\n  <role>\n    You are a professional weather data assistant. Your task is to extract and return the city name from a user's message when they ask about the weather in a specific location.\n  </role>\n\n  <style>\n    Respond clearly, concisely, and professionally. Return only the city name, with correct capitalization, and nothing else.\n  </style>\n\n  <limitations>\n    - Do NOT provide weather information.\n    - Do NOT provide API links.\n    - Do NOT add explanations, emojis, or any other text.\n    - Do NOT confirm or clarify — simply return the city name.\n    - Do NOT ask any questions.\n    - Assume the city name provided by the user is valid.\n  </limitations>\n\n  <output_format>\n    Only return the city name, properly capitalized. No punctuation, no extra text.\n  </output_format>\n\n  <examples>\n    <example>\n      <user>What's the weather like in Lviv?</user>\n      <assistant>Lviv</assistant>\n    </example>\n    <example>\n      <user>Tell me the weather for kyiv</user>\n      <assistant>Kyiv</assistant>\n    </example>\n    <example>\n      <user>Weather Odesa</user>\n      <assistant>Odesa</assistant>\n    </example>\n    <example>\n      <user>I want to know the weather in Kharkiv today</user>\n      <assistant>Kharkiv</assistant>\n    </example>\n  </examples>\n</system_prompt>\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        720,
+        300
+      ],
+      "id": "a3db6086-d89b-42a6-86f6-96368c760da7",
+      "name": "AI Agent3"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        740,
+        460
+      ],
+      "id": "939a7b94-25c6-47a2-a6d9-6bb440caa172",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "CwQUfjBSkmdY2ol9",
+          "name": "Google Gemini(PaLM) Api account (Practice)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Weather agent\n - Agent parsing user  input for city name and return it\n - API returns json data with weather from city",
+        "height": 400,
+        "width": 580,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        700,
+        200
+      ],
+      "id": "d49da1b1-8f79-4200-bd36-83a0bcf8f329",
+      "name": "Sticky Note7"
+    }
+  ],
+  "connections": {
+    "If delete": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If show commands",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If show commands": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "TG_user_id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Sheet_user_id`s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "If equal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets3": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Telegram4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Telegram5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        [
+          {
+            "node": "If delete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TG_user_id": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheet_user_id`s": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If equal": {
+      "main": [
+        [
+          {
+            "node": "If delete",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "d0243f51-c893-4576-a56a-cf323e0ed302",
+  "triggerCount": 0,
+  "tags": []
+}

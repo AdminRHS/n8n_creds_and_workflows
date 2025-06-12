@@ -1,0 +1,3679 @@
+{
+  "createdAt": "2025-06-10T07:56:52.586Z",
+  "updatedAt": "2025-06-11T08:08:43.329Z",
+  "id": "qNkWTkGpfGzJkvFy",
+  "name": "Discord Report Parser",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2560,
+        2000
+      ],
+      "id": "c801f0d3-ee3b-406f-b090-1167fc62c0f3",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "AI Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.author }}",
+            "Date": "={{ $json.timestamp }}",
+            "Report text": "={{ $json.message }}",
+            "row_number": "={{ $json.row_number }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        200
+      ],
+      "id": "7a4809ce-1e07-4f9c-8a4d-f95a425bcdbd",
+      "name": "AI sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 943166496,
+          "mode": "list",
+          "cachedResultName": "FInance Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=943166496"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}",
+            "Date": "={{ $json.timestamp }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        400
+      ],
+      "id": "d5ad3f85-375b-49d3-8025-171dd50bd51b",
+      "name": "Finance Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1347111996553953280",
+          "mode": "list",
+          "cachedResultName": "ai-reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1347111996553953280"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        200
+      ],
+      "id": "9013ec0a-26ac-434a-9189-5934f3442cfc",
+      "name": "Discord AI",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1346390192440868954",
+          "mode": "list",
+          "cachedResultName": "finance-tasks-reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1346390192440868954"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        400
+      ],
+      "id": "7114e956-edd2-4c9f-96ef-8e45006d30af",
+      "name": "Discord Finance",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "921032850327871518",
+          "mode": "list",
+          "cachedResultName": "leadgen_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/921032850327871518"
+        },
+        "limit": 20,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        600
+      ],
+      "id": "a72a26c3-9019-43e7-993d-3eb02d03cc96",
+      "name": "Discord LeadGens",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "994614802083217418",
+          "mode": "id"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        980
+      ],
+      "id": "1fa4b78c-bed5-4303-ac38-0b815b4a7ffa",
+      "name": "Discord RC",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 502554882,
+          "mode": "list",
+          "cachedResultName": "RC Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=502554882"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "Name": "={{ $json.author }}",
+            "Date": "={{ $json.timestamp }}",
+            "Report text": "={{ $json.message }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        980
+      ],
+      "id": "15429654-df05-41cf-a2fa-857efe683320",
+      "name": "RC Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "913032931281350716",
+          "mode": "list",
+          "cachedResultName": "design_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/913032931281350716"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        1160
+      ],
+      "id": "92ca106e-bd9f-42bb-bb88-6f3c36f19b85",
+      "name": "Discord Design",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 116574041,
+          "mode": "list",
+          "cachedResultName": "Design Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=116574041"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "Name": "={{ $json.author }}",
+            "Date": "={{ $json.timestamp }}",
+            "Report text": "={{ $json.message }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        1160
+      ],
+      "id": "44e596f5-24a1-4941-8003-abbcdcde4949",
+      "name": "Design Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "918543419738054656",
+          "mode": "list",
+          "cachedResultName": "video_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/918543419738054656"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        1340
+      ],
+      "id": "1cf0be44-3044-4e13-a274-3cf9b19213a3",
+      "name": "Discord Video",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1095114866,
+          "mode": "list",
+          "cachedResultName": "Video Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=1095114866"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        1340
+      ],
+      "id": "49e91f94-db58-480b-bfa9-91a9c3717503",
+      "name": "Video Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "960511819607326780",
+          "mode": "list",
+          "cachedResultName": "assistants_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/960511819607326780"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        1520
+      ],
+      "id": "9ce0770c-c81a-4879-9507-7e5eb4ad9832",
+      "name": "Discord Assistants",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1012432891,
+          "mode": "list",
+          "cachedResultName": "Assistants Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=1012432891"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        1520
+      ],
+      "id": "f0d054b6-0f7c-4307-b4d2-d2d44e853aa0",
+      "name": "Assistants Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "920632335932719144",
+          "mode": "list",
+          "cachedResultName": "illustration_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/920632335932719144"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        1700
+      ],
+      "id": "8e58b659-ee8d-4aec-9302-76cbc2412d65",
+      "name": "Discord Illustation",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 821558930,
+          "mode": "list",
+          "cachedResultName": "Illustation Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=821558930"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        1700
+      ],
+      "id": "d70b1582-a5ab-4332-83b2-4d13246bcd06",
+      "name": "Illustation Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "920648663901028373",
+          "mode": "list",
+          "cachedResultName": "cms_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/920648663901028373"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        1900
+      ],
+      "id": "bf56282b-b06e-4418-8905-5f532e4604b7",
+      "name": "Discord CMS",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1306390602,
+          "mode": "list",
+          "cachedResultName": "CMS Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=1306390602"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        1900
+      ],
+      "id": "753a56d4-11ac-4932-b221-84e02207c806",
+      "name": "CMS Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "920948375543750656",
+          "mode": "list",
+          "cachedResultName": "crm_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/920948375543750656"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        2100
+      ],
+      "id": "eecbf9aa-a63a-4e89-8c70-8e9810d8e944",
+      "name": "Discord CRM",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 978101647,
+          "mode": "list",
+          "cachedResultName": "CRM Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=978101647"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        2100
+      ],
+      "id": "343fb415-020a-452a-ba06-5cadd92d0f29",
+      "name": "CRM Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "\n## **AI**",
+        "height": 80,
+        "width": 210,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        220
+      ],
+      "id": "1067d45c-8863-4610-a0ea-79ecccd5fe66",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1009415418282262529",
+          "mode": "list",
+          "cachedResultName": "smm_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1009415418282262529"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        2280
+      ],
+      "id": "8e0d2ac3-5bbd-45d9-a951-48601b328f91",
+      "name": "Discord SMM",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 594247994,
+          "mode": "list",
+          "cachedResultName": "SMM Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=594247994"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "Name": "={{ $json.author }}",
+            "Date": "={{ $json.timestamp }}",
+            "Report text": "={{ $json.message }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        2280
+      ],
+      "id": "cc276684-bafe-48db-b55d-74805b56c07f",
+      "name": "SMM sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1009415848101953596",
+          "mode": "list",
+          "cachedResultName": "ads_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1009415848101953596"
+        },
+        "limit": 20,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        2480
+      ],
+      "id": "3138024c-3b9a-4752-8de4-8f3867c90b76",
+      "name": "Discord Ads",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1009416467172831273",
+          "mode": "list",
+          "cachedResultName": "copywrite_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1009416467172831273"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        2660
+      ],
+      "id": "3e7943ef-4339-446d-8597-4c13e43dd071",
+      "name": "Discord Copywrite",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1239892273,
+          "mode": "list",
+          "cachedResultName": "Copywrite Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=1239892273"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "Name": "={{ $json.author }}",
+            "Date": "={{ $json.timestamp }}",
+            "Report text": "={{ $json.message }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        2660
+      ],
+      "id": "1ca17697-b1b8-4177-913d-4159cdea0533",
+      "name": "Copywrite Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "963680721988386836",
+          "mode": "list",
+          "cachedResultName": "pm_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/963680721988386836"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        2840
+      ],
+      "id": "d4497a89-d131-47d0-afcd-871143ef3bb3",
+      "name": "Discord PM",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1286275221,
+          "mode": "list",
+          "cachedResultName": "PM Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=1286275221"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "Name": "={{ $json.author }}",
+            "Date": "={{ $json.timestamp }}",
+            "Report text": "={{ $json.message }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        2840
+      ],
+      "id": "84895150-dd1b-4e10-b04a-ea386bed7d69",
+      "name": "PM Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "968532306715365497",
+          "mode": "list",
+          "cachedResultName": "marketing_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/968532306715365497"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        3020
+      ],
+      "id": "01edda6a-1f4f-4624-b363-7ddac310661d",
+      "name": "Discord Marketing",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2034382134,
+          "mode": "list",
+          "cachedResultName": "Marketing Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=2034382134"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        3020
+      ],
+      "id": "770541d3-55d0-4d06-9855-3b2950a99689",
+      "name": "Marketing Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "973529430867738634",
+          "mode": "list",
+          "cachedResultName": "pi_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/973529430867738634"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        3200
+      ],
+      "id": "f74dd666-5f4d-4178-b89a-13a6cff22e49",
+      "name": "Discord Pi",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 288425960,
+          "mode": "list",
+          "cachedResultName": "Pi Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=288425960"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        3200
+      ],
+      "id": "2c622757-f41f-4105-8a5a-96fa28c6066e",
+      "name": "Pi Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "978398817676324895",
+          "mode": "list",
+          "cachedResultName": "affiliate_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/978398817676324895"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        3380
+      ],
+      "id": "4f0df2c1-2195-49e3-b2bd-8a73205b6984",
+      "name": "Discord Affiliates",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1353774808,
+          "mode": "list",
+          "cachedResultName": "Affiliate Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=1353774808"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        3380
+      ],
+      "id": "97c5349d-f617-4693-ad18-85ecb3d6cb61",
+      "name": "Affiliates Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1018842568181690408",
+          "mode": "list",
+          "cachedResultName": "hr_reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1018842568181690408"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        3580
+      ],
+      "id": "7330f121-29dc-45fc-b710-8661867cfbb9",
+      "name": "Discord HR",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 553973621,
+          "mode": "list",
+          "cachedResultName": "HR Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=553973621"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        3580
+      ],
+      "id": "f5871320-6ff4-4b62-a4fa-b08cf27bd067",
+      "name": "HR Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1171839859078467714",
+          "mode": "list",
+          "cachedResultName": "sales-reports",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963/1171839859078467714"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        3780
+      ],
+      "id": "98b7945a-4a8b-4eb5-91e8-37ca5011d963",
+      "name": "Discord Sales",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 525759113,
+          "mode": "list",
+          "cachedResultName": "Sales Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=525759113"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        3780
+      ],
+      "id": "5b232314-d143-43ea-9026-a305139c6897",
+      "name": "Sales Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "\n## **FINANCE**",
+        "height": 80,
+        "width": 210,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        420
+      ],
+      "id": "e95f8a25-89f8-46a1-9c2e-bedcab6ea3e5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "\n## **LEAD GENERATORS**",
+        "height": 80,
+        "width": 210,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        620
+      ],
+      "id": "51248f06-f478-4fee-b679-13cd9ae37dd7",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "\n## **RC**",
+        "height": 80,
+        "width": 210,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1000
+      ],
+      "id": "7c554592-96f9-4794-a462-97f2674c5951",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "\n## **DESIGN**",
+        "height": 80,
+        "width": 210,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1180
+      ],
+      "id": "2695d294-0b9e-4569-891e-eb7b8922b733",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "\n## **ASSISTANTS**",
+        "height": 80,
+        "width": 210,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1540
+      ],
+      "id": "3cfc6bb5-a727-4e23-932d-03c02b011d00",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "\n## **VIDEO EDITORS**",
+        "height": 80,
+        "width": 210,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1360
+      ],
+      "id": "0ec6446b-1f03-44a4-b1e3-6ba9455ed5fc",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "\n## **ILLUSTRATION**",
+        "height": 80,
+        "width": 210,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1720
+      ],
+      "id": "3b2a81ac-0db2-4185-8c4d-14c95addbdde",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "\n## **CMS**",
+        "height": 80,
+        "width": 210,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        1920
+      ],
+      "id": "ce159944-8b8e-4b29-89a4-a2da73b412f4",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "\n## **CRM**",
+        "height": 80,
+        "width": 210,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        2120
+      ],
+      "id": "5f1e9078-b341-4fa4-9f00-f68debc9cea4",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "\n## **SMM**",
+        "height": 80,
+        "width": 210,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        2300
+      ],
+      "id": "035bae63-2323-4937-a0fa-f4e8462c0870",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "\n## **LG TEAM LEADS**",
+        "height": 80,
+        "width": 210,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        820
+      ],
+      "id": "8d769986-f6b5-46e5-89a4-072255f9a63d",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "\n## **ADS**",
+        "height": 80,
+        "width": 210,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        2500
+      ],
+      "id": "34534caf-0ec3-43c0-8c95-092a69033328",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "\n## **COPYWRITE**",
+        "height": 80,
+        "width": 210
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        2680
+      ],
+      "id": "774430e4-f015-4e5f-89ad-e6072d144427",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "\n## **PM**",
+        "height": 80,
+        "width": 210,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        2860
+      ],
+      "id": "4cb705b6-bbd2-4e83-ad03-45b40947eec9",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "content": "\n## **PI**",
+        "height": 80,
+        "width": 210,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        3220
+      ],
+      "id": "14003ff0-3b0d-4230-b2ef-c1f253c9274b",
+      "name": "Sticky Note15"
+    },
+    {
+      "parameters": {
+        "content": "\n## **MARKETING**",
+        "height": 80,
+        "width": 210,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        3040
+      ],
+      "id": "a19b195a-32e3-4cde-b23c-987be8721e2a",
+      "name": "Sticky Note16"
+    },
+    {
+      "parameters": {
+        "content": "\n## **AFFILIATES**",
+        "height": 80,
+        "width": 210,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        3400
+      ],
+      "id": "05c1d6cb-69d9-4e34-a84b-0ba34fcb7e35",
+      "name": "Sticky Note17"
+    },
+    {
+      "parameters": {
+        "content": "\n## **HR**",
+        "height": 80,
+        "width": 210,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        3600
+      ],
+      "id": "632d5eef-93e4-43a0-8d6e-f866b39d223c",
+      "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
+        "content": "\n## **SALES**",
+        "height": 80,
+        "width": 210,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        3800
+      ],
+      "id": "39435e60-ff67-49e0-8b6c-12f2af95e302",
+      "name": "Sticky Note19"
+    },
+    {
+      "parameters": {
+        "content": "## Filtering New department messages",
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "21469456-3c80-4379-91fa-bb767db92b14",
+      "name": "Sticky Note20"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        3780
+      ],
+      "id": "9aaab851-dd46-4f33-8be2-722210124452",
+      "name": "Filtering New Sales messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        3580
+      ],
+      "id": "f8b15d5d-bca5-4f7e-a852-2fa8670f68c7",
+      "name": "Filtering New HR messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        3380
+      ],
+      "id": "ace9f318-1d47-42a3-a164-26c48bf82ce9",
+      "name": "Filtering New Affiliates messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        3200
+      ],
+      "id": "36e8d6f6-0d0c-43c1-ba97-5498f8cd0164",
+      "name": "Filtering New PI messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        3020
+      ],
+      "id": "7edf66ad-6144-4c79-8088-87efb614a1a8",
+      "name": "Filtering New Marketing messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        2840
+      ],
+      "id": "54001fec-1d15-4749-a248-b02d47c516f6",
+      "name": "Filtering New PM Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        2660
+      ],
+      "id": "3137f47b-240f-4345-88d3-690cffef4d37",
+      "name": "Filtering New Copywrite Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        2480
+      ],
+      "id": "4228eb28-ec9c-4b78-a141-7280aeea248e",
+      "name": "Filtering New Ads Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        2280
+      ],
+      "id": "3af54f8b-a395-4321-bcf0-e77d49d791a7",
+      "name": "Filtering New SMM Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        2100
+      ],
+      "id": "ad3d7634-5025-4e06-9088-2e001da9644b",
+      "name": "Filtering New CRM Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        1900
+      ],
+      "id": "c67737ec-f5f3-4b4e-ae8d-223271b34d3a",
+      "name": "Filtering New CMS Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        1700
+      ],
+      "id": "72f0f1bc-0738-4153-af8b-d823de774986",
+      "name": "Filtering New Illustation Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        1520
+      ],
+      "id": "02bd9bbc-b714-497f-a652-aa23b756e5cf",
+      "name": "Filtering New Assistants Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        1340
+      ],
+      "id": "0c44506a-7867-4373-b078-b13cecef93ae",
+      "name": "Filtering New Video Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        1160
+      ],
+      "id": "4d98b48f-62e8-4009-93d0-17731c7ab4d2",
+      "name": "Filtering New Design Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        980
+      ],
+      "id": "d2027ae4-6809-48b1-ba34-cd52b91c8179",
+      "name": "Filtering New RC Mesages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        600
+      ],
+      "id": "421f57b2-7864-4c0d-80da-67be016357cc",
+      "name": "Filtering New LG Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        400
+      ],
+      "id": "27bb5207-f452-457c-af04-6592b7a49f83",
+      "name": "Filtering New Finance Messages"
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        200
+      ],
+      "id": "c6eb1c86-f1e8-4b01-b681-f7038cf81da6",
+      "name": "Filtering New AI Messages"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 708931920,
+          "mode": "list",
+          "cachedResultName": "Ads Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=708931920"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.timestamp }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        2480
+      ],
+      "id": "467a8b1a-a8a0-4f6c-90d0-e50cec5e9806",
+      "name": "Ads Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2011925316,
+          "mode": "list",
+          "cachedResultName": "LeadGen Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=2011925316"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.author }}",
+            "Date": "={{ $json.timestamp }}",
+            "Report text": "={{ $json.message }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        600
+      ],
+      "id": "1e5fbc43-d4aa-45c9-b2a6-e50df521d0cd",
+      "name": "LG Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "https://discord.com/channels/732698343951695963/1331236411361329152",
+          "mode": "url",
+          "__regex": "https:\\/\\/discord.com\\/channels\\/[0-9]+\\/([0-9]+)"
+        },
+        "limit": 8,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        800
+      ],
+      "id": "16acf896-1caa-473b-bb53-185388c32f1f",
+      "name": "Discord LG TeamLeads",
+      "webhookId": "4ef70230-445a-41eb-835c-c1a3af17cc8f",
+      "alwaysOutputData": true,
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1723319401,
+          "mode": "list",
+          "cachedResultName": "LG TeamLeads Reports",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xZF-T9QFJhNFKiCLrM6csJ9hMYzdFUgc2m4zg3hcKW4/edit#gid=1723319401"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "Report text": "={{ $json.message }}",
+            "Name": "={{ $json.author }}",
+            "Date": "={{ $json.timestamp }}"
+          },
+          "matchingColumns": [
+            "Date"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Report text",
+              "displayName": "Report text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        380,
+        800
+      ],
+      "id": "17a04199-e54a-49d7-8f10-e709869ac6f2",
+      "name": "LG Team Leads Sheet",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let startRowNumber = 2;\n// Сортировка сообщений по дате (от старых к новым)\nitems.sort((a, b) => {\n  return new Date(a.json.timestamp).getTime() - new Date(b.json.timestamp).getTime();\n});\n\nreturn items.map((item, index) => {\n  // Преобразование timestamp в формат dd.mm.yyyy hh:mm\n  const date = new Date(item.json.timestamp);\n  const day = (\"0\" + date.getDate()).slice(-2);\n  const month = (\"0\" + (date.getMonth() + 1)).slice(-2);\n  const year = date.getFullYear();\n  const hours = (\"0\" + date.getHours()).slice(-2);\n  const minutes = (\"0\" + date.getMinutes()).slice(-2);\n  const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;\n  \n  return {\n    json: {\n      row_number: startRowNumber + index,\n      message: item.json.content,\n      timestamp: formattedDate,\n      author: item.json.author.username,\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        800
+      ],
+      "id": "94d98eb5-2a3f-4a68-8807-5efafc8bace9",
+      "name": "Filtering New LG Team Leads Messages"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Discord AI",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Finance",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord LeadGens",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord RC",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Design",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Video",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Assistants",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Illustation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord CMS",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord CRM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord SMM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Ads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Copywrite",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord PM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Marketing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Pi",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Affiliates",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord HR",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Sales",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord LG TeamLeads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord AI": {
+      "main": [
+        [
+          {
+            "node": "Filtering New AI Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Finance": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Finance Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord LeadGens": {
+      "main": [
+        [
+          {
+            "node": "Filtering New LG Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord RC": {
+      "main": [
+        [
+          {
+            "node": "Filtering New RC Mesages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Design": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Design Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Video": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Video Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Assistants": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Assistants Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Illustation": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Illustation Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord CMS": {
+      "main": [
+        [
+          {
+            "node": "Filtering New CMS Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord CRM": {
+      "main": [
+        [
+          {
+            "node": "Filtering New CRM Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord SMM": {
+      "main": [
+        [
+          {
+            "node": "Filtering New SMM Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Ads": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Ads Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Copywrite": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Copywrite Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord PM": {
+      "main": [
+        [
+          {
+            "node": "Filtering New PM Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Marketing": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Marketing messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Pi": {
+      "main": [
+        [
+          {
+            "node": "Filtering New PI messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Affiliates": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Affiliates messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord HR": {
+      "main": [
+        [
+          {
+            "node": "Filtering New HR messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord Sales": {
+      "main": [
+        [
+          {
+            "node": "Filtering New Sales messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Sales messages": {
+      "main": [
+        [
+          {
+            "node": "Sales Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New HR messages": {
+      "main": [
+        [
+          {
+            "node": "HR Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Affiliates messages": {
+      "main": [
+        [
+          {
+            "node": "Affiliates Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New PI messages": {
+      "main": [
+        [
+          {
+            "node": "Pi Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Marketing messages": {
+      "main": [
+        [
+          {
+            "node": "Marketing Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New PM Messages": {
+      "main": [
+        [
+          {
+            "node": "PM Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Copywrite Messages": {
+      "main": [
+        [
+          {
+            "node": "Copywrite Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Ads Messages": {
+      "main": [
+        [
+          {
+            "node": "Ads Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New SMM Messages": {
+      "main": [
+        [
+          {
+            "node": "SMM sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New CRM Messages": {
+      "main": [
+        [
+          {
+            "node": "CRM Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New CMS Messages": {
+      "main": [
+        [
+          {
+            "node": "CMS Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Illustation Messages": {
+      "main": [
+        [
+          {
+            "node": "Illustation Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Assistants Messages": {
+      "main": [
+        [
+          {
+            "node": "Assistants Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Video Messages": {
+      "main": [
+        [
+          {
+            "node": "Video Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Design Messages": {
+      "main": [
+        [
+          {
+            "node": "Design Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New RC Mesages": {
+      "main": [
+        [
+          {
+            "node": "RC Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New LG Messages": {
+      "main": [
+        [
+          {
+            "node": "LG Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New Finance Messages": {
+      "main": [
+        [
+          {
+            "node": "Finance Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New AI Messages": {
+      "main": [
+        [
+          {
+            "node": "AI sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord LG TeamLeads": {
+      "main": [
+        [
+          {
+            "node": "Filtering New LG Team Leads Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtering New LG Team Leads Messages": {
+      "main": [
+        [
+          {
+            "node": "LG Team Leads Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "5cb984a6-554e-43d3-80c8-bc62fa3f039c",
+  "triggerCount": 1,
+  "tags": []
+}

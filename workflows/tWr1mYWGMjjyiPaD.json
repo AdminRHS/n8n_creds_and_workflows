@@ -1,0 +1,413 @@
+{
+  "createdAt": "2025-06-11T11:53:49.075Z",
+  "updatedAt": "2025-06-11T11:54:02.571Z",
+  "id": "tWr1mYWGMjjyiPaD",
+  "name": "CRM_Integration",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "crm-integration",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -920,
+        220
+      ],
+      "id": "c8b8fddc-7732-42b9-b876-c0972c5d7d9b",
+      "name": "Webhook",
+      "webhookId": "2c58efd5-810f-48b0-81a2-3a460f0def94"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b3a8c508-129d-416c-ab2a-7f6501d44c8b",
+                    "leftValue": "={{$json.body.message.includes(\"покажи данные департамента\")}}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Read from CRM"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e49fbdd6-78c1-4de4-ac37-cb92d0694871",
+                    "leftValue": "={{$json.body.message.includes(\"запиши\")}}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Write to CRM"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -700,
+        220
+      ],
+      "id": "120355f3-4c63-433a-8ed8-63d3a9b8720c",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "url": "=http://new.crm-s.com/api/departments/{{ $json.body.message.split(\" \")[3] }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        0
+      ],
+      "id": "cc38d074-cb3b-4773-8d3a-16480265ea4b",
+      "name": "HTTP Read Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SY2duFo5Q5EVG5xR",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://new.crm-s.com/api/departments/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "{{ $json.body.message.split(' ').slice(4).join(' ') }}"
+            },
+            {
+              "name": "status_id",
+              "value": "8"
+            },
+            {
+              "name": "translation_id",
+              "value": "1"
+            },
+            {
+              "name": "priority_id",
+              "value": "1"
+            },
+            {
+              "name": "color",
+              "value": "rgb(255, 87, 87)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        380
+      ],
+      "id": "48eaaef6-8ad0-45c5-a342-5f7923719228",
+      "name": "HTTP Write Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SY2duFo5Q5EVG5xR",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"response\": \"{{ $json['response'] }}\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        60,
+        0
+      ],
+      "id": "adfda934-d227-4ee4-971b-8ca915d49311",
+      "name": "Respond to Read Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"response\": \"{{ $json['response'] }}\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        60,
+        380
+      ],
+      "id": "f59db39f-c37e-45f0-bb1b-6763816636d7",
+      "name": "Respond to Write Webhook",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "209c4d87-5be5-4ca1-a822-73c5afb51f03",
+              "name": "response",
+              "value": "=Департамент {{ $('Switch').item.json.body.message.split(' ')[3] }} создан с именем {{ $('Switch').item.json.body.message.split(' ').slice(4).join(' ') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -180,
+        380
+      ],
+      "id": "b5afd5c0-142d-4c04-b306-a8d76f10faaf",
+      "name": "Edit Write Field",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f0157906-80ea-4f41-815f-3cc8b6937668",
+              "name": "response",
+              "value": "=Данные департамента: {{ $json.data.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -180,
+        0
+      ],
+      "id": "8cadbb31-4f12-4fe2-b68a-b2ea0cb04f0d",
+      "name": "Read Field"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1ZP-R7Hrh7pc6Ba_NMnVC8kixzlvMQfCaj4W8W036Xbg/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZP-R7Hrh7pc6Ba_NMnVC8kixzlvMQfCaj4W8W036Xbg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "output": "={{ $json.response }}"
+          },
+          "matchingColumns": [
+            "output"
+          ],
+          "schema": [
+            {
+              "id": "output",
+              "displayName": "output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        280,
+        380
+      ],
+      "id": "84100c03-be87-450d-9ab4-47ae7e9fa9a8",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# РАБОТАЕТ",
+        "height": 80,
+        "width": 220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -100
+      ],
+      "id": "146d6869-989f-4f88-931a-61db820df00a",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HTTP Read Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Write Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Read Request": {
+      "main": [
+        [
+          {
+            "node": "Read Field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Write Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Write Field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Write Field": {
+      "main": [
+        [
+          {
+            "node": "Respond to Write Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Field": {
+      "main": [
+        [
+          {
+            "node": "Respond to Read Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Write Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "07a74399-1b5b-47dc-9c4d-3f392be2cb93",
+  "triggerCount": 0,
+  "tags": []
+}

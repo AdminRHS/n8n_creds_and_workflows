@@ -1,0 +1,1452 @@
+{
+  "createdAt": "2025-06-11T12:50:14.539Z",
+  "updatedAt": "2025-06-11T13:26:32.613Z",
+  "id": "rBYOh6VDwSrAbndJ",
+  "name": "Notion__DriveDropbox_Sync",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "databaseId": {
+          "__rl": true,
+          "value": "1f4b16a3-1451-803b-926c-f1f31c5537df",
+          "mode": "list",
+          "cachedResultName": "Google Drive, Dropbox, Notion",
+          "cachedResultUrl": "https://www.notion.so/1f4b16a31451803b926cf1f31c5537df"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        -20
+      ],
+      "id": "3cf92352-6e8b-411a-af15-c9d7cac6d72e",
+      "name": "Notion Trigger",
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "event": "pagedUpdatedInDatabase",
+        "databaseId": {
+          "__rl": true,
+          "value": "1f4b16a3-1451-803b-926c-f1f31c5537df",
+          "mode": "list",
+          "cachedResultName": "Google Drive, Dropbox, Notion",
+          "cachedResultUrl": "https://www.notion.so/1f4b16a31451803b926cf1f31c5537df"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        180
+      ],
+      "id": "2cbfa41d-2dea-41a9-b233-aa0c5507f3b2",
+      "name": "Notion Trigger1",
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -700,
+        100
+      ],
+      "id": "dd78c222-e2b9-467c-b26e-2376e3b0cffc",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9663e4e6-67aa-4496-b980-56f3594d0e8d",
+              "leftValue": "={{$json.properties[\"Last Sync Source\"]?.select?.name}}",
+              "rightValue": "GoogleDrive",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "e1f4871d-4e10-4919-9377-231e7d332372",
+              "leftValue": "={{$json.properties[\"Last Sync Source\"]?.select?.name}}",
+              "rightValue": "Dropbox",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2080,
+        360
+      ],
+      "id": "fc07678d-e94c-4b51-9543-b4985c4553e0",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json._name }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json._driveParent }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        440,
+        20
+      ],
+      "id": "7c267718-1df1-4d3e-9849-b61c19061237",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "l5J3kVIH7euvMeJa",
+          "name": "Dev Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "path": "={{ $json._dropboxPath + '/' + $json._name }}"
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        900,
+        20
+      ],
+      "id": "ca80c625-db38-4be8-ab1a-ad25d316ae68",
+      "name": "Dropbox"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{$node[\"Notion Trigger\"].json.id}}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "GDrive ID|rich_text",
+              "textContent": "={{$node[\"Google Drive\"].json.id}}"
+            },
+            {
+              "key": "Dropbox ID|rich_text",
+              "textContent": "={{$node[\"Dropbox\"].json.metadata.path_display}}"
+            },
+            {
+              "key": "Last Sync Source|select",
+              "selectValue": "Notion"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        20
+      ],
+      "id": "58418b27-558c-4266-94b0-f06ac6bf1fec",
+      "name": "Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.Parent[0] }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -300,
+        -100
+      ],
+      "id": "b0cbb671-0772-42cc-8532-2c83bef189b3",
+      "name": "Notion1",
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Пример «Ensure Parents»: получаем цепочку родительских ID из Notion\n// и поочерёдно создаём папки в Google Drive и Dropbox\n// В данном примере мы просто возвращаем значения для дальнейших узлов.\n\nconst page = items[0].json;\nconst parents = page.properties.Parent?.relation || [];\n\nlet driveParentId = '1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh';\nlet dropboxPath = '';\n\nfor (const rel of parents) {\n  // Тут вы можете проверять, есть ли уже GDrive ID в Notion для этого rel.id\n  // — если нет, создавать папку в Google Drive (через следующий узел)\n  // и записывать результат обратно в Notion.\n  //\n  // Аналогично для Dropbox: строить новый путь на основе dropboxPath.\n\n  // Для простоты вернём текущие значения:\n  driveParentId = driveParentId;\n  dropboxPath = dropboxPath + '/' + page.properties.Name.title[0].plain_text;\n}\n\nreturn [{\n  json: {\n    parentGDriveId: driveParentId,\n    parentDropboxPath: dropboxPath,\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1780,
+        560
+      ],
+      "id": "3f56cc1a-0de0-4574-8099-bae3d4cd7a25",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "functionCode": "// items — массив объектов вида item.json = { id, Parent, Name, \"GDrive ID\", ... }\nreturn items.map(item => {\n  // превращаем Name → чистое название\n  const name = item.json.Name?.replace(/^\"|\"$/g, '') || 'untitled';\n\n  // сюда будем записывать в родительскую папку Google Drive\n  const driveParentId = item.json['GDrive ID'] || 'root';\n\n  // путь внутри Dropbox\n  const dropboxPath = `/NotionSync/${name}`;\n\n  // засунем обратно\n  item.json._name         = name;\n  item.json._driveParent = driveParentId;\n  item.json._dropboxPath = dropboxPath;\n\n  return item;\n});\n"
+      },
+      "id": "ca88a46d-5e03-46f6-b287-fbb9ec8e4f52",
+      "name": "Function",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8e202cad-83b1-4ab8-ab2a-2edd02e36452",
+              "leftValue": "={{ $json.Parent?.length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -480,
+        100
+      ],
+      "id": "59c95dda-ccda-4123-8583-d9f23c8477ec",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "functionCode": "return items.map(item => {\n  const j = item.json;\n\n  // 1) достаём чистое название:\n  //    если есть Notion API properties — берём оттуда,\n  //    иначе fallback на j.Name\n  const rawFromProps = j.properties?.Name?.title?.[0]?.plain_text;\n  const name = rawFromProps ?? j.Name ?? 'untitled';\n  const cleanName = name.replace(/^\"|\"$/g, '');\n\n  // 2) родитель Google Drive — 'root' в корне\n  const driveParent = 'root';\n\n  // 3) путь для Dropbox\n  const dropboxPath = `/NotionSync/${cleanName}`;\n\n  // 4) сохраняем в JSON для следующих нод\n  item.json._name         = cleanName;\n  item.json._driveParent  = driveParent;\n  item.json._dropboxPath  = dropboxPath;\n\n  return item;\n});\n"
+      },
+      "id": "58f024d8-cb4f-4363-9d0d-0702d822cb9f",
+      "name": "Function1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c23362e4-0e97-4377-9127-93e9a3af6449",
+              "name": "driveParent",
+              "value": "1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh",
+              "type": "string"
+            },
+            {
+              "id": "68c6bd83-ef0f-4988-82cb-825cd9200ec9",
+              "name": "dropboxPath",
+              "value": "/NotionSync",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -200,
+        300
+      ],
+      "id": "bb0cfb96-f721-41aa-8bfe-c6fc538fd45d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        20,
+        240
+      ],
+      "id": "80e0424a-4978-43d2-bc02-4f7f47664d93",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.Name }}",
+        "driveId": {
+          "__rl": true,
+          "value": "=1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh",
+          "mode": "id"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.driveParent }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        240,
+        240
+      ],
+      "id": "f71a1440-9322-4880-b52d-290154e8f1c5",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "l5J3kVIH7euvMeJa",
+          "name": "Dev Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{$node[\"Notion Trigger1\"].json.id}}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "GDrive ID|rich_text",
+              "textContent": "={{$node[\"Google Drive1\"].json.id}}"
+            },
+            {
+              "key": "Dropbox ID|rich_text",
+              "textContent": "={{$node[\"Dropbox1\"].json.metadata.path_display}}"
+            },
+            {
+              "key": "Last Sync Source|select",
+              "selectValue": "Notion"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        740,
+        220
+      ],
+      "id": "a533322e-ada6-4b0b-b328-b5be252b99dd",
+      "name": "Notion2",
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c23362e4-0e97-4377-9127-93e9a3af6449",
+              "name": "_name",
+              "value": "={{ $json.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "68c6bd83-ef0f-4988-82cb-825cd9200ec9",
+              "name": "_driveParent",
+              "value": "={{ $json.property_g_drive_id }}",
+              "type": "string"
+            },
+            {
+              "id": "38e2a322-3eee-4f87-a8c7-d0b5ec3f4f56",
+              "name": "_dropboxPath",
+              "value": "={{ $json.property_dropbox_id.replace(/^id:/, '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        40
+      ],
+      "id": "acfd1651-0cd8-47cd-88d5-fd9c4612aa8a",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        260,
+        -80
+      ],
+      "id": "73f2e436-5c83-4c59-8982-d8d972473463",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -120,
+        40
+      ],
+      "id": "c67482eb-6460-42d1-91b5-ec55d1db4ea9",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        660,
+        -60
+      ],
+      "id": "7c0f2eef-e09c-4a65-af2a-c9b1f8dc8331",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {},
+      "id": "7ffdb833-a0c7-4464-91fb-4d96225fa57d",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1000,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "1f4b16a3-1451-803b-926c-f1f31c5537df",
+          "mode": "list",
+          "cachedResultName": "Google Drive, Dropbox, Notion",
+          "cachedResultUrl": "https://www.notion.so/1f4b16a31451803b926cf1f31c5537df"
+        },
+        "options": {}
+      },
+      "id": "af14f895-e083-48a4-abaa-c58eb5dfa6dc",
+      "name": "Get Notion Page",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        880
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const text = $json.properties.FileText.rich_text[0]?.text?.content || '';\n\nreturn [{\n  json: {},\n  binary: {\n    data: Buffer.from(text, 'utf-8').toString('base64')\n  }\n}];"
+      },
+      "id": "1a39cf91-596d-4bb8-9de2-5c7cd2314200",
+      "name": "Text to Binary",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "parents": [
+          "ВАШ_GOOGLE_DRIVE_FOLDER_ID"
+        ],
+        "options": {}
+      },
+      "id": "f2312d93-58aa-4951-934b-5f3c27af3b40",
+      "name": "Upload to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        1960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "path": "/NotionSync/{{$json.properties.Name.title[0].plain_text || 'file'}}.txt",
+        "binaryData": true
+      },
+      "id": "36ea6d19-e242-4660-8473-d1ec3795d9fb",
+      "name": "Upload to Dropbox",
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        1940,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": "={{$json.page_id}}",
+        "options": {}
+      },
+      "id": "b3c85524-c45d-4f99-9548-5b78c03a49d7",
+      "name": "Update Notion Page",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1841eb4-0ea0-464c-bbc9-30807e4f64e8",
+              "leftValue": "={{ $json.Type }}",
+              "rightValue": "File-Text",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -580,
+        880
+      ],
+      "id": "82a19e58-f9ea-4143-96f8-f0b1313cf2e6",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "operation": "getAll",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -280,
+        860
+      ],
+      "id": "5553747a-3017-4a7a-8d04-3e1c7909d6d3",
+      "name": "Notion3",
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://notion.com/{{ $json.root_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2500,
+        460
+      ],
+      "id": "5f15c418-d15b-4db4-85a5-4d1fb777b305",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "googleDocs"
+      },
+      "id": "5ed970a7-ad63-45dc-a37d-d72e26cb08dc",
+      "name": "Create Google Docs",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "1f4b16a3-1451-803b-926c-f1f31c5537df",
+          "mode": "list",
+          "cachedResultName": "Google Drive, Dropbox, Notion",
+          "cachedResultUrl": "https://www.notion.so/1f4b16a31451803b926cf1f31c5537df"
+        },
+        "options": {}
+      },
+      "id": "cbae41e9-1d7e-44e1-bb42-604002c81054",
+      "name": "Get Notion Page1",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1841eb4-0ea0-464c-bbc9-30807e4f64e8",
+              "leftValue": "={{$json.Type}}",
+              "rightValue": "File-Text",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1960,
+        680
+      ],
+      "id": "b4b0ff64-f15e-4ee7-b7b6-c6b9c28e9837",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "operation": "getAll",
+        "blockId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2140,
+        700
+      ],
+      "id": "36bc8503-c2d5-4818-9213-44c464e92067",
+      "name": "Notion4"
+    },
+    {
+      "parameters": {
+        "url": "=https://notion.com/{{ $json.root_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2420,
+        560
+      ],
+      "id": "25cdd505-33d0-4bea-8343-9268162154ad",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "path": "=/NotionSync/{{$json.fileName}}.docx",
+        "binaryData": true
+      },
+      "id": "1f58b103-a954-464d-996c-b8629d2290e1",
+      "name": "Upload to Dropbox1",
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        1560
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "root_id",
+              "field2": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2380,
+        760
+      ],
+      "id": "f6a118aa-7113-4b20-a4d5-27d50d172c8d",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "jsCode": "let content = '';\n\nfor (const item of items) {\n  // Каждый item — это отдельный блок\n  if (item.json.type === 'paragraph') {\n    content += (item.json.content || '') + '\\n\\n';\n  }\n  // Добавь обработку других типов блоков, если нужно\n}\n\n// pageId можно взять из первого блока\nreturn [{\n  json: {\n    ...items[0].json,\n    content,\n    pageId: items[0].json.parent.page_id\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        860
+      ],
+      "id": "627bd341-3762-4388-b19b-04886df0db31",
+      "name": "Gather Text From Blocks"
+    },
+    {
+      "parameters": {
+        "jsCode": "     return [{\n       json: {\n         ...$json,\n         fileName: $json.Name || 'untitled',\n         // или если сложная структура:\n         // fileName: $json.properties?.Name?.title?.[0]?.plain_text || 'untitled',\n         pageId: $json.id,\n         parentId: $json.Parent?.[0] || null\n       }\n     }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        1060
+      ],
+      "id": "d745e931-b355-4f82-9717-35555a125b0b",
+      "name": "Get FileName"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "pageId",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        160,
+        960
+      ],
+      "id": "334b44d4-4123-4a70-be90-3b65009e2ab0",
+      "name": "Merge File Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    ...$json,\n  },\n  binary: {\n    data: Buffer.from($json.content || '', 'utf-8')\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        1460
+      ],
+      "id": "b8a28fb9-2ef8-4f8c-8a3c-77821e0b7b51",
+      "name": "Text to Binary1"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "binaryData": true,
+        "name": "={{$json.fileName}}.txt",
+        "parents": [
+          "1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh"
+        ],
+        "options": {}
+      },
+      "id": "e5edcf75-d98b-4434-969b-ef091ea698b0",
+      "name": "Upload to Google Drive1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        1360
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "l5J3kVIH7euvMeJa",
+          "name": "Dev Google Drive"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "=1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh",
+        "title": "={{$json.fileName}}.docx"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        320,
+        800
+      ],
+      "id": "b2242665-65de-4aa0-a6a3-8573f7333e07",
+      "name": "Google Docs",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "=1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh",
+        "title": "Hello"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        780,
+        920
+      ],
+      "id": "0234c5bf-62c3-4c29-9aa8-f9c4f54b2e9b",
+      "name": "Google Docs1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql",
+        "query": "SELECT \n  input1.id AS doc_id, \n  input1.name, \n  input1.mimeType, \n  input2.content, \n  input2.page_id\nFROM input1\nLEFT JOIN input2 ON input1.name LIKE input2.Name || '%.docx'"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        600,
+        920
+      ],
+      "id": "70355d13-b1b8-42e4-aab1-00d53523747b",
+      "name": "Merge File Data1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=  https://docs.googleapis.com/v1/documents/{{$json.doc_id}}:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"requests\": [\n      {\n        \"insertText\": {\n          \"location\": {\n            \"index\": 1\n          },\n          \"text\": \"Тестовый текст\"\n        }\n      }\n    ]\n  }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        1120
+      ],
+      "id": "5a3cb281-235a-45b3-b664-45c9c76016be",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{$json.id}}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=Hello there!"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        980,
+        900
+      ],
+      "id": "e4e8cabb-767f-409a-842a-e81f97adc799",
+      "name": "Google Docs2",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "path": "=/NotionSync/{{$json.name}}"
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        480,
+        220
+      ],
+      "id": "2257eeda-b841-4765-8028-9363af7bd0d3",
+      "name": "Dropbox1"
+    }
+  ],
+  "connections": {
+    "Notion Trigger": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Dropbox": {
+      "main": [
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Notion1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Dropbox1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Dropbox",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Get Notion Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Notion Page": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text to Binary": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload to Dropbox",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Update Notion Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Dropbox": {
+      "main": [
+        [
+          {
+            "node": "Update Notion Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Notion3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get FileName",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion3": {
+      "main": [
+        [
+          {
+            "node": "Gather Text From Blocks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Notion Page1": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Notion4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Notion4": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gather Text From Blocks": {
+      "main": [
+        [
+          {
+            "node": "Merge File Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get FileName": {
+      "main": [
+        [
+          {
+            "node": "Merge File Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge File Data": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge File Data1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Text to Binary1": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload to Dropbox1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Merge File Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs1": {
+      "main": [
+        [
+          {
+            "node": "Google Docs2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge File Data1": {
+      "main": [
+        [
+          {
+            "node": "Google Docs1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dropbox1": {
+      "main": [
+        [
+          {
+            "node": "Notion2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "1de1518d-ab25-489b-be52-c325acbc18b1",
+  "triggerCount": 0,
+  "tags": []
+}

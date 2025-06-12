@@ -1,0 +1,285 @@
+{
+  "createdAt": "2025-06-12T09:07:33.929Z",
+  "updatedAt": "2025-06-12T12:06:37.629Z",
+  "id": "sIR0evIiJwqA1DIw",
+  "name": "Design Channels",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -40
+      ],
+      "id": "6ea9bbce-5e91-4300-a119-07f83adf6f9d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "channelId": "UCOwFX-YFktXxEIX7-IPjlKQ",
+        "part": [
+          "*",
+          "snippet",
+          "contentDetails",
+          "contentOwnerDetails",
+          "id",
+          "statistics",
+          "brandingSettings",
+          "localizations",
+          "status",
+          "topicDetails"
+        ]
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        -240
+      ],
+      "id": "238b2cd8-8e92-4dfc-80f2-9c71f6b1f15d",
+      "name": "YouTube",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "jWlNickvUhnmffw9",
+          "name": "DEV YouTube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "playlistItem",
+        "operation": "getAll",
+        "playlistId": "=UUOwFX-YFktXxEIX7-IPjlKQ",
+        "part": [
+          "*",
+          "contentDetails",
+          "id",
+          "snippet",
+          "status"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -140
+      ],
+      "id": "47efec64-76ee-42ea-bc9c-591287ac877b",
+      "name": "YouTube1",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "jWlNickvUhnmffw9",
+          "name": "DEV YouTube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "playlistItem",
+        "operation": "getAll",
+        "playlistId": "=UU70Mgjs8in30-EdimeE0Ecg",
+        "part": [
+          "*",
+          "contentDetails",
+          "id",
+          "snippet",
+          "status"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        480,
+        40
+      ],
+      "id": "a23c7ce4-97b8-411f-b90f-66325995cf92",
+      "name": "YouTube2",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "jWlNickvUhnmffw9",
+          "name": "DEV YouTube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// вычисляем метку времени «неделю назад»\nconst oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;\n\n// фильтруем элементы по дате публикации из snippet.publishedAt\nconst recentItems = items.filter(item => {\n  const pubDate = new Date(item.json.snippet.publishedAt).getTime();\n  return pubDate >= oneWeekAgo;\n});\n\nreturn recentItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        -40
+      ],
+      "id": "678c6622-4227-4d44-8674-a2dcd476db0d",
+      "name": "24 hours"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        820,
+        -40
+      ],
+      "id": "a9c50d4e-efd5-492e-9940-668c7bc67fce",
+      "name": "Merge YouTube videos"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "60d0d292-7f04-40b4-acf3-8a64c13acd26",
+              "name": "title",
+              "value": "={{ $json.snippet.title }}",
+              "type": "string"
+            },
+            {
+              "id": "753c7ef6-4008-4b16-81f0-7fbe291f015a",
+              "name": "url",
+              "value": "=https://youtube.com/watch?v={{ $json.snippet.resourceId.videoId }}",
+              "type": "string"
+            },
+            {
+              "id": "b51008a2-7ca7-408c-b212-f8a441d7c3e5",
+              "name": "publishedAt",
+              "value": "={{ $json.snippet.publishedAt }}",
+              "type": "string"
+            },
+            {
+              "id": "32915e1e-22a5-452f-a234-8371d3993da3",
+              "name": "videoId",
+              "value": "={{ $json.snippet.resourceId.videoId }}",
+              "type": "string"
+            },
+            {
+              "id": "081f3dd5-08ce-455f-9275-e10a8078a5b5",
+              "name": "channel_id",
+              "value": "=https://www.youtube.com/channel/{{ $json.snippet.channelId }}",
+              "type": "string"
+            },
+            {
+              "id": "e97eb45f-74d6-4e77-af1d-b8dd659469f0",
+              "name": "ChannelName",
+              "value": "={{ $json.snippet.channelTitle }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1340,
+        -40
+      ],
+      "id": "b8fa7e11-b685-41f3-b3c2-8bd7b17fe435",
+      "name": "Parse title ulr and publishedAt2"
+    },
+    {
+      "parameters": {
+        "videoId": "={{ $json.videoId }}"
+      },
+      "type": "n8n-nodes-youtube-transcription-kasha.youtubeTranscripter",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -40
+      ],
+      "id": "97dc3562-f28f-4a3c-9bf3-96dcedb94d47",
+      "name": "YouTube Transcript"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "YouTube1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "YouTube2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "24 hours": {
+      "main": [
+        [
+          {
+            "node": "Parse title ulr and publishedAt2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge YouTube videos": {
+      "main": [
+        [
+          {
+            "node": "24 hours",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube2": {
+      "main": [
+        [
+          {
+            "node": "Merge YouTube videos",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "YouTube1": {
+      "main": [
+        [
+          {
+            "node": "Merge YouTube videos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse title ulr and publishedAt2": {
+      "main": [
+        [
+          {
+            "node": "YouTube Transcript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "6867590c-cb65-4af9-aa2f-2d5aa572661d",
+  "triggerCount": 0,
+  "tags": []
+}

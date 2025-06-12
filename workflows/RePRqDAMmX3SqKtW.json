@@ -1,0 +1,431 @@
+{
+  "createdAt": "2025-06-11T11:39:54.713Z",
+  "updatedAt": "2025-06-11T11:40:14.028Z",
+  "id": "RePRqDAMmX3SqKtW",
+  "name": "Parse_Company_Links_-_emails",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1Jx0vSsCIPeBZxsdxJIyt7bvauxDbqF7XTFhuiTKcH7c/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Jx0vSsCIPeBZxsdxJIyt7bvauxDbqF7XTFhuiTKcH7c/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -420,
+        -60
+      ],
+      "id": "1c090ba7-7cbc-47a0-a806-812ba36ce284",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.0-flash-thinking-exp:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        140
+      ],
+      "id": "3de887c5-9934-414a-975b-d63098a01842",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Генерація лінків",
+        "height": 80,
+        "width": 320,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -180
+      ],
+      "id": "95ae4026-8df4-40e5-a2fb-a579c50a26a8",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.data }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        860,
+        180
+      ],
+      "id": "3d880a1b-58d7-4ff0-aeb2-2513845d2aa0",
+      "name": "Window Buffer Memory4"
+    },
+    {
+      "parameters": {
+        "content": "# Дістаємо необхідну інфу",
+        "height": 80,
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        580,
+        -180
+      ],
+      "id": "14a85341-2065-4941-8b4a-1d769177afcd",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro-exp-03-25:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        720,
+        180
+      ],
+      "id": "a60f32fb-8a70-4dfe-ac20-1ee8355e2eba",
+      "name": "OpenRouter Chat Model4",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -640,
+        -60
+      ],
+      "id": "bde37e18-8e79-4836-a660-817c6ea177b3",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are given a list of URLs: {{ $json.Links }}.  \nFor each link, return only one value in the format:\n\nhttps://r.jina.ai/<original_link>\n\nExample:  \nInput: https://air.be/  \nOutput: https://r.jina.ai/https://air.be/\n\nOnly return valid links. No duplicates, no extra text, no line breaks.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -180,
+        -60
+      ],
+      "id": "47b5523f-0889-40a9-b186-538b8acf8631",
+      "name": "URL Formatter"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Объединяем данные из всех элементов\nconst combinedData = items.map(item => item.json.data).join(\"\\n\");\n\n// Находим и сохраняем все email-адреса из исходных данных\nconst emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/g;\nconst foundEmails = combinedData.match(emailRegex) || [];\n\n// Сохраняем уникальные email-адреса в массиве\nconst uniqueEmails = [...new Set(foundEmails)];\nconsole.log(\"Найденные email-адреса:\", uniqueEmails);\n\n// Создаём плейсхолдеры для каждого email, чтобы защитить их во время очистки\nconst emailPlaceholders = {};\nuniqueEmails.forEach((email, index) => {\n  const placeholder = `__EMAIL_PLACEHOLDER_${index}__`;\n  emailPlaceholders[placeholder] = email;\n});\n\n// Заменяем email-адреса на плейсхолдеры в исходном тексте\nlet processedData = combinedData;\nObject.entries(emailPlaceholders).forEach(([placeholder, email]) => {\n  processedData = processedData.replace(new RegExp(email.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'), 'g'), placeholder);\n});\n\n// Максимально полная и универсальная очистка текста от всех типов артефактов\nlet cleaned = processedData\n  // 1. ПРЕДВАРИТЕЛЬНАЯ ОБРАБОТКА\n  // Фиксируем экранированные символы и форматирование\n  .replace(/\\\\n/g, '\\n')                                      // Заменяем текстовые \\n на настоящие переносы\n  .replace(/\\\\\"/g, '\"')                                       // Заменяем экранированные кавычки\n  .replace(/\\\\t/g, ' ')                                       // Заменяем табуляцию на пробел\n  \n  // 2. УДАЛЕНИЕ URL И ТЕХНИЧЕСКИХ ССЫЛОК\n  .replace(/blob:\\s*http:?\\s*\\/\\/[^\\s)]*\\s*/g, '')           // Удаляем blob URL с пробелами\n  .replace(/blob:http:\\/\\/[^\\s)]*\\s*/g, '')                  // Удаляем blob URL без пробелов\n  .replace(/https:\\s*\\/\\/[^\\s)*]*\\s*/g, '')                  // Удаляем https URL с пробелами\n  .replace(/http:\\s*\\/\\/[^\\s)*]*\\s*/g, '')                   // Удаляем http URL с пробелами\n  .replace(/https:\\/\\/[^\\s)*]*\\s*/g, '')                     // Удаляем https URL без пробелов\n  .replace(/http:\\/\\/[^\\s)*]*\\s*/g, '')                      // Удаляем http URL без пробелов\n  .replace(/\\?dgi=[a-zA-Z0-9-]+/g, '')                       // Удаляем параметры URL\n  .replace(/\\(https?:.*?\\)/g, '')                            // Удаляем URL в скобках\n  \n  // 3. УДАЛЕНИЕ ТЕХНИЧЕСКИХ И СПЕЦИАЛЬНЫХ ЭЛЕМЕНТОВ\n  .replace(/Title:.*?(?=\\n|$)/g, '')                          // Удаляем заголовки Title\n  .replace(/URL Source:.*?(?=\\n|$)/g, '')                     // Удаляем URL Source\n  .replace(/Markdown Content:.*?(?=\\n|$)/g, '')               // Удаляем Markdown Content\n  .replace(/!\\[.*?\\](?:\\(.*?\\))?/g, '')                       // Удаляем все markdown-картинки ![...](...)\n  .replace(/\\[.*?\\]\\(.*?\\)/g, '')                             // Удаляем все markdown-ссылки [...](...)\n  .replace(/\\[\\s*\\]/g, '')                                    // Удаляем пустые скобки []\n  .replace(/\\[\\#.*?\\#\\]/g, '')                                // Удаляем теги [#...#]\n  .replace(/\\#.*?\\#/g, '')                                    // Удаляем теги #...#\n  .replace(/\\(\\s*\\)/g, '')                                    // Удаляем пустые скобки ()\n  .replace(/^\\s*\\(/gm, '')                                    // Удаляем открывающие скобки в начале строки\n  .replace(/\\s*\\)$/gm, '')                                    // Удаляем закрывающие скобки в конце строки\n  .replace(/Consent.*?(?=\\n|$)/g, '')                         // Удаляем слово Consent и все после него до конца строки\n  .replace(/Details.*?(?=\\n|$)/g, '')                         // Удаляем Details\n  .replace(/About.*?(?=\\n|$)/g, '')                           // Удаляем About\n  \n  // 4. УДАЛЕНИЕ БЛОКОВ О COOKIES\n  .replace(/This website uses cookies[\\s\\S]*?Do not sell or share my personal information.*?(?=\\n|$)/g, '')\n  .replace(/Cookie declaration last updated.*?(?=\\n|$)/g, '')\n  .replace(/Cross-domain consent.*?(?=\\n|$)/g, '')\n  .replace(/\\*\\s*Necessary.*?We do not use cookies of this type\\./gs, '')\n  .replace(/\\*\\s*Preferences.*?We do not use cookies of this type\\./gs, '')\n  .replace(/\\*\\s*Statistics.*?HTTP Cookie(\\s|\\n|.)*?We do not use cookies of this type\\./gs, '')\n  .replace(/\\*\\s*Marketing.*?We do not use cookies of this type\\./gs, '')\n  .replace(/\\*\\s*Unclassified.*?We do not use cookies of this type\\./gs, '')\n  .replace(/Deny Allow selection Customize.*?(?=\\n|$)/g, '')\n  .replace(/Allow all.*?(?=\\n|$)/g, '')\n  \n  // 5. ИСПРАВЛЕНИЕ РАЗБИТЫХ ТЕКСТОВ \n  // Объединение разорванных URL и доменов\n  .replace(/(\\w+):\\s*\\/\\/\\s*(\\w+)\\.\\s*(\\w+)/g, '$1://$2.$3')\n  \n  // 6. ОБРАБОТКА РАЗБИТЫХ НА БУКВЫ СЛОВ\n  // Собираем буквы в слова (специально для \"e q u a l\" и подобных)\n  .replace(/\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*/g, '$1$2$3$4$5')\n  .replace(/\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*/g, '$1$2$3$4')\n  .replace(/\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*/g, '$1$2$3')\n  .replace(/\\n\\s*([a-zA-Z])\\s*\\n\\s*([a-zA-Z])\\s*\\n\\s*/g, '$1$2')\n  .replace(/\\n\\s*([a-zA-Z])\\s*\\n\\s*/g, '$1')\n  // Проходим несколько раз, чтобы собрать более длинные цепочки букв\n  .replace(/([a-zA-Z])(?:\\s*\\n\\s*)([a-zA-Z])/g, '$1$2')\n  .replace(/([a-zA-Z])(?:\\s*\\n\\s*)([a-zA-Z])/g, '$1$2')\n  .replace(/([a-zA-Z])(?:\\s*\\n\\s*)([a-zA-Z])/g, '$1$2')\n  \n  // 7. РАЗДЕЛЕНИЕ СЛИВШИХСЯ СЛОВ И ДОБАВЛЕНИЕ ПРОБЕЛОВ\n  // Разделение слитых элементов навигации\n  .replace(/Home(?=[A-Z])/g, 'Home ')\n  .replace(/Work(?=[A-Z])/g, 'Work ')\n  .replace(/Agency(?=[A-Z])/g, 'Agency ')\n  .replace(/BCorp(?=[A-Z])/g, 'BCorp ')\n  .replace(/Archives(?=[A-Z])/g, 'Archives ')\n  \n  // Разделение известных слившихся слов и фраз\n  .replace(/Changehasalwaysbeenaround/g, 'Change has always been around')\n  .replace(/Whereourindustrypartlycreatedaproblem/g, 'Where our industry partly created a problem')\n  .replace(/wewanttobepartofthesolution/g, 'we want to be part of the solution')\n  .replace(/NOWWEARETALKING/g, 'NOW WE ARE TALKING')\n  .replace(/Déciderdebienavancer/g, 'Décider de bien avancer')\n  .replace(/anewperspective/g, 'a new perspective')\n  .replace(/Jointhefam/g, 'Join the fam')\n  .replace(/Onne/g, 'On ne')\n  .replace(/Lazone/g, 'La zone')\n  .replace(/MenIn/g, 'Men In')\n  .replace(/Thelast/g, 'The last')\n  .replace(/Lafête/g, 'La fête')\n  .replace(/NextGen/g, 'Next Gen')\n  .replace(/SoSimply/g, 'So Simply')\n  .replace(/AboStart/g, 'Abo Start')\n  .replace(/Asecond/g, 'A second')\n  // Разделяем CamelCase (слова в формате camelCase)\n  .replace(/([a-z])([A-Z][a-z])/g, '$1 $2')\n  \n  // Исправляем склеенные слова с опечатками\n  .replace(/Youneed/g, 'You need')\n  .replace(/Getthe/g, 'Get the')\n  .replace(/Theair/g, 'The air')\n  .replace(/BigCommitment/g, 'Big Commitment')\n  .replace(/AIRhas/g, 'AIR has')\n  .replace(/Weare/g, 'We are')\n  .replace(/Tomove/g, 'To move')\n  .replace(/Thegood/g, 'The good')\n  .replace(/Getin/g, 'Get in')\n  .replace(/Thefragility/g, 'The fragility')\n  .replace(/Airhas/g, 'Air has')\n  .replace(/CBCBanque/g, 'CBC Banque')\n  .replace(/thelook/g, 'the look')\n  .replace(/forgeting/g, 'for geting')\n  .replace(/TheDonuts/g, 'The Donuts')\n  .replace(/newtalents/g, 'new talents')\n  .replace(/ThePeople/g, 'The People')\n  .replace(/nowyes/g, 'now yes')\n  \n  // 8. ОЧИСТКА ССЫЛОК И УДАЛЕНИЕ НЕНУЖНЫХ ЭЛЕМЕНТОВ\n  .replace(/Check it out/g, '')                               // Удаляем \"Check it out\"\n  .replace(/Read More/g, '')                                  // Удаляем \"Read More\"\n  .replace(/View the case/g, '')                              // Удаляем \"View the case\"\n  .replace(/\\*/g, '')                                         // Удаляем звездочки (маркеры списков)\n  .replace(/\\#\\s+/g, '')                                      // Удаляем # в начале строки (markdown-заголовки)\n  .replace(/\\d{10,}/g, '')                                    // Удаляем длинные последовательности цифр\n  // Важно - не удаляем mailto: и tel: чтобы сохранить email и телефоны\n  // .replace(/mailto:/g, '')                                 // Удаляем mailto: префиксы - ЗАКОММЕНТИРОВАНО\n  // .replace(/tel:/g, '')                                    // Удаляем tel: префиксы - ЗАКОММЕНТИРОВАНО\n  .replace(/\\-{3,}/g, '')                                     // Удаляем длинные разделители из дефисов\n  .replace(/\\={3,}/g, '')                                     // Удаляем длинные разделители из знаков равно\n  .replace(/\\s+\\./g, '.')                                     // Удаляем пробелы перед точкой\n  .replace(/\\*\\*/g, '')                                       // Удаляем двойные звездочки (выделение жирным в markdown)\n  .replace(/\\_ga(?:\\_#)?/g, '')                               // Удаляем специфичные технические текстовые артефакты\n  .replace(/Cookie/g, '')                                     // Удаляем упоминания Cookie\n  .replace(/Maximum Storage Duration.*?(?=\\n|$)/g, '')        // Удаляем информацию о хранении cookie\n  .replace(/Type.*?(?=\\n|$)/g, '')                           // Удаляем информацию о типе cookie\n  .replace(/HTTP Cookie.*?(?=\\n|$)/g, '')                    // Удаляем упоминания HTTP Cookie\n  .replace(/Pixel Tracker.*?(?=\\n|$)/g, '')                  // Удаляем упоминания Pixel Tracker\n  .replace(/\\d{3,}px/g, '')                                  // Удаляем размеры в пикселях\n  .replace(/Cookiebot.*?(?=\\n|$)/g, '')                      // Удаляем упоминания Cookiebot\n  .replace(/123456789101112/g, '')                           // Удаляем числовую последовательность\n  .replace(/: \\n/g, ':\\n')                                    // Убираем пробел перед переносом строки после двоеточия\n  \n  // 9. ФИНАЛЬНАЯ НОРМАЛИЗАЦИЯ ТЕКСТА\n  .replace(/\\s+/g, ' ')                                       // Заменяем множественные пробелы на один\n  .replace(/(\\n\\s*){3,}/g, '\\n\\n')                            // Ограничиваем до максимум 2 переносов строк подряд\n  .replace(/^\\s+|\\s+$/gm, '')                                 // Удаляем пробелы в начале и конце каждой строки\n  .replace(/\\s*,\\s*/g, ', ')                                  // Нормализуем запятые (пробел после, но не до)\n  .replace(/\\s*\\.\\s*/g, '. ')                                 // Нормализуем точки (пробел после, но не до)\n  .replace(/\\s+:/g, ':')                                      // Удаляем пробелы перед двоеточием\n  .replace(/:\\s*/g, ': ')                                     // Добавляем пробел после двоеточия\n  .replace(/(Copyright ©)/g, '\\n$1')                          // Добавляем перенос перед Copyright\n  .replace(/\\.{2,}/g, '...')                                  // Нормализуем многоточие\n  .trim();                                                    // Удаляем пробелы по краям\n\n// Восстанавливаем email-адреса, заменяя плейсхолдеры обратно на email\nObject.entries(emailPlaceholders).forEach(([placeholder, email]) => {\n  cleaned = cleaned.replace(new RegExp(placeholder, 'g'), email);\n});\n\n// Финальная проверка: все ли email-адреса были сохранены\nlet emailsInCleaned = cleaned.match(emailRegex) || [];\nlet missingEmails = uniqueEmails.filter(email => !emailsInCleaned.includes(email));\n\n// Добавляем все пропущенные email-адреса в конец очищенного текста\nif (missingEmails.length > 0) {\n  cleaned += '\\n\\n### Контактные email-адреса:\\n' + \n    missingEmails.join('\\n');\n}\n\n// Возвращаем один объект с максимально очищенными данными и сохраненными email-адресами\nreturn [\n  {\n    json: {\n      data: cleaned\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        -60
+      ],
+      "id": "567840b1-a8dc-456f-9676-0a41c0d745cf",
+      "name": "Merge Page Data"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        -60
+      ],
+      "id": "a259f74f-4a80-4de0-8d3e-aa64c28adc83",
+      "name": "Fetch Web Content"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.Links }}",
+        "contextWindowLength": 50
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        20,
+        140
+      ],
+      "id": "7894a46a-e85d-44d2-81da-01b954b0d512",
+      "name": "Session Context Memory"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract all real email addresses from the following text ({{ $json.data }}) and return them in a JSON array.\n\nDo not generate any emails — only return those that are actually present in the input.\n\nIf no emails are found, return an empty array.\n\nFormat:\n{\n  \"emails\": [\"example@email.com\", \"contact@domain.org\"]\n}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        720,
+        -60
+      ],
+      "id": "87c2ff0b-91c0-4ca2-a24f-59e7edd4583a",
+      "name": "Email Extractor from Text",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * Обработчик для извлечения email-адресов из JSON\n */\n\n// Быстрая проверка входных данных\nif (!items?.length) {\n  return [{ json: { error: \"Нет входных данных\", success: false } }];\n}\n\n// Деструктуризация для более чистого кода\nconst { json } = items[0];\nconst { output } = json || {};\n\n// Проверка наличия поля output\nif (!output) {\n  return [{ \n    json: { \n      error: \"Поле 'output' не найдено\", \n      success: false,\n      inputData: json \n    } \n  }];\n}\n\ntry {\n  // Удаляем markdown-обёртку и вызываем trim() для удаления лишних пробелов\n  const rawOutput = output\n    .replace(/^```json\\s*/i, \"\")\n    .replace(/```$/i, \"\")\n    .trim();\n  \n  // Парсим JSON\n  const parsedData = JSON.parse(rawOutput);\n  \n  // Проверяем наличие email-адресов\n  const { emails = [] } = parsedData || {};\n  \n  // Проверка на валидность массива emails\n  if (!Array.isArray(emails) || emails.length === 0) {\n    return [{ \n      json: { \n        error: \"Email-адреса не найдены\", \n        success: false,\n        parsedData \n      } \n    }];\n  }\n  \n  // Возвращаем каждый email как отдельный объект\n  return emails.map(email => ({\n    json: { \n      email,\n      success: true \n    }\n  }));\n} catch (error) {\n  // Улучшенная обработка ошибок\n  return [{ \n    json: { \n      error: `Ошибка парсинга JSON: ${error.message}`, \n      success: false,\n      rawData: output \n    } \n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        -60
+      ],
+      "id": "bf43197f-240c-43e2-90e7-61a3cdfc0328",
+      "name": "Parse Emails from JSON Output"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1vherBlwjTKVwv_BNxO87nkUbGjT9scUuVgAzNyAif3Q/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vherBlwjTKVwv_BNxO87nkUbGjT9scUuVgAzNyAif3Q/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $json.email }}",
+            "success": "={{ $json.success }}"
+          },
+          "matchingColumns": [
+            "success"
+          ],
+          "schema": [
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "success",
+              "displayName": "success",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1360,
+        -60
+      ],
+      "id": "c7096428-6fe6-4419-8877-5dae46d86650",
+      "name": "Website_Emails",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "G2Cofo2yQHQm8yf9",
+          "name": "DEV Google Sheets"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "URL Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "URL Formatter",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory4": {
+      "ai_memory": [
+        [
+          {
+            "node": "Email Extractor from Text",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email Extractor from Text",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL Formatter": {
+      "main": [
+        [
+          {
+            "node": "Fetch Web Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Page Data": {
+      "main": [
+        [
+          {
+            "node": "Email Extractor from Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Web Content": {
+      "main": [
+        [
+          {
+            "node": "Merge Page Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Session Context Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "URL Formatter",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Extractor from Text": {
+      "main": [
+        [
+          {
+            "node": "Parse Emails from JSON Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Emails from JSON Output": {
+      "main": [
+        [
+          {
+            "node": "Website_Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "1081e272-9b11-44d6-a7b4-a46d0ad5934e",
+  "triggerCount": 0,
+  "tags": []
+}

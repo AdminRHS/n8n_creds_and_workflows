@@ -1,0 +1,122 @@
+{
+  "createdAt": "2025-06-11T11:50:18.893Z",
+  "updatedAt": "2025-06-11T11:50:26.013Z",
+  "id": "Xd1Sm982bKIqZmsV",
+  "name": "Course_generator",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "coursegen",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        -40
+      ],
+      "id": "a0519248-8c82-457d-8126-65f06ec20aa9",
+      "name": "Webhook",
+      "webhookId": "d54310dc-9070-497b-997e-dd2947b0b389"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Выдай мне готовую статью.\n\nНапиши статью на английском  языке на тему {{ $('Webhook').item.json.body.topic }} согласно следующему плану: используй подзаголовки {{ $('Webhook').item.json.body.plan }} штуки или по готовому плану. Результат должен быть отформатирован в чистом Markdown (без использования HTML и блоков кода) и не содержать никаких служебных комментариев или фраз вроде «вот статья согласно заданной структуре».\n\nСтруктура статьи должна быть следующей:\n\t1.\tВступление: один абзац без заголовков и списков.\n\t2.\tПодтемы: для каждой подтемы создай подзаголовок второго уровня (начинай строку с ##) и добавь содержание, используя один из двух шаблонов, чередующихся для последовательных подтем.\nШаблон 1:\n\t•\tАбзац текста.\n\t•\tПредложение, вводящее список.\n\t•\tСписок ровно из 5 кратких пунктов, связанных с подтемой.\n\t•\tЗаключительный абзац.\nШаблон 2:\n\t•\tОт 1 до 3 абзацев текста без списков.\n\nИспользуй следующий контекст для статьи:\nКонтекст\n\nРезультат необходимо представить как чистый Markdown без дополнительных оберток или форматирования кода.\nНельзя писать цифр в квадратных скобках. \nСписки в результате делай через дефис -\nВключи детали, числа:, статистику и другие полезные детали, если они есть в источниках. ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        20,
+        -40
+      ],
+      "id": "7234a114-9489-48f9-b319-4bd227c55813",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        160,
+        180
+      ],
+      "id": "9d99a12c-3ec8-4b5a-9c38-9c8c7690fd62",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        -40
+      ],
+      "id": "0aecffe9-b49e-4805-a1ed-f4d98c020885",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7e7ed7eb-37bb-40cb-880d-9a118d29bac7",
+  "triggerCount": 0,
+  "tags": []
+}

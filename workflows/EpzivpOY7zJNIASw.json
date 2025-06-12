@@ -1,0 +1,96 @@
+{
+  "createdAt": "2025-06-11T11:19:53.198Z",
+  "updatedAt": "2025-06-11T11:20:00.874Z",
+  "id": "EpzivpOY7zJNIASw",
+  "name": "GetOnboardingFile_Fill_companyleads_data_in_CRM",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "onboarding/leadgeneration/guide/FillCompanyAndleadsDataInCRM",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        -80
+      ],
+      "id": "ef8e48b5-5ab7-4e1f-96f6-64d68783861c",
+      "name": "Webhook",
+      "webhookId": "f3fc905c-c576-4161-a1da-15a10033c8b6"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1ytG30hHjDflHlfjRdMowHCJauc-Wjxq25cFFaF3LLwo/edit?usp=drive_link"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        -80
+      ],
+      "id": "f7e6cf2c-2d3b-4ae9-91dd-9b5a2326d85d",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        -80
+      ],
+      "id": "3c25440e-94b5-49ac-b610-d5a2d12d407a",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "118ecad5-cda0-46dc-a60e-adddc6148b00",
+  "triggerCount": 0,
+  "tags": []
+}

@@ -1,0 +1,672 @@
+{
+  "createdAt": "2025-06-10T12:38:31.528Z",
+  "updatedAt": "2025-06-11T13:33:25.251Z",
+  "id": "xAdKoB20SQkFqIAK",
+  "name": "Google Drive sync (Daily File Update Monitor)",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        400
+      ],
+      "id": "fc09baae-411e-4b62-b996-42261bdd7d7b",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "content": "Нужно проверить количество используемых токенов при процессе\n\nОтвет: 0, ибо мы не используем ИИ и (как следствие) модели с токенами.",
+        "height": 120,
+        "width": 490
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        140
+      ],
+      "id": "e79fdca5-af5b-4bae-91e8-b58ec14521e4",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        580,
+        520
+      ],
+      "id": "3456bade-0b0e-48e1-9775-1aac6adeefce",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Qkd3XuqO1t5IBAj_M7qerK3s73sa3GxRZAO7A6Rdl-M",
+          "mode": "list",
+          "cachedResultName": "Daily File Update Monitor spreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Qkd3XuqO1t5IBAj_M7qerK3s73sa3GxRZAO7A6Rdl-M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 365260997,
+          "mode": "list",
+          "cachedResultName": "Google Drive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Qkd3XuqO1t5IBAj_M7qerK3s73sa3GxRZAO7A6Rdl-M/edit#gid=365260997"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "File name": "={{ $json['File name'] }}",
+            "url": "={{ $json.url }}",
+            "Time": "={{ $json.Time }}",
+            "Date": "={{ $json.Date }}",
+            "Which account": "={{ $json['Which account'] }}",
+            "Summary (doc description AI)": "={{ $json['Summary (doc description AI)'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "File name",
+              "displayName": "File name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Which account",
+              "displayName": "Which account",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Access (Shared)",
+              "displayName": "Access (Shared)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Summary (doc description AI)",
+              "displayName": "Summary (doc description AI)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        800,
+        420
+      ],
+      "id": "265988b2-220d-41b9-bba4-c7a79b3a8245",
+      "name": "Append to Google Sheet (all data, admin)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1Qkd3XuqO1t5IBAj_M7qerK3s73sa3GxRZAO7A6Rdl-M",
+          "mode": "list",
+          "cachedResultName": "Daily File Update Monitor spreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Qkd3XuqO1t5IBAj_M7qerK3s73sa3GxRZAO7A6Rdl-M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 365260997,
+          "mode": "list",
+          "cachedResultName": "Google Drive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Qkd3XuqO1t5IBAj_M7qerK3s73sa3GxRZAO7A6Rdl-M/edit#gid=365260997"
+        },
+        "keepFirstRow": true
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -380,
+        500
+      ],
+      "id": "1470df6c-3b8c-466c-b4e5-9b8df0c48627",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "732698343951695963",
+          "mode": "list",
+          "cachedResultName": "Remote Helpers",
+          "cachedResultUrl": "https://discord.com/channels/732698343951695963"
+        },
+        "sendTo": "user",
+        "userId": {
+          "__rl": true,
+          "value": "1080887161169117214",
+          "mode": "id"
+        },
+        "content": "=Здравствуйте!\n\nЗа вчерашний день было изменено следующее количество файлов: **{{ $json.count }}**.\n\nИз них:\n\n- **ADMIN** *(admin@rh-s.com)*: {{ $json.admin_count }}\n- **Lead Generators** *(lg@rh-s.com)*: {{ $json.lg_count }}\n- **HR** *(hr@remotemployees.com)*: {{ $json.hr_count }}\n- **Designers, Video Editors** *(dd@rh-s.com)*: {{ $json.dd_count }}\n- **Sales** *(sales@rh-s.com)*: {{ $json.sales_count }}\n- **Developers, Prompt Engineers** *(dev@rh-s.com)*: {{ $json.dev_count }}\n\nС полным списком логов изменений можно ознакомиться по ссылке: {{ $json.link }}\n\n*Внимание! Это сообщение будет отправляться автоматически один раз в сутки в это же время.*",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        600
+      ],
+      "id": "26f49ba6-64b0-4dca-b20b-cd3734029180",
+      "name": "Discord",
+      "webhookId": "85ea31f0-5081-469b-8c19-f79b84cf6db1",
+      "credentials": {
+        "discordBotApi": {
+          "id": "ORC2mh0eSY7Izho1",
+          "name": "RH Report Discord Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const yesterday = new Date();\nyesterday.setDate(yesterday.getDate() - 1);\n\n// Получаем строку даты вчерашнего дня в формате YYYY-MM-DD\nconst yesterdayStr = yesterday.toISOString().split('T')[0];\n\nconst filteredItems = items.filter(item => {\n  const itemDate = item.json.Date;\n  return itemDate === yesterdayStr;\n});\n\nreturn filteredItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        600
+      ],
+      "id": "f9a9d599-2579-4b77-b110-42101fd7237c",
+      "name": "Filter by Today"
+    },
+    {
+      "parameters": {
+        "jsCode": "const count = items.length;\nconst spreadSheetUrl = \"https://docs.google.com/spreadsheets/d/1Qkd3XuqO1t5IBAj_M7qerK3s73sa3GxRZAO7A6Rdl-M/edit?gid=365260997#gid=365260997\";\n\n// Инициализация счетчиков\nconst accountCounts = {\n  \"admin@rh-s.com\": 0,\n  \"lg@rh-s.com\": 0,\n  \"hr@remotemployers.com\": 0,\n  \"dd@rh-s.com\": 0,\n  \"sales@rh-s.com\": 0,\n  \"dev@rh-s.com\": 0\n};\n\nconst uniqueAccounts = new Set();\n\nitems.forEach(item => {\n  let account = item?.json?.[\"Which account\"];\n  if (typeof account === \"string\") {\n    account = account.trim(); // убираем пробелы по краям\n  }\n  uniqueAccounts.add(account);\n\n  if (accountCounts.hasOwnProperty(account)) {\n    accountCounts[account]++;\n  } else {\n    console.log(\"Unmatched account: \", account);\n  }\n});\n\nreturn [\n  {\n    json: {\n      count: count,\n      link: spreadSheetUrl,\n      admin_count: accountCounts[\"admin@rh-s.com\"],\n      lg_count: accountCounts[\"lg@rh-s.com\"],\n      hr_count: accountCounts[\"hr@remotemployers.com\"],\n      dd_count: accountCounts[\"dd@rh-s.com\"],\n      sales_count: accountCounts[\"sales@rh-s.com\"],\n      dev_count: accountCounts[\"dev@rh-s.com\"]\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        600
+      ],
+      "id": "42fa35dd-255d-413c-824a-a87319d095b7",
+      "name": "Data to send"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        600
+      ],
+      "id": "2cf250d6-a8c3-4975-874e-0aad7452e9c0",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "18r0h4wJz86BIRkQS0EelNQmwIG1axMllcRSnsuqH7Ig"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Google Drive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18r0h4wJz86BIRkQS0EelNQmwIG1axMllcRSnsuqH7Ig/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        0,
+        840
+      ],
+      "id": "bfae3954-4208-4e7d-982a-9ec1a6d7673d",
+      "name": "Google Sheets (HR)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1qzzsLK3DFrTkEtKCmL0v3p1UaRdYTC7hTO_3IvhAHZo",
+          "mode": "list",
+          "cachedResultName": "Daily File Monitor + App Script",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qzzsLK3DFrTkEtKCmL0v3p1UaRdYTC7hTO_3IvhAHZo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Google Drive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qzzsLK3DFrTkEtKCmL0v3p1UaRdYTC7hTO_3IvhAHZo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "17e8a8bb-65ec-4b6c-9222-5b24c603963e",
+      "name": "Google Sheets (Admin)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1sXx5LNdk7H3T-BY0gMkjPORShbHJvyFliIVTxVAZSdQ",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Google Drive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sXx5LNdk7H3T-BY0gMkjPORShbHJvyFliIVTxVAZSdQ/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        0,
+        200
+      ],
+      "id": "ec8b1049-1ebf-4dc4-8ec7-addf5da1f2c3",
+      "name": "Google Sheets (Dev)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1anmz5o3-uwHa2IhwxjL3_U_TdUmOB6lS58uCNkyEpxo"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Google Drive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1anmz5o3-uwHa2IhwxjL3_U_TdUmOB6lS58uCNkyEpxo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        0,
+        420
+      ],
+      "id": "9c6f83c8-2386-402f-8435-bbcbb1ef60d7",
+      "name": "Google Sheets (DD)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "18r0h4wJz86BIRkQS0EelNQmwIG1axMllcRSnsuqH7Ig"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Google Drive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/18r0h4wJz86BIRkQS0EelNQmwIG1axMllcRSnsuqH7Ig/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        0,
+        620
+      ],
+      "id": "e681a20a-be09-439b-a720-527d5408f6f7",
+      "name": "Google Sheets (Sales)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1GbhhHTAptcyFk6Z3bRpX-PBL3aZOJDrAeBhbI19DFP4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Google Drive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GbhhHTAptcyFk6Z3bRpX-PBL3aZOJDrAeBhbI19DFP4/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        0,
+        1040
+      ],
+      "id": "1ad4e6e4-fdd7-48e5-8fe1-bb18181645eb",
+      "name": "Google Sheets (LeadGen)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 6
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        300,
+        520
+      ],
+      "id": "5bd6a5e0-d373-4e2b-a587-36dc1f1b8de9",
+      "name": "Merge1"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Filter by Today",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append to Google Sheet (all data, admin)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets (Admin)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets (Dev)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets (DD)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets (Sales)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets (HR)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets (LeadGen)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter by Today": {
+      "main": [
+        [
+          {
+            "node": "Data to send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data to send": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets (Admin)": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets (Dev)": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Sheets (DD)": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Google Sheets (Sales)": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Google Sheets (HR)": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Google Sheets (LeadGen)": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "8e9adea6-30fd-4534-92f6-21e15ecae79a",
+  "triggerCount": 1,
+  "tags": []
+}

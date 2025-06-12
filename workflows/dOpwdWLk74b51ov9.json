@@ -1,0 +1,61 @@
+{
+  "createdAt": "2025-06-11T11:47:10.229Z",
+  "updatedAt": "2025-06-11T11:47:15.684Z",
+  "id": "dOpwdWLk74b51ov9",
+  "name": "TestJSONGenerator",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "TestJSONGenerator",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -120
+      ],
+      "id": "0cfa3463-3ef5-4a34-88bc-59ca1496f9d7",
+      "name": "Webhook",
+      "webhookId": "3a439b42-5a74-4a90-98a7-43622f370585"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function Node в n8n (async)\nasync function run() {\n  // Получаем входной массив\n  const items = $input.all();\n  const newItems = [];\n  \n  // Функция для обработки одного объекта\n  async function processItem(obj) {\n    // Если есть поле testWebhook\n    if (obj.testWebhook) {\n      // Формируем новый URL: просто prepend \"https://r.jina.ai/\" к исходному testWebhook\n      const newURL = \"https://r.jina.ai/\" + obj.testWebhook;\n      let response;\n      try {\n        response = await fetch(newURL);\n      } catch (err) {\n        return {\n          day: obj.day,\n          lesson: obj.lesson,\n          testContent: { error: \"Fetch error: \" + err.message }\n        };\n      }\n      let data;\n      try {\n        data = await response.json();\n      } catch (err) {\n        // Если не получилось распарсить как JSON, возвращаем текст\n        data = { error: \"JSON parse error\", raw: await response.text() };\n      }\n      return {\n        day: obj.day,\n        lesson: obj.lesson,\n        testContent: data\n      };\n    } else {\n      // Если поле отсутствует, возвращаем исходный объект\n      return obj;\n    }\n  }\n  \n  // Если входной элемент содержит массив в одном объекте\n  if (items.length === 1 && Array.isArray(items[0].json)) {\n    for (const obj of items[0].json) {\n      const processed = await processItem(obj);\n      newItems.push({ json: processed });\n    }\n  } else {\n    // Если каждый item – отдельный объект\n    for (const item of items) {\n      const processed = await processItem(item.json);\n      newItems.push({ json: processed });\n    }\n  }\n  \n  return newItems;\n}\n\nreturn await run();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        -120
+      ],
+      "id": "55ad3593-9566-4f50-809e-aaa808913da3",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "b7c0601b-03d5-433f-8445-92041b9b1dc6",
+  "triggerCount": 0,
+  "tags": []
+}

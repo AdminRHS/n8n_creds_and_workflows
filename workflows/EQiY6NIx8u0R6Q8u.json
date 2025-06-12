@@ -1,0 +1,19 @@
+{
+  "createdAt": "2025-06-11T06:53:43.553Z",
+  "updatedAt": "2025-06-11T08:03:27.200Z",
+  "id": "EQiY6NIx8u0R6Q8u",
+  "name": "WorkFlow for test something",
+  "active": false,
+  "isArchived": true,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "0f17cca3-9a9d-4515-9da4-8263a326282b",
+  "triggerCount": 0,
+  "tags": []
+}

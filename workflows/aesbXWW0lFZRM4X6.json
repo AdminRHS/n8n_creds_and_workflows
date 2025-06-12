@@ -1,0 +1,422 @@
+{
+  "createdAt": "2025-06-11T12:47:37.638Z",
+  "updatedAt": "2025-06-11T12:54:57.416Z",
+  "id": "aesbXWW0lFZRM4X6",
+  "name": "NotionAutomation",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Определи тип запроса, который тебе отправляет пользователь:\n1. Read.\n2. Write.\n3. Other.\nНапиши только результат. \n\nGive me the data in Notion about my tasks.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -2500,
+        340
+      ],
+      "id": "13fb389e-0434-4b55-9aed-2117a7b92c05",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "google/gemma-3-27b-it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -2520,
+        520
+      ],
+      "id": "70a2317e-97cf-42b4-824d-5057bba8e7ae",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2680,
+        200
+      ],
+      "id": "cb770691-3d8a-4489-9104-59875ee9d7b8",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "Read",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "c0a64c7c-e0a2-4f96-b472-fa2bac1d9760"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Read"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -2180,
+        100
+      ],
+      "id": "4425aaf5-f435-41a6-b0bb-277067954e6a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "f7fa934cfc8440b38a705af8af6cc32f",
+        "returnAll": true,
+        "options": {}
+      },
+      "id": "2259a34e-fe78-4b4a-b52d-628950d87c85",
+      "name": "Read Workflow DB",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 1,
+      "position": [
+        -1940,
+        100
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "a3368838-3458-482f-9e2b-e61c1d667200",
+              "leftValue": "={{$json[\"Project name\"]}}",
+              "rightValue": "LLM Team",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e070f3ea-e29e-4988-b671-dbf99ba6d312",
+      "name": "Filter LLM Team",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1700,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "pageId": "={{$json[\"id\"]}}"
+      },
+      "id": "1a30e382-cfaf-4d01-98b7-2240c4e8b9e4",
+      "name": "Get LLM Team page",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 1,
+      "position": [
+        -1400,
+        -40
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "javascript",
+        "jsCode": "const taskIdsRaw = $json[\"Tasks\"];\nconsole.log(\"taskIdsRaw:\", taskIdsRaw);\n\nif (!Array.isArray(taskIdsRaw)) {\n    console.log(\"Tasks is not an array:\", JSON.stringify(taskIdsRaw));\n    return [];  // Ensure we're returning an empty array if it's not valid\n}\n\nconst taskData = taskIdsRaw.map(taskId => {\n    return { taskId };  // Creating an object for each taskId\n});\n\nconsole.log(\"taskData:\", taskData);\n\n// Return taskData as an array of objects to be iterated over in the next node\nreturn taskData;\n"
+      },
+      "id": "831ac5d1-5f4d-4e8e-98af-58dc0c01b0cc",
+      "name": "List Task IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "language": "javascript",
+        "jsCode": "// Получаем данные задачи\nconst task = $json;  // Предполагаем, что это объект с данными задачи\n\n// Извлекаем только имя задачи\nconst taskName = task?.[\"properties\"]?.[\"Task name\"]?.[\"title\"]?.[0]?.[\"plain_text\"];  // Получаем Task name\nconsole.log('taskName', task[\"Task name\"])\n\n// Возвращаем его для дальнейшей обработки\nreturn { taskName };\n"
+      },
+      "id": "ec549f50-64ff-4e57-bf62-199faa28b29d",
+      "name": "List Task Names",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": "=1",
+        "options": {
+          "reset": "={{ $json[\"taskData\"] }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -700,
+        -20
+      ],
+      "id": "d7d3896a-c91b-4626-b86a-52e7e72067ab",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and extract the taskName\nlet taskNames = [];\nfor (const item of $input.all()) {\n  taskNames.push(item.json.taskName);\n}\n\n// Return the list of task names\nreturn { taskNames };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        -160
+      ],
+      "id": "d9414703-e17f-4ef6-b69d-a49bbb7aba91",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "pageId": "={{$json.taskId}}\n",
+        "simple": false
+      },
+      "id": "1b2304a9-0c0f-4784-8b5e-8d1882397db5",
+      "name": "Get Task names",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        -20
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "CPFNoqAnAY4CbN2Q",
+          "name": "Notion Task Read"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bb00b6c3-a8b4-430b-921a-b8ca8863d2bc",
+              "name": "={{$json[\"Tasks\"]}}",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -360,
+        240
+      ],
+      "id": "b88dafd7-dd88-4ef9-b1df-68d470832178",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Read Workflow DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Workflow DB": {
+      "main": [
+        [
+          {
+            "node": "Filter LLM Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter LLM Team": {
+      "main": [
+        [
+          {
+            "node": "Get LLM Team page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get LLM Team page": {
+      "main": [
+        [
+          {
+            "node": "List Task IDs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Task IDs": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Task names",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Task Names": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Task names": {
+      "main": [
+        [
+          {
+            "node": "List Task Names",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "8d884697-4a36-4a0f-afad-09c6124f411f",
+  "triggerCount": 0,
+  "tags": []
+}

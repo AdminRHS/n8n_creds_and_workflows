@@ -1,0 +1,96 @@
+{
+  "createdAt": "2025-06-11T11:20:48.753Z",
+  "updatedAt": "2025-06-11T11:20:54.430Z",
+  "id": "sAjMLhONDKvAUnyP",
+  "name": "GetOnboardingFile_Google_calendar_set_up_and_events_planning",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "onboarding/leadgeneration/guide/GoogleCalendarSetUpAndEventsPlanning",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        40
+      ],
+      "id": "2ac697dc-10cc-4cd5-a8b1-aef7b340549a",
+      "name": "Webhook",
+      "webhookId": "3a491478-dcde-40b5-b824-7ba999ad93f4"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1lEDTSQBcSUCsonPsJRsFeFf6OgF7c9pMoCUPsr1kUNw/edit?tab=t.0"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        80,
+        40
+      ],
+      "id": "cf8022aa-a783-4dfd-9476-7e7211683838",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vj5PwFO1LpX5RU2k",
+          "name": "DEV Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        300,
+        40
+      ],
+      "id": "5c2c7ac3-447a-4c7a-9803-85519a2b7f18",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "ba593c46-8cb3-4fee-9012-03e845bcbfdb",
+  "triggerCount": 0,
+  "tags": []
+}

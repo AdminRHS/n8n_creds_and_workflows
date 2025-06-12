@@ -1,0 +1,146 @@
+{
+  "createdAt": "2025-06-11T11:45:40.468Z",
+  "updatedAt": "2025-06-11T11:45:51.272Z",
+  "id": "F9frEZlSKWwG0YB2",
+  "name": "DeleteJSONForUpdate",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://docs.googleapis.com/v1/documents/11S6ngZytRUSfc91-YVewlglqqeMHhnVoQZLc_1PTenw",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        20,
+        -100
+      ],
+      "id": "eb0edbe8-987d-4fd2-bf57-181c5048c19b",
+      "name": "HTTP Request",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vh0MKh3KIigssxrQ",
+          "name": "Sales Google Docs"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        -100
+      ],
+      "id": "5dfaa670-7006-4942-83b1-83aa40e88f74",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://docs.googleapis.com/v1/documents/11S6ngZytRUSfc91-YVewlglqqeMHhnVoQZLc_1PTenw:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"requests\": [\n    {\n      \"deleteContentRange\": {\n        \"range\": {\n          \"startIndex\": 1,\n          \"endIndex\": {{$json.endIndex - 1}}\n        }\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        -100
+      ],
+      "id": "b9e96508-64b4-4652-b7bf-6775a534d950",
+      "name": "HTTP Request1",
+      "retryOnFail": false,
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "vh0MKh3KIigssxrQ",
+          "name": "Sales Google Docs"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = items[0].json.body.content;\n\n// Отбираем только те элементы, у которых endIndex больше 1 и преобразуем в число\nconst validIndices = content\n\t.map(item => Number(item.endIndex))\n\t.filter(n => n > 1);\n\n// Берем максимальное значение, если есть, иначе 1\nconst maxEndIndex = validIndices.length ? Math.max(...validIndices) : 1;\n\nreturn [{ json: { endIndex: maxEndIndex } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        360,
+        -100
+      ],
+      "id": "70ea15df-bd50-4b79-9ee1-ab6b4802dadf",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "e839aae0-a6b1-404f-bea6-9db818ea0830",
+  "triggerCount": 0,
+  "tags": []
+}
