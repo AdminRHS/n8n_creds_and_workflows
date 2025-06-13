@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-10T08:24:23.354Z",
-  "updatedAt": "2025-06-11T08:51:43.310Z",
+  "updatedAt": "2025-06-13T06:00:58.608Z",
   "id": "68zdWSGjneBwLnao",
   "name": "Practice Workflow",
   "active": false,
@@ -467,7 +467,7 @@
     },
     {
       "parameters": {
-        "content": "## Simple scrapper\n - Needs credentials for **jina.ai** scrapper ai model\n - Needs to add google credentials for gemini ai model",
+        "content": "## Simple scrapper",
         "height": 560,
         "width": 1100,
         "color": 4
@@ -574,7 +574,7 @@
     },
     {
       "parameters": {
-        "content": "## Simple 'Answer to email' Agent, that creates reply draft(not sending!) for following email\n - Needs to add google credentials for gemini ai model",
+        "content": "## Simple 'Answer to email' Agent, that creates reply draft(not sending!) for following email\n",
         "height": 560,
         "width": 960,
         "color": 6
@@ -600,7 +600,7 @@
       "typeVersion": 1.1,
       "position": [
         -1280,
-        1440
+        1420
       ],
       "id": "382f08b7-de41-482b-9d4d-3b2cd6d279ee",
       "name": "Telegram Trigger",
@@ -624,7 +624,7 @@
       "typeVersion": 1.7,
       "position": [
         -1040,
-        1440
+        1420
       ],
       "id": "419c243d-844e-48ed-ae42-2d3ab6346ca4",
       "name": "AI Agent1"
@@ -638,7 +638,7 @@
       "typeVersion": 1,
       "position": [
         -1100,
-        1680
+        1660
       ],
       "id": "a3162525-706c-41f9-845a-71bdea8e5d90",
       "name": "Google Gemini Chat Model2",
@@ -671,7 +671,7 @@
       "typeVersion": 4.5,
       "position": [
         -820,
-        1680
+        1660
       ],
       "id": "8c2bbcc7-b1f2-48fb-b014-0c10674ce634",
       "name": "Google Sheets1",
@@ -692,7 +692,7 @@
       "typeVersion": 1.2,
       "position": [
         -640,
-        1440
+        1420
       ],
       "id": "8b094a32-00a1-4f86-9508-acb05df7ff84",
       "name": "Telegram4",
@@ -706,7 +706,7 @@
     },
     {
       "parameters": {
-        "content": "## Simple AI Agent for analyze data from google sheets\n - Needs credentials for sheets\n - Needs credentials foro gemini\n",
+        "content": "## Simple AI Agent for analyze data from google sheets\n\n",
         "height": 520,
         "width": 920,
         "color": 5
@@ -715,7 +715,7 @@
       "typeVersion": 1,
       "position": [
         -1340,
-        1320
+        1300
       ],
       "id": "e439bf9e-4a6f-4fcd-8826-c1d5a5d0bf02",
       "name": "Sticky Note3",
@@ -805,7 +805,7 @@
     },
     {
       "parameters": {
-        "content": "## Simple AI Agent for practice to chat with user\n - Needs gemini credentials",
+        "content": "## Simple AI Agent for practice to chat with user\n",
         "height": 500,
         "width": 980,
         "color": 3
@@ -1329,7 +1329,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "d0243f51-c893-4576-a56a-cf323e0ed302",
+  "versionId": "988245a9-2344-4587-bfd6-639fada1ad4d",
   "triggerCount": 0,
   "tags": []
 }

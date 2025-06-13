@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-11T19:14:13.751Z",
-  "updatedAt": "2025-06-12T13:21:59.485Z",
+  "updatedAt": "2025-06-13T20:11:40.758Z",
   "id": "vMmRCkhLAWms1Z9r",
   "name": "Google Tasks Automation (create a new one)",
   "active": false,
@@ -11,7 +11,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        0,
+        -140,
         0
       ],
       "id": "fbff959c-30dd-462e-b548-69823559e75d",
@@ -24,7 +24,7 @@
             {
               "id": "c6345e75-18c0-4dd3-8110-885b6bbf6c1e",
               "name": "prompt",
-              "value": "      Новый список: test to-do\n      - create test\n      - update test\n      - read test",
+              "value": "      Новый список: testy-test\n      - test 1\n      - test 2\n      - test 3\n      - test 4\n      - test 5",
               "type": "string"
             }
           ]
@@ -34,7 +34,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        220,
+        80,
         0
       ],
       "id": "a2bce378-b96c-47eb-aada-9f3c98cf8194",
@@ -49,7 +49,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2,
       "position": [
-        400,
+        300,
         0
       ],
       "id": "0efb752c-6289-40fb-8010-c37c9d9732fe",
@@ -77,86 +77,12 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "c602ffb2-2b6c-4ea0-8c5b-1e213c92f9a6",
-              "name": "taskListId",
-              "value": "={{ $json[\"id\"] }}",
-              "type": "string"
-            }
-          ]
-        },
         "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1220,
-        0
-      ],
-      "id": "42d09c6c-3548-47ba-9d5f-8783088fa4ef",
-      "name": "ID of our list"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "bdccc83d-d299-4a2f-a91a-a89f015d85ee",
-              "leftValue": "={{ $json[\"title\"] }}",
-              "rightValue": "={{ $node[\"AI Agent\"].json[\"list\"] }}",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        960,
-        0
-      ],
-      "id": "0ca03cc6-7bc9-4464-9434-ed4684b89540",
-      "name": "Check if the list exists"
-    },
-    {
-      "parameters": {
-        "operation": "getAll",
-        "returnAll": true,
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.googleTasks",
-      "typeVersion": 1,
-      "position": [
-        740,
-        0
-      ],
-      "id": "17bf90ee-17f4-42bb-b6b5-c7698f490fa5",
-      "name": "Get all Google Tasks list"
-    },
-    {
-      "parameters": {
-        "options": {
-          "reset": "={{ $node[\"AI Agent\"].json[\"tasks\"] }}"
-        }
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1440,
+        1620,
         0
       ],
       "id": "a4482d61-2b8d-4eb7-acfe-15ae5c20b329",
@@ -164,20 +90,24 @@
     },
     {
       "parameters": {
-        "task": "={{ $node[\"Set\"].json[\"taskListId\"] }}",
-        "title": "={{ $item }}",
-        "additionalFields": {
-          "dueDate": "={{ $now.toISOString().split('T')[0] }}"
-        }
+        "task": "={{ $json.id }}",
+        "title": "={{ $json.task }}",
+        "additionalFields": {}
       },
       "type": "n8n-nodes-base.googleTasks",
       "typeVersion": 1,
       "position": [
-        1680,
+        1960,
         0
       ],
       "id": "050b91c2-b96d-42b6-a2a4-be0b03d9ddad",
-      "name": "Google Tasks"
+      "name": "Google Tasks",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "c5C6IDGXioIhiukT",
+          "name": "Google Tasks account"
+        }
+      }
     },
     {
       "parameters": {
@@ -186,12 +116,73 @@
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "typeVersion": 1.1,
       "position": [
-        0,
-        -200
+        -140,
+        -220
       ],
       "id": "5beed688-eedc-43b4-a304-10d86cb254fa",
       "name": "When chat message received",
       "webhookId": "12f1c15f-8956-4615-b017-8a8192dc5a9c"
+    },
+    {
+      "parameters": {
+        "url": "https://tasks.googleapis.com/tasks/v1/users/@me/lists",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleTasksOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        0
+      ],
+      "id": "740a8afc-f0e5-4bd5-aa14-7f6c26939440",
+      "name": "HTTP Request",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "c5C6IDGXioIhiukT",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем строку из output\nlet raw = $json[\"output\"];\n\n// Удаляем обёртку ```json и ```\nraw = raw.replace(/```json|```/g, '').trim();\n\n// Парсим JSON\nlet parsed = JSON.parse(raw);\n\n// Возвращаем как объект\nreturn parsed;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        0
+      ],
+      "id": "fd3439f8-0f2a-4074-a91a-8a1bb88b6b01",
+      "name": "AI Agent output"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем массив всех списков задач\nconst allLists = items[0].json.items;\n\n// Получаем название нужного списка из другой ноды (AI Agent output)\nconst aiNode = $items(\"AI Agent output\", 0);\nconst targetTitle = aiNode[0].json.list;\nconsole.log('allLists', allLists)\n\n// Ищем нужный объект\nfor (const item of allLists) {\n  console.log('item', item)\n  if (item.title === targetTitle) {\n    return [item];\n  }\n}\n\n// Если не найдено — возвращаем пустой массив\nreturn [];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "bf875da0-a6d6-4eb3-9023-530ae55096b3",
+      "name": "Filter task lists"
+    },
+    {
+      "parameters": {
+        "jsCode": "const tasks = $node[\"AI Agent output\"].json.tasks;\nreturn tasks.map(task => ({ json: { task, id: $json.id } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        0
+      ],
+      "id": "8216ef86-4d55-42fc-b483-8e36ef8f2027",
+      "name": "Separate tasks"
     }
   ],
   "connections": {
@@ -232,40 +223,7 @@
       "main": [
         [
           {
-            "node": "Get all Google Tasks list",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Check if the list exists": {
-      "main": [
-        [
-          {
-            "node": "ID of our list",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get all Google Tasks list": {
-      "main": [
-        [
-          {
-            "node": "Check if the list exists",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "ID of our list": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
+            "node": "AI Agent output",
             "type": "main",
             "index": 0
           }
@@ -294,6 +252,55 @@
           }
         ]
       ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Filter task lists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent output": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter task lists": {
+      "main": [
+        [
+          {
+            "node": "Separate tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separate tasks": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        []
+      ]
     }
   },
   "settings": {
@@ -304,7 +311,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "d86cc223-af6e-4ae5-a7bd-97f471b3ffb2",
+  "versionId": "a5ce59d4-6fb7-4966-bbe1-511ab5d5eabc",
   "triggerCount": 0,
   "tags": []
 }
