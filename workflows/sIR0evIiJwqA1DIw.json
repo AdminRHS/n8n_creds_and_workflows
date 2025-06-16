@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-12T09:07:33.929Z",
-  "updatedAt": "2025-06-12T12:06:37.629Z",
+  "updatedAt": "2025-06-16T06:04:23.799Z",
   "id": "sIR0evIiJwqA1DIw",
   "name": "Design Channels",
   "active": false,
@@ -196,6 +196,61 @@
       ],
       "id": "97dc3562-f28f-4a3c-9bf3-96dcedb94d47",
       "name": "YouTube Transcript"
+    },
+    {
+      "parameters": {
+        "youtubeURL": "={{ $json.url }}",
+        "language": ""
+      },
+      "type": "n8n-nodes-youtube-transcript-api.youtubeTranscriptApi",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -180
+      ],
+      "id": "1124fdc3-1161-41ce-b65c-dd70eb30d8cd",
+      "name": "Youtube Transcript"
+    },
+    {
+      "parameters": {
+        "youtubeId": "={{ $json.videoId }}",
+        "options": {}
+      },
+      "type": "@catalinbozianu/n8n-nodes-youtube-transcript.youtubeTranscriptNode",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        100
+      ],
+      "id": "26c3bdea-85ba-4c74-b96e-be6b0e0083d8",
+      "name": "Youtube Transcript1"
+    },
+    {
+      "parameters": {
+        "youtubeURL": "={{ $json.videoId }}",
+        "language": ""
+      },
+      "type": "n8n-nodes-youtube-transcript-api.youtubeTranscriptApi",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -320
+      ],
+      "id": "453a2e8e-876d-4b9c-bc89-6dc772f509a2",
+      "name": "Youtube Transcript2"
+    },
+    {
+      "parameters": {
+        "videoId": "={{ $json.url }}"
+      },
+      "type": "n8n-nodes-youtube-transcription-dmr.youtubeTranscripter",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        240
+      ],
+      "id": "8a171dbe-ad31-49ed-9e9c-f33ff47e314b",
+      "name": "YouTube Transcript1"
     }
   ],
   "connections": {
@@ -266,6 +321,26 @@
             "node": "YouTube Transcript",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Youtube Transcript",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Youtube Transcript2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Youtube Transcript1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "YouTube Transcript1",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -279,7 +354,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "6867590c-cb65-4af9-aa2f-2d5aa572661d",
+  "versionId": "8a558b04-78c0-4a36-837c-db805eec5a5e",
   "triggerCount": 0,
   "tags": []
 }
