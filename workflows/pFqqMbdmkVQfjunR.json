@@ -1,0 +1,133 @@
+{
+  "createdAt": "2025-06-17T09:48:30.463Z",
+  "updatedAt": "2025-06-17T12:58:33.677Z",
+  "id": "pFqqMbdmkVQfjunR",
+  "name": "Supabase server",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "Supabase MCP"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        0
+      ],
+      "id": "9d63fce0-643f-4ef7-aa84-9c19f0af8883",
+      "name": "Supabase MCP",
+      "webhookId": "8c84b19e-41d8-4758-a09b-d78767a012ce"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "RecruitmentContext",
+        "returnAll": true,
+        "filterType": "none"
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        60,
+        200
+      ],
+      "id": "ad96f2f5-351f-47f9-8169-9b63acb78398",
+      "name": "Get",
+      "credentials": {
+        "supabaseApi": {
+          "id": "FQpr78T18a7Evcl4",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "RecruitmentContext",
+        "dataToSend": "autoMapInputData"
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        220
+      ],
+      "id": "be2dcfd7-cfef-4faa-959a-b02a8c09d19d",
+      "name": "Create",
+      "credentials": {
+        "supabaseApi": {
+          "id": "FQpr78T18a7Evcl4",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "RecruitmentContext",
+        "dataToSend": "autoMapInputData"
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        200,
+        220
+      ],
+      "id": "1b8502ff-93e8-46ec-8f0f-a93b82dfdf53",
+      "name": "Update",
+      "credentials": {
+        "supabaseApi": {
+          "id": "FQpr78T18a7Evcl4",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Get": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supabase MCP",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supabase MCP",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update": {
+      "ai_tool": [
+        [
+          {
+            "node": "Supabase MCP",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "37b3c42e-c8df-4bd3-8b83-82c2a8fc0e60",
+  "triggerCount": 1,
+  "tags": []
+}

@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-12T12:53:12.413Z",
-  "updatedAt": "2025-06-13T14:45:30.201Z",
+  "updatedAt": "2025-06-17T06:17:59.013Z",
   "id": "0QKsgFmSZjYSB7qt",
   "name": "Sales Calls",
   "active": false,
@@ -667,8 +667,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1100,
-        -540
+        1340,
+        -720
       ],
       "id": "0e16da53-f424-4443-9e62-eedede2a9c5c",
       "name": "merdge gmail+calendar"
@@ -844,8 +844,8 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        720,
-        -340
+        780,
+        -480
       ],
       "id": "7e5b4c30-8ccb-48bc-a1a3-c29d7f305c09",
       "name": "Conversation Notes",
@@ -880,11 +880,12 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        1120,
-        -340
+        1180,
+        -480
       ],
       "id": "306c67ab-e1de-4a02-8888-4a957553a7d6",
-      "name": "Basic LLM Chain6"
+      "name": "Basic LLM Chain6",
+      "disabled": true
     },
     {
       "parameters": {
@@ -893,11 +894,12 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
       "position": [
-        1300,
-        -180
+        1360,
+        -320
       ],
       "id": "cf5cd646-b85a-4fda-b6a6-74c301a74076",
-      "name": "Structured Output Parser6"
+      "name": "Structured Output Parser6",
+      "disabled": true
     },
     {
       "parameters": {
@@ -907,8 +909,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "typeVersion": 1,
       "position": [
-        1120,
-        -180
+        1180,
+        -320
       ],
       "id": "eb5ff74d-ba0f-4718-836b-d21040167919",
       "name": "OpenRouter Chat Model1",
@@ -917,7 +919,8 @@
           "id": "OEY7AoSUjSZlA7Co",
           "name": "ADMIN OpenRouter"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -953,8 +956,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        520,
-        -340
+        580,
+        -480
       ],
       "id": "2382118a-16b8-43ca-a0f6-57a3dd246176",
       "name": "TakeTranscriptURL"
@@ -967,8 +970,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        920,
-        -340
+        980,
+        -480
       ],
       "id": "79aa3ab5-1461-43ae-adf7-1808377216bb",
       "name": "DataFromTranscript"
@@ -1015,8 +1018,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        340,
-        -340
+        400,
+        -480
       ],
       "id": "7039ddc4-12fe-4e2f-a3ff-5d45549b0639",
       "name": "html parser"
@@ -1050,7 +1053,7 @@
               "rightValue": "Remote Helpers",
               "operator": {
                 "type": "string",
-                "operation": "notContains"
+                "operation": "contains"
               }
             }
           ],
@@ -1066,6 +1069,65 @@
       ],
       "id": "2cb7f438-b7be-435d-837b-bb479125dd64",
       "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  // Creating html text variable\n  const html = item.json.description || \"\";\n\n  // Creatign function that crops text from html tags\n  // Example: \n  //  from: \n  //    <br>Website: rh-s.com<br>\n  //  to:\n  //    rh-s.com\n  const getMatch = (regex) => {\n    const match = html.match(regex);\n    return match ? match[1].trim() : null;\n  };\n\n  // Creating function that crops urls from html tags\n  // Example: \n  //  from: \n  //    <a href=\"http://www.breslin.ch/\">http://www.breslin.ch/</a>\n  //  to:\n  //    http://www.breslin.ch/\n  const extractLink = (label) => {\n    const regex = new RegExp(`${label}:.*?<a[^>]+href=\"([^\"]+)\"[^>]*>`, 'i');\n    const match = html.match(regex);\n    return match ? match[1] : null;\n  };\n\n  // using functions on html text to find matching text and create json format type data\n  const result = {\n    website: getMatch(/Website:\\s*(\\S+)<br>/i),\n    companyWebsite: extractLink(\"Company website\"),\n    companyName: getMatch(/<strong>(.*?)<\\/strong>/i),\n    companyInfo: getMatch(/Company info:\\s*<br>(.*?)<br><br>Comments:/is),\n    linkedin: extractLink(\"Comments\"),\n    comment: getMatch(/Comments:.*?<a[^>]*>(.*?)<\\/a><br>\"([^\"]+)\"/is)?.[1],\n    commentText: getMatch(/<br>\"([^\"]+)\"\\s*<br>/),\n    country: getMatch(/Country:\\s*(.*?)<br>/i),\n    industry: getMatch(/Industry:\\s*(.*?)<br>/i),\n    manager: getMatch(/Manager:\\s*(.*)/i),\n  };\n\n  // Getting all data and passing it into item object\n  item.json = {\n    ...item.json,\n    ...result,\n  };\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        340,
+        80
+      ],
+      "id": "fa30a34d-f5fa-4787-9b82-cba168bcd724",
+      "name": "html parser1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "attachments[3]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        520,
+        80
+      ],
+      "id": "5ff9069f-ada7-420d-acf2-def523a55c48",
+      "name": "TakeTranscriptURL1"
+    },
+    {
+      "parameters": {
+        "content": "## Remote Helpers - First Call\n",
+        "height": 360,
+        "width": 1240,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -540
+      ],
+      "id": "2fbd5349-bb00-4bba-ac40-cda7ed4461e0",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Other calls",
+        "height": 360,
+        "width": 1240,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -60
+      ],
+      "id": "eae79e0b-871c-4a4e-96c8-2dd717d0b58c",
+      "name": "Sticky Note2"
     }
   ],
   "connections": {
@@ -1506,6 +1568,24 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "html parser1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "html parser1": {
+      "main": [
+        [
+          {
+            "node": "TakeTranscriptURL1",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
@@ -1518,7 +1598,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "0b539c5e-e84d-49f1-86f6-3f4bbd8ef5ec",
+  "versionId": "e28d610c-8e52-40c9-9567-8e6373a4f3ed",
   "triggerCount": 0,
   "tags": []
 }
