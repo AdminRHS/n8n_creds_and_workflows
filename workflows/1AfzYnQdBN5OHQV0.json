@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-11T07:28:58.965Z",
-  "updatedAt": "2025-06-11T11:57:44.206Z",
+  "updatedAt": "2025-06-19T07:58:55.118Z",
   "id": "1AfzYnQdBN5OHQV0",
   "name": "1 Hour before call",
   "active": true,
@@ -166,7 +166,7 @@
       "typeVersion": 2.2,
       "position": [
         260,
-        0
+        120
       ],
       "id": "bdbfafc3-0b2b-4a3f-80b4-eaf9fa648c8b",
       "name": "Contains RH"
@@ -245,7 +245,7 @@
       "main": [
         [
           {
-            "node": "Contains RH",
+            "node": "Has Sales",
             "type": "main",
             "index": 0
           }
@@ -287,13 +287,7 @@
     },
     "Contains RH": {
       "main": [
-        [
-          {
-            "node": "Has Sales",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "If pre-call 60 min": {
@@ -321,7 +315,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "3ac8eadd-43e9-4a16-8232-3503394cbbc2",
+  "versionId": "97b73dd9-6788-48e8-8b72-e7250a270264",
   "triggerCount": 1,
   "tags": []
 }
