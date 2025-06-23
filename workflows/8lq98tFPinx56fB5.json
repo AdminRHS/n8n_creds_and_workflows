@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-10T07:41:10.624Z",
-  "updatedAt": "2025-06-11T11:38:00.614Z",
+  "updatedAt": "2025-06-23T08:41:16.849Z",
   "id": "8lq98tFPinx56fB5",
   "name": "HR FAQ Bot",
   "active": true,
@@ -274,7 +274,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "866d754d-bf59-4c22-9450-b68fb0a1f98e",
+  "versionId": "e03ddac3-9b53-4d53-ac38-958fada74c0e",
   "triggerCount": 1,
   "tags": []
 }
