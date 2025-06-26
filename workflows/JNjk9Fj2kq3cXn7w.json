@@ -1,0 +1,2896 @@
+{
+  "createdAt": "2025-06-26T09:43:27.094Z",
+  "updatedAt": "2025-06-26T09:43:27.094Z",
+  "id": "JNjk9Fj2kq3cXn7w",
+  "name": "Notion Drive syn",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "1fbb16a3-1451-819e-a2ed-de8669a31a5c",
+          "mode": "list",
+          "cachedResultName": "Google Drive, Notion",
+          "cachedResultUrl": "https://www.notion.so/1fbb16a31451819ea2edde8669a31a5c"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -2340,
+        1120
+      ],
+      "id": "f0605975-10b2-4e8c-bbbb-aa7900e4f922",
+      "name": "Notion"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b753bb30-df35-4203-868d-207e7e1af538",
+              "name": "notion_name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "03a887ff-d6f2-402c-b459-88a9b992b16c",
+              "name": "notion_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "name, property_name",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2160,
+        1120
+      ],
+      "id": "82652d7b-662a-465e-b52d-ea5dd9bd95dc",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0d41deab-d3d4-4285-a92b-5ff8852e44c1",
+              "name": "drive_name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "57ff6615-3742-450a-a8ce-f5aa2e8faa1b",
+              "name": "drive_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "d25aacf8-e439-4782-8d5a-384d259320cf",
+              "name": "relativePath",
+              "value": "={{ \n  $json.relativePath.split('/').length > 2 \n    ? $json.relativePath.replace(/\\/$/, '') \n    : $json.relativePath \n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "name",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1920,
+        1300
+      ],
+      "id": "0530c20f-e642-420c-91e0-92efb7624c43",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const preinputjson = $input.first().json\nlet inputjson = []\ninputjson.push(preinputjson)\n\nfunction findFirstIncompleteNodeId(data) {\n  if (!Array.isArray(data)) {\n    console.log(\"Input must be an array.\");\n    return null;\n  }\n\n  const queue = [...data];\n\n  while (queue.length > 0) {\n    const node = queue.shift();\n\n    if (node === null || typeof node !== 'object' || !node.hasOwnProperty('id')) {\n      console.log(\"Skipping invalid node:\", node);\n      continue;\n    }\n\n    if (!node.hasOwnProperty('children')) {\n      return node.id;\n    }\n\n    if (Array.isArray(node.children) && node.children.length > 0) {\n      for (const child of node.children) {\n         if (child !== null && typeof child === 'object') {\n             queue.push(child);\n         } else {\n            console.log(\"Skipping invalid child node:\", child, \"under parent:\", node.id);\n         }\n      }\n    }\n  }\n  return null;\n}\n\nlet firstincompleteNodeId = findFirstIncompleteNodeId(inputjson)\nif(firstincompleteNodeId===null){\n  return []\n}\nreturn {\"id\": firstincompleteNodeId}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3160,
+        1780
+      ],
+      "id": "6de65a07-d89f-468c-a26e-5505b70edcb0",
+      "name": "get one id without children",
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          },
+          "whatToSearch": "folders"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2660,
+        1700
+      ],
+      "id": "73073ec2-decd-4995-a4e6-aa689ed2c5e4",
+      "name": "get children folders from folder id",
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -1980,
+        2080
+      ],
+      "id": "cba70968-7033-41d3-ab73-98c0c3bfde40",
+      "name": "Merge",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e7764b2f-c23e-476f-9b9a-a1962ab95c72",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2960,
+        1680
+      ],
+      "id": "fcd4f036-e41c-44fe-a095-fa7d421d2e86",
+      "name": "empty input ? (so no more id without children)",
+      "alwaysOutputData": false,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "include": "specifiedFields",
+        "fieldsToInclude": "id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -2440,
+        1700
+      ],
+      "id": "2738918e-2e56-4bb7-b638-17fe1c40477c",
+      "name": "Aggregate",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1760,
+        2080
+      ],
+      "id": "ae9d994c-c025-42d7-a8ac-7fe03edcedf2",
+      "name": "Aggregate1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3560,
+        1980
+      ],
+      "id": "82a972be-a247-4a5f-b04e-17b56adbc42f",
+      "name": "pass tree dict  as is",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// will only have one input data (after aggregate node)\n\nlet unwrap_data_if_needed = (input_dict) => {\n  if (input_dict && input_dict.hasOwnProperty('data')) {\n    return input_dict.data\n  }\n  return input_dict\n}\n\nlet input = unwrap_data_if_needed($input.first().json)\nconsole.log('input is', input)\n// expecting an array with 3 elements\nif (!Array.isArray(input) || input.length !== 3) {\n  // return an empty array so that n8n stops the current loop\n  return []\n}\nconst json_tree = unwrap_data_if_needed(input[0])\nconst id_to_insert_children_in = unwrap_data_if_needed(input[1]).id\nconst children_to_insert = unwrap_data_if_needed(input[2])\n// expecting an array for children_to_insert\nif (!Array.isArray(children_to_insert)) {\n  throw new Error('children_to_insert must be an array.');\n}\n\nlet return_dict = {}\nreturn_dict[\"json_tree\"] = json_tree\nreturn_dict[\"id_to_insert_children_in\"] = id_to_insert_children_in\nreturn_dict[\"children_to_insert\"] = children_to_insert\n\nreturn return_dict"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1580,
+        2080
+      ],
+      "id": "7d027754-d4e5-418c-9dea-90c83cd28093",
+      "name": "process data for tree modification",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// will only have one input data\n\n\nlet input = $input.first().json\n\nlet json_tree = input.json_tree\nlet id_to_insert_children_in = input.id_to_insert_children_in\nlet children_to_insert = input.children_to_insert\n\nlet new_json_tree = JSON.parse(JSON.stringify(json_tree)) // deep copy\n\n// now lets insert the children_to_insert into the json_tree at the node level where id is id_to_insert_children_in\nlet insertChildren = (node, id_to_insert_children_in, children_to_insert) => {\n  if (node.id === id_to_insert_children_in) {\n    // If the node's ID matches, insert the children\n    node.children = children_to_insert;\n    return true; // Indicate that the insertion was successful\n  }\n\n  // If the node has children, recursively check them\n  if (node.children && Array.isArray(node.children)) {\n    for (const child of node.children) {\n      if (insertChildren(child, id_to_insert_children_in, children_to_insert)) {\n        return true; // Insertion was successful in a child\n      }\n    }\n  }\n\n  return false; // Insertion was not successful\n};\n\n// Start the insertion process\nlet insertionSuccessful = insertChildren(new_json_tree, id_to_insert_children_in, children_to_insert);\nif (!insertionSuccessful) {\n  throw new Error(`Node with ID ${id_to_insert_children_in} not found in the tree.`);\n}\n// Return the modified JSON tree\nreturn new_json_tree"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1360,
+        2080
+      ],
+      "id": "42997c6a-68ba-4d42-8a50-98d53ec7653d",
+      "name": "insert children in tree",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// will only have one input data\n\nlet input = $input.first().json\n\n// check if the tree is complete, which means that all nodes that have an id also have a children key (which can be empty)\nlet isTreeComplete = true\nlet checkTree = (node) => {\n  if (node.id && !node.hasOwnProperty('children')) {\n    isTreeComplete = false\n    return\n  }\n  if (node.children && Array.isArray(node.children)) {\n    for (const child of node.children) {\n      checkTree(child)\n    }\n  }\n}\ncheckTree(input)\nif (isTreeComplete) {\n  // return the input as is\n  return input\n}\n// if the tree is not complete, return an empty array this will stop the current loop in n8n\nreturn []\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3160,
+        1460
+      ],
+      "id": "24c98c29-aeb6-4c44-81aa-cdeda28ad1d9",
+      "name": "output tree if tree complete",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const returnvalue = \n[\n  {\n  \"id\": $input.first().json.body.id\n  }\n]\n\nreturn returnvalue"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3800,
+        1940
+      ],
+      "id": "fba2053d-e751-426f-935a-94d2ff0281c8",
+      "name": "output initial valid tree dict1"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        180,
+        0
+      ],
+      "id": "e68e5bd2-54ef-457a-be10-6f06a1d9b26f",
+      "name": "Respond to Webhook",
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "get_gdrive_subfolders",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -4100,
+        1600
+      ],
+      "id": "ab40a524-1787-4a66-b744-4b7887488d03",
+      "name": "Webhook",
+      "webhookId": "373dff38-624c-4e95-800d-71bc3a5a882a"
+    },
+    {
+      "parameters": {
+        "content": "make a POST request with id in body",
+        "height": 220,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4180,
+        1540
+      ],
+      "id": "45880928-bf52-47a5-9f05-b630b74ef4a8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## How it works\na tree is instanciated with the id. A tree is a json object that looks like:\n\n{\n   id : \"a google drive folder id\",\n   children: []\n}\n\nchildren having other nodes (if the id has subfolders) inside.\n\nThis workflow loops over this tree structure to progressively add children to each node until every node has a children key (that can have an empty array value after we verify it has no children).\n\n\n",
+        "height": 480,
+        "width": 440
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4040,
+        900
+      ],
+      "id": "18265354-d6ae-4da9-8433-54112b625c02",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b7334488-0c3d-4366-af74-813e85279ec0",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2740,
+        1460
+      ],
+      "id": "04962e34-2cc7-489d-b6ee-bc55e5bebe3e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.id }}",
+            "mode": "id"
+          },
+          "whatToSearch": "all"
+        },
+        "options": {
+          "fields": [
+            "name",
+            "webViewLink",
+            "id",
+            "mimeType"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2100,
+        1460
+      ],
+      "id": "e83a9fde-3a13-459c-bdd8-cd1eec3449e4",
+      "name": "Google Drive",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "95f79e3c-73f7-4757-aa0c-4a870297a57c",
+              "name": "relativePath",
+              "value": "={{ $('Loop Over Items').item.json.path + \"/\" }}",
+              "type": "string"
+            },
+            {
+              "id": "85be2f65-1600-47fe-bd63-006fb9cdf5d4",
+              "name": "mimeType",
+              "value": "={{ $json.mimeType.split('.').pop() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1920,
+        1460
+      ],
+      "id": "b9639c3c-6adb-4412-8dc2-a4811ff7b960",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\n\nconst filtered = allItems\n  .map(i => i.json)\n  .filter(json => json.kind === 'drive#file');\n\nreturn [{ json: { data: filtered } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2840,
+        1300
+      ],
+      "id": "ea791225-eb05-4bcb-9712-30c8b6994e43",
+      "name": "file + path"
+    },
+    {
+      "parameters": {
+        "jsCode": "const flat = [];\nfunction walk(node, parent = '') {\n  // build a slash-delimited path of IDs\n  const thisPath = parent\n    ? `${parent}/${node.id}`\n    : node.id;\n  flat.push({ id: node.id, path: thisPath });\n  for (const c of node.children || []) {\n    walk(c, thisPath);\n  }\n}\nitems.forEach(item => walk(item.json));\nreturn flat.map(f => ({ json: f }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2980,
+        1460
+      ],
+      "id": "57e0b031-9b4b-4af2-8e7e-f04ee00b4d7d",
+      "name": "folder id + path"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -2640,
+        1200
+      ],
+      "id": "83e91198-3966-4e3d-964f-95b8127a017f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        -1440,
+        1160
+      ],
+      "id": "5e2fe460-94ec-4a7b-9675-ac118eb964db",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "toNotion",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        1040
+      ],
+      "id": "02b3c769-c9e5-4391-97d3-0858d19aff2c",
+      "name": "toNotion"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "toDrive",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        1280
+      ],
+      "id": "00fbac36-5bc5-45a6-8e55-060ff1be0cc2",
+      "name": "toDrive"
+    },
+    {
+      "parameters": {
+        "jsCode": "const driveFiles = $(\"Edit Fields1\").all(); // Drive files\nconst notionFiles = $(\"Edit Fields\").all(); // Notion files\n\nconst driveNames = new Set(driveFiles.map(item => item.json.drive_name));\nconst notionNames = new Set(notionFiles.map(item => item.json.notion_name));\n\nconst toDrive = notionFiles\n  .filter(item => !driveNames.has(item.json.notion_name))\n  .map(item => item.json);\n\nconst toNotion = driveFiles\n  .filter(item => !notionNames.has(item.json.drive_name))\n  .map(item => item.json);\n\nreturn [\n  {\n    json: {\n      toDrive,\n      toNotion,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1220,
+        1160
+      ],
+      "id": "f5940e61-12ad-49e8-8094-68137fc1d33f",
+      "name": "Identify Unsynced Files"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b9dc988d-53dd-41db-9840-c2ea5501daae",
+              "leftValue": "={{ $json.property_type }}",
+              "rightValue": "=File-Text",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1060,
+        1600
+      ],
+      "id": "72df393d-7208-4952-a9a4-5975e58602e5",
+      "name": "If File-Text"
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "operation": "getAll",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "returnAll": true,
+        "fetchNestedBlocks": true
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -800,
+        1500
+      ],
+      "id": "9780f128-dcec-4256-b83a-57632285ad67",
+      "name": "Get Page Content"
+    },
+    {
+      "parameters": {
+        "jsCode": "function notionToMarkdown(blocks) {\n  return blocks\n    .map(block => {\n      if (!block.json.content) return \"\"; // Skip empty content\n      \n      switch (block.json.type) {\n        case \"heading_1\":\n          return `# ${block.json.content}`;\n        case \"heading_2\":\n          return `## ${block.json.content}`;\n        case \"heading_3\":\n          return `### ${block.json.content}`;\n        case \"bulleted_list_item\":\n          return `- ${block.json.content}`;\n        case \"to_do\":\n          return `- [ ] ${block.json.content}`;\n        case \"paragraph\":\n          return `${block.json.content}`;\n        default:\n          return \"\"; // Ignore unsupported types\n      }\n    })\n    .filter(line => line.trim() !== \"\") // Remove empty lines\n    .join(\"\\n\\n\"); // Ensure proper spacing\n}\nconsole.log($input.all())\nreturn [ {\"md\": notionToMarkdown($input.all())} ]"
+      },
+      "id": "c8da070d-924d-43bf-a0c8-91ec214a11d8",
+      "name": "Notion Node Blocks to Md",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -600,
+        1500
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const markdownInput = $input.first().json.md || ''; \n\nconst name = $('If File-Text').first().json.notion_name|| '';\nconst ext = name.split('.').pop().toLowerCase();\n\n// Helper function to convert markdown to CSV\nfunction markdownToCSV(mdContent) {\n  const lines = mdContent.split(\"\\n\\n\");\n  const header = ['Type', 'Content'];\n  const rows = lines.map(line => {\n    if (line.startsWith(\"# \")) {\n      return ['Heading 1', line.replace('# ', '')];\n    } else if (line.startsWith(\"## \")) {\n      return ['Heading 2', line.replace('## ', '')];\n    } else if (line.startsWith(\"### \")) {\n      return ['Heading 3', line.replace('### ', '')];\n    } else if (line.startsWith(\"- \")) {\n      return ['Bulleted List Item', line.replace('- ', '')];\n    } else {\n      return ['Paragraph', line];\n    }\n  });\n  const csvContent = [header, ...rows].map(row => row.join(',')).join(\"\\n\");\n  return csvContent;\n}\n\n// Helper function to convert markdown to HTML\nfunction markdownToHTML(mdContent) {\n  const lines = mdContent.split(\"\\n\\n\");\n  let htmlContent = '';\n  \n  lines.forEach(line => {\n    if (line.startsWith(\"# \")) {\n      htmlContent += `<h1>${line.replace('# ', '')}</h1>`;\n    } else if (line.startsWith(\"## \")) {\n      htmlContent += `<h2>${line.replace('## ', '')}</h2>`;\n    } else if (line.startsWith(\"### \")) {\n      htmlContent += `<h3>${line.replace('### ', '')}</h3>`;\n    } else if (line.startsWith(\"- \")) {\n      htmlContent += `<ul><li>${line.replace('- ', '')}</li></ul>`;\n    } else {\n      htmlContent += `<p>${line}</p>`;\n    }\n  });\n\n  return `<html><body>${htmlContent}</body></html>`;\n}\n\n// Helper function to convert markdown to JSON\nfunction markdownToJSON(mdContent) {\n  const lines = mdContent.split(\"\\n\\n\");\n  return lines.map(line => {\n    if (line.startsWith(\"# \")) {\n      return { type: 'heading_1', content: line.replace('# ', '') };\n    } else if (line.startsWith(\"## \")) {\n      return { type: 'heading_2', content: line.replace('## ', '') };\n    } else if (line.startsWith(\"### \")) {\n      return { type: 'heading_3', content: line.replace('### ', '') };\n    } else if (line.startsWith(\"- \")) {\n      return { type: 'bulleted_list_item', content: line.replace('- ', '') };\n    } else {\n      return { type: 'paragraph', content: line };\n    }\n  });\n}\n\n// Helper function to convert markdown to plain text (TXT)\nfunction markdownToTXT(mdContent) {\n  return mdContent.replace(/\\n\\n/g, '\\n').replace(/#/g, '').replace(/-/g, '').trim();\n}\n\n// Helper function to convert markdown to XLS/XLSX (simulated as JSON in this case)\nfunction markdownToXLSX(mdContent) {\n  const lines = mdContent.split(\"\\n\\n\");\n  return lines.map(line => {\n    if (line.startsWith(\"# \")) {\n      return { Type: 'Heading 1', Content: line.replace('# ', '') };\n    } else if (line.startsWith(\"## \")) {\n      return { Type: 'Heading 2', Content: line.replace('## ', '') };\n    } else if (line.startsWith(\"### \")) {\n      return { Type: 'Heading 3', Content: line.replace('### ', '') };\n    } else if (line.startsWith(\"- \")) {\n      return { Type: 'Bulleted List Item', Content: line.replace('- ', '') };\n    } else {\n      return { Type: 'Paragraph', Content: line };\n    }\n  });\n}\n\nlet output = {};\n\nif (markdownInput) {\n  const mdContent = markdownInput\n\n  switch (ext) {\n    case 'csv':\n      // Convert to CSV format\n      const csvContent = markdownToCSV(mdContent);\n      output = {\n        fileType: 'csv',\n        fileName: name,\n        fileContent: csvContent\n      };\n      break;\n    case 'html':\n      // Convert to HTML format\n      const htmlContent = markdownToHTML(mdContent);\n      output = {\n        fileType: 'html',\n        fileName: name,\n        fileContent: htmlContent\n      };\n      break;\n    case 'json':\n      // Convert to JSON format\n      const jsonContent = markdownToJSON(mdContent);\n      output = {\n        fileType: 'json',\n        fileName: name,\n        fileContent: JSON.stringify(jsonContent, null, 2)\n      };\n      break;\n    case 'txt':\n      // Convert to TXT format\n      const txtContent = markdownToTXT(mdContent);\n      output = {\n        fileType: 'txt',\n        fileName: name,\n        fileContent: txtContent\n      };\n      break;\n    case 'xls':\n    case 'xlsx':\n      // Convert to XLS/XLSX (simulated as JSON)\n      const xlsxContent = markdownToXLSX(mdContent);\n      output = {\n        fileType: ext,\n        fileName: name,\n        fileContent: JSON.stringify(xlsxContent)\n      };\n      break;\n    default:\n      // Default case: Convert to JSON if the extension is unsupported\n      const defaultJsonContent = markdownToJSON(mdContent);\n      output = {\n        fileType: 'json-other',\n        fileName: name.replace(/\\.[^/.]+$/, '.json-other'), // Replace the extension with .json\n        fileContent: JSON.stringify(defaultJsonContent, null, 2)\n      };\n      break;\n  }\n} else {\n  output = {\n    fileType: 'json',\n    fileName: name,\n    fileContent: JSON.stringify({ message: 'No markdown input provided' })\n  };\n}\n\nreturn [{ json: output }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        1500
+      ],
+      "id": "e62ac182-a505-4ae7-8706-c578be4b5f4f",
+      "name": "Process the Markdown"
+    },
+    {
+      "parameters": {
+        "options": {
+          "fileName": "= {{ $json.fileName }}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        60,
+        1400
+      ],
+      "id": "3501b37c-9ec3-4a26-aab0-8a6f52dd5996",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {
+          "fileName": "={{ $json.fileName }}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        1700
+      ],
+      "id": "32618d86-bb4d-439d-a503-f2be10352c7c",
+      "name": "Convert to File5"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "= {{ $json.fileContent }}",
+        "options": {
+          "fileName": "= {{ $json.fileName }}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        360,
+        1560
+      ],
+      "id": "459bd218-b12e-4cbe-afa1-d89299903ae0",
+      "name": "Convert to File6"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1220,
+        1700
+      ],
+      "id": "fb6f5e48-4f96-456c-a81c-5c8f3e07e7ad",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('If File-Text').first().json.url }}",
+          "mode": "url"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Name|title",
+              "title": "={{ $json.fileName }}"
+            },
+            {
+              "key": "Last Sync Source|select",
+              "selectValue": "Drive"
+            },
+            {
+              "key": "Date|date",
+              "date": "={{ $today.toISODate() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        900,
+        2000
+      ],
+      "id": "4de36488-49cd-464d-8a1d-eaa55d5f77b2",
+      "name": "Update Notion Page"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {
+          "fileName": "={{ $json.fileName }}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        1820
+      ],
+      "id": "53f3d05b-cb39-41ea-9d49-204cdcd4271b",
+      "name": "Convert to File7"
+    },
+    {
+      "parameters": {
+        "jsCode": "const originalName = $('If File-Text').first().json.notion_name;\n\n// Remove the extension (if any)\nconst nameWithoutExt = originalName.replace(/\\.[^/.]+$/, '');\n\n// Add .js extension\nconst newName = nameWithoutExt + '.js';\n\n// Set the new file name in the output\nfor (const item of $input.all()) {\n  item.json.fileName = newName;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        1880
+      ],
+      "id": "fa579cb0-976b-4081-879e-9ad444b26133",
+      "name": "Update File Name"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "df59ecf9-aff4-4f16-9957-19ca46b813a7",
+              "leftValue": "={{ $json.property_type }}",
+              "rightValue": "Folder",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -780,
+        1280
+      ],
+      "id": "3aad9bbb-a9bf-481f-9cc1-e99097091ad6",
+      "name": "If Folder"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "460de322-d6fc-4fae-956e-dd352df602de",
+              "leftValue": "={{ $json.property_parent[0] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -580,
+        1140
+      ],
+      "id": "0f05cfc2-05f1-46d7-ac36-7dcf3fda2fec",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.property_parent[0] }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        1220
+      ],
+      "id": "2699e0f2-cb05-4176-8bb6-0377336b0bde",
+      "name": "Find Parent"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.property_g_drive_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -60,
+        1220
+      ],
+      "id": "3fd4bcc1-4d8d-4a06-ac48-8877a9693ad2",
+      "name": "Create Folder in Parent"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('If6').item.json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "GDrive ID|rich_text",
+              "textContent": "={{ $json.id }}"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        140,
+        1100
+      ],
+      "id": "286923a3-62ba-4929-bee8-f2c0acd375ba",
+      "name": "Update GDriveID in Page"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('If File-Text').first().json.property_parent[0] }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1800,
+        1800
+      ],
+      "id": "326e3edb-10af-41a0-9729-b5a2c49247f3",
+      "name": "Find Parent1"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh",
+          "mode": "list",
+          "cachedResultName": "Notion sync",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -180,
+        1040
+      ],
+      "id": "bbee1759-9638-47c5-96f8-ff1cc7ce09dc",
+      "name": "Create Folder in Root"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Update File Name').item.json.fileName ? $('Update File Name').item.json.fileName : $('If File-Text').first().json.notion_name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $input.all().last().json.property_g_drive_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2200,
+        1720
+      ],
+      "id": "65a0a6d9-6e8a-42ef-bc75-7a1c281c3cd2",
+      "name": "Upload File to Parent"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        2040,
+        1720
+      ],
+      "id": "2d875713-18c3-4402-b4b3-e787b127f1e0",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b4b825e7-f130-45ba-a54f-2e3f669889f3",
+              "leftValue": "={{ $('If File-Text').first().json.property_parent[0] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1460,
+        1720
+      ],
+      "id": "8fdd3a1d-0cb8-4f27-b186-3758ef1012fe",
+      "name": "If7"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Update File Name').item.json.fileName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh",
+          "mode": "list",
+          "cachedResultName": "Notion sync",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1800,
+        1960
+      ],
+      "id": "f314116b-0056-4d19-a073-f1a7e6b2771c",
+      "name": "Upload File to Root"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18a8e2ff-df19-45b6-a017-a115c49e7422",
+              "leftValue": "={{ $json.property_type }}",
+              "rightValue": "File-Binary",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -800,
+        1700
+      ],
+      "id": "ba6f904f-150e-4b6b-a339-c4c51ba0a021",
+      "name": "If File-Binary"
+    },
+    {
+      "parameters": {
+        "content": "## Note\n\nThis synchronization works only when there is a file mismatch between Notion and Google Drive.\n\nIf files are deleted or the content is updated in either end, they will not be synchronized on the other end.\n\n## Important\nExplicitly mention file extention both in Notion and Google Drive",
+        "height": 300,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4980,
+        1240
+      ],
+      "id": "f8a7e334-0f6b-431e-a4a8-cea21eac2100",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d449b180-afc9-4bae-b590-11a14229b3c6",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "folder",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -780,
+        1040
+      ],
+      "id": "b5a2d1ec-ddfe-4c14-82bf-23369d267bb8",
+      "name": "If Folder1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        -320,
+        320
+      ],
+      "id": "1512e771-91a7-4bfc-ad6f-23836e51da62",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "1fbb16a3-1451-819e-a2ed-de8669a31a5c",
+          "mode": "list",
+          "cachedResultName": "Google Drive, Notion",
+          "cachedResultUrl": "https://www.notion.so/1fbb16a31451819ea2edde8669a31a5c"
+        },
+        "title": "={{ $json.drive_name }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date|date",
+              "date": "={{ $now.format('yyyy-MM-dd') }}"
+            },
+            {
+              "key": "GDrive ID|rich_text",
+              "textContent": "={{ $json.id }}"
+            },
+            {
+              "key": "Last Sync Source|select",
+              "selectValue": "Notion"
+            },
+            {
+              "key": "Name|title",
+              "title": "={{ $json.drive_name }}"
+            },
+            {
+              "key": "Parent|relation",
+              "relationValue": [
+                "={{ $json.property_g_drive_id }}"
+              ]
+            },
+            {
+              "key": "Type|select",
+              "selectValue": "Folder"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        20,
+        320
+      ],
+      "id": "b5456cff-c18c-48ba-8de1-88cd62e979b6",
+      "name": "Create Folder"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1a7e5204-ac55-4379-b9f2-33234ebcba93",
+              "leftValue": "={{ $json.property_type }}",
+              "rightValue": "Folder",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1000,
+        820
+      ],
+      "id": "31ff97bc-3ec5-41d8-98c5-7b81c337e8cd",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dad8dac5-28b5-422e-8e60-b217875a3061",
+              "leftValue": "={{ $json.relativePath.split('/').last() }}",
+              "rightValue": "={{ $json.property_g_drive_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -140,
+        320
+      ],
+      "id": "4d79f729-4c74-41f3-9260-0522ff7f18b8",
+      "name": "Filter1"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_id }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "text/plain"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -340,
+        500
+      ],
+      "id": "4ba8699c-7bce-4f05-bef6-a02147552045",
+      "name": "Download Files",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1ff3ad40-d877-4296-93df-f6d206d2de60",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -2520,
+        1360
+      ],
+      "id": "a7e3d0b6-d8dd-47fd-876e-2cde376d7419",
+      "name": "Filter2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6c28cead-7c21-4a23-8347-4b7b1aedf281",
+              "leftValue": "={{ $json.fileType }}",
+              "rightValue": "csv",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        1500
+      ],
+      "id": "1a2bb54a-cd26-479f-b315-3730a1190be3",
+      "name": "If CSV"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "586b80ee-53f3-4eee-817d-a4ae3ec3a445",
+              "leftValue": "={{ $json.fileName }}",
+              "rightValue": "txt",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        1600
+      ],
+      "id": "c62d56b7-888e-4d09-93cb-c74e6722f956",
+      "name": "If TXT"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "055984a8-21b1-4132-ac4e-4c7687ed16b9",
+              "leftValue": "={{ $json.fileType }}",
+              "rightValue": "json",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        360,
+        1740
+      ],
+      "id": "ccb2d2fe-9b37-41b3-8bb4-c5d8f953fa9e",
+      "name": "If JSON"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        600,
+        540
+      ],
+      "id": "e9c79956-e4df-450a-b551-87cccd6c0dce",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "74e5df38-6e8e-4257-91b3-0345d512695d",
+              "leftValue": "={{ $binary.data.fileExtension }}",
+              "rightValue": "csv",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -120,
+        780
+      ],
+      "id": "bef25972-db8c-42d6-a8b8-131dbf4aa122",
+      "name": "If CSV1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "170f0f82-ddf9-432e-9bdd-94a976a21b43",
+              "leftValue": "={{ $binary.data.fileExtension }}",
+              "rightValue": "txt",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        960
+      ],
+      "id": "032188a8-bbef-4fbd-b7cd-3d51f2ec1e25",
+      "name": "If TXT1"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        940,
+        880
+      ],
+      "id": "c8eef78b-4cb2-4400-88b9-ae55ef626367",
+      "name": "Extract from File3"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        940,
+        1040
+      ],
+      "id": "ec5c8401-09ab-4c64-bbf3-3c4362a7026e",
+      "name": "Extract from File4"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1900,
+        840
+      ],
+      "id": "154c6003-7264-4717-800b-0ee225ec7e73",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node\n\nconst items = $input.all();\n\nreturn items.map(item => {\n  const {\n    mimeType,\n    webViewLink,\n    relativePath,\n    drive_name,\n    drive_id,\n    data\n  } = item.json;\n\n  // if there’s no data array or it’s empty, return metadata only\n  if (!Array.isArray(data) || data.length === 0) {\n    return {\n      json: {\n        mimeType,\n        webViewLink,\n        relativePath,\n        drive_name,\n        drive_id,\n        blocks: []\n      }\n    };\n  }\n\n  // derive table headers from the first row’s keys\n  const headers = Object.keys(data[0]);\n\n  // build the header row\n  const headerRow = {\n    object: 'block',\n    type: 'table_row',\n    table_row: {\n      cells: headers.map(h => ([{\n        type: 'text',\n        text: { content: h }\n      }]))\n    }\n  };\n\n  // build one data row per entry\n  const dataRows = data.map(row => ({\n    object: 'block',\n    type: 'table_row',\n    table_row: {\n      cells: headers.map(h => ([{\n        type: 'text',\n        text: { content: row[h] != null ? String(row[h]) : '' }\n      }]))\n    }\n  }));\n\n  // assemble the table block\n  const tableBlock = {\n    object: 'block',\n    type: 'table',\n    table: {\n      table_width: headers.length,\n      has_column_header: true,\n      has_row_header: false,\n      children: [headerRow, ...dataRows]\n    }\n  };\n\n  return {\n    json: {\n      mimeType,\n      webViewLink,\n      relativePath,\n      drive_name,\n      drive_id,\n      blocks: [tableBlock]\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        640
+      ],
+      "id": "b18f6299-379f-48e0-a1e0-bc07b5b98593",
+      "name": "Convert to Notion Page"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node\n\nreturn $input.all().map(item => {\n  const {\n    mimeType,\n    webViewLink,\n    relativePath,\n    drive_name,\n    drive_id,\n    data\n  } = item.json;\n\n  const blocks = [];\n\n  // only use the data array for processing\n  (Array.isArray(data) ? data : []).forEach(row => {\n    // heading with the fileName\n    blocks.push({\n      object: 'block',\n      type: 'heading_2',\n      heading_2: {\n        rich_text: [{\n          type: 'text',\n          text: { content: row.fileName }\n        }],\n        is_toggleable: false\n      }\n    });\n\n    // parse the JSON content string\n    let parsed = [];\n    try {\n      parsed = JSON.parse(row.fileContent);\n    } catch (err) {\n      blocks.push({\n        object: 'block',\n        type: 'paragraph',\n        paragraph: {\n          rich_text: [{\n            type: 'text',\n            text: { content: `⚠️ Failed to parse JSON: ${err.message}` }\n          }]\n        }\n      });\n      return; // skip further processing of this row\n    }\n\n    // convert each parsed entry into a Notion paragraph block\n    parsed.forEach(entry => {\n      if (entry.type === 'paragraph') {\n        blocks.push({\n          object: 'block',\n          type: 'paragraph',\n          paragraph: {\n            rich_text: [{\n              type: 'text',\n              text: { content: entry.content }\n            }]\n          }\n        });\n      }\n      // add more handlers here if needed (e.g., headings, lists, etc.)\n    });\n  });\n\n  // return metadata plus the generated blocks\n  return {\n    json: {\n      mimeType,\n      webViewLink,\n      relativePath,\n      drive_name,\n      drive_id,\n      blocks\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        1040
+      ],
+      "id": "772db4a6-22ae-4c21-b88b-535517ff8f42",
+      "name": "Convert to Notion Page1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node\n\n// get all incoming items (each has .json.data, .json.relativePath, and other metadata)\nconst files = $input.all();\n\nreturn files.map((item, index) => {\n  const {\n    mimeType,\n    webViewLink,\n    relativePath,\n    drive_name,\n    drive_id,\n    data\n  } = item.json;\n\n  // only use the 'data' field (text content) for processing\n  const content = data || '';\n  const lines = content.split(/\\r?\\n/).filter(line => line.trim() !== '');\n\n  // build Notion blocks: start with a heading naming the file\n  const blocks = [{\n    object: 'block',\n    type: 'heading_2',\n    heading_2: {\n      rich_text: [{\n        type: 'text',\n        text: { content: `Text File ${index + 1}` }\n      }],\n      is_toggleable: false\n    }\n  }];\n\n  // one paragraph block per line of text\n  lines.forEach(line => {\n    blocks.push({\n      object: 'block',\n      type: 'paragraph',\n      paragraph: {\n        rich_text: [{\n          type: 'text',\n          text: { content: line }\n        }]\n      }\n    });\n  });\n\n  // return metadata plus the generated blocks\n  return {\n    json: {\n      mimeType,\n      webViewLink,\n      relativePath,\n      drive_name,\n      drive_id,\n      blocks\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        880
+      ],
+      "id": "b5dcb7af-53d4-486b-85c8-8e4e2e2bc464",
+      "name": "Convert to Notion Page2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2e2d8089-ba76-44f0-9c9c-b7203fa32919",
+              "leftValue": "={{ $binary.data.fileExtension }}",
+              "rightValue": "js",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        600,
+        1060
+      ],
+      "id": "f5f0d4a7-8862-4bb7-a614-a404968858dd",
+      "name": "If JSON1"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        940,
+        1220
+      ],
+      "id": "c9201015-fd70-498b-a51c-968fbc402ffa",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node\n\n// process each incoming item, decode its base64 data to HTML,\n// include metadata (mimeType, webViewLink, relativePath, drive_name, drive_id)\nreturn $input.all().map(item => {\n  const {\n    mimeType,\n    webViewLink,\n    relativePath,\n    drive_name,\n    drive_id,\n    data\n  } = item.json;\n\n  // decode only the 'data' field (base64-encoded HTML)\n  const base64 = data || '';\n  const buffer = Buffer.from(base64, 'base64');\n  const html = buffer.toString('utf8');\n\n  return {\n    json: {\n      mimeType,\n      webViewLink,\n      relativePath,\n      drive_name,\n      drive_id,\n      html\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        1220
+      ],
+      "id": "64ad9d30-72cf-4841-9a3c-8241c298395a",
+      "name": "Convert to JSON"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "51704c63-f2fd-448f-92a6-52e945ca927d",
+              "leftValue": "={{ $json.relativePath.split('/').last() }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2060,
+        720
+      ],
+      "id": "fb502290-3b5e-4e95-88b4-b918832739ae",
+      "name": "If",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "1fbb16a3-1451-819e-a2ed-de8669a31a5c",
+          "mode": "list",
+          "cachedResultName": "Google Drive, Notion",
+          "cachedResultUrl": "https://www.notion.so/1fbb16a31451819ea2edde8669a31a5c"
+        },
+        "title": "={{ $json.drive_name }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date|date",
+              "date": "={{ $now.format('yyyy-MM-dd') }}"
+            },
+            {
+              "key": "Last Sync Source|select",
+              "selectValue": "Drive"
+            },
+            {
+              "key": "Name|title",
+              "title": "={{ $json.drive_name }}"
+            },
+            {
+              "key": "Type|select",
+              "selectValue": "File-Text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2320,
+        800
+      ],
+      "id": "3f38f916-79b1-4a26-86da-f0f144321dc3",
+      "name": "Create Page"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "1fbb16a3-1451-819e-a2ed-de8669a31a5c",
+          "mode": "list",
+          "cachedResultName": "Google Drive, Notion",
+          "cachedResultUrl": "https://www.notion.so/1fbb16a31451819ea2edde8669a31a5c"
+        },
+        "title": "={{ $json.drive_name }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date|date",
+              "date": "={{ $now.format('yyyy-MM-dd') }}"
+            },
+            {
+              "key": "Last Sync Source|select"
+            },
+            {
+              "key": "Name|title",
+              "title": "={{ $json.drive_name }}"
+            },
+            {
+              "key": "Type|select"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2320,
+        620
+      ],
+      "id": "0ca20b20-05bd-4feb-b5ee-5c7cdf3da754",
+      "name": "Create Page1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1160,
+        640
+      ],
+      "id": "67573188-eeed-4511-8c19-e408b83b61fc",
+      "name": "Merge8"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1160,
+        880
+      ],
+      "id": "795db79b-d451-43e8-a865-e12371ede687",
+      "name": "Merge9"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        940,
+        640
+      ],
+      "id": "df13eecc-ff60-4b9e-b3fe-dd67425d32aa",
+      "name": "Aggregate3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        80,
+        680
+      ],
+      "id": "f6f192fc-d5b1-42d9-b775-e713bf231771",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1160,
+        1040
+      ],
+      "id": "dddfa827-30d3-4433-8eb5-b97fe20908be",
+      "name": "Merge10"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1160,
+        1220
+      ],
+      "id": "07fcc05c-6797-4ac0-b13f-022e4d431822",
+      "name": "Merge11"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.notion.com/v1/blocks/{{ $json.id }}/children",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('If').item.json.blocks }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2540,
+        800
+      ],
+      "id": "89503d85-54e2-4f32-b03a-22bf5dfd6d4d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.notion.com/v1/oauth/token",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "code",
+              "value": "string"
+            },
+            {
+              "name": "grant_type",
+              "value": "authorization_code"
+            },
+            {
+              "name": "redirect_uri",
+              "value": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3100,
+        980
+      ],
+      "id": "452fc2a6-d0e9-4415-b369-55fa97ce8cdf",
+      "name": "HTTP Request1"
+    }
+  ],
+  "connections": {
+    "Notion": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "get one id without children": {
+      "main": [
+        [
+          {
+            "node": "empty input ? (so no more id without children)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "get children folders from folder id": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "empty input ? (so no more id without children)": {
+      "main": [
+        [],
+        [
+          {
+            "node": "get children folders from folder id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "process data for tree modification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pass tree dict  as is": {
+      "main": [
+        [
+          {
+            "node": "get one id without children",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "output tree if tree complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "process data for tree modification": {
+      "main": [
+        [
+          {
+            "node": "insert children in tree",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "insert children in tree": {
+      "main": [
+        [
+          {
+            "node": "pass tree dict  as is",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output tree if tree complete": {
+      "main": [
+        [
+          {
+            "node": "folder id + path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output initial valid tree dict1": {
+      "main": [
+        [
+          {
+            "node": "pass tree dict  as is",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "output initial valid tree dict1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Filter2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "folder id + path": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Identify Unsynced Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identify Unsynced Files": {
+      "main": [
+        [
+          {
+            "node": "toDrive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "toNotion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "toDrive": {
+      "main": [
+        [
+          {
+            "node": "If Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If File-Text": {
+      "main": [
+        [
+          {
+            "node": "Get Page Content",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If File-Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Page Content": {
+      "main": [
+        [
+          {
+            "node": "Notion Node Blocks to Md",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion Node Blocks to Md": {
+      "main": [
+        [
+          {
+            "node": "Process the Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process the Markdown": {
+      "main": [
+        [
+          {
+            "node": "If CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File6": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Convert to File5": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File7": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Update File Name": {
+      "main": [
+        [
+          {
+            "node": "Update Notion Page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Convert to File7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Folder": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If File-Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Create Folder in Root",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Find Parent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Parent": {
+      "main": [
+        [
+          {
+            "node": "Create Folder in Parent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Folder in Parent": {
+      "main": [
+        [
+          {
+            "node": "Update GDriveID in Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Folder in Root": {
+      "main": [
+        [
+          {
+            "node": "Update GDriveID in Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Parent1": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Upload File to Parent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Find Parent1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upload File to Root",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "toNotion": {
+      "main": [
+        [
+          {
+            "node": "If Folder1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Folder1": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Create Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Files": {
+      "main": [
+        [
+          {
+            "node": "If CSV1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If CSV": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If TXT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If TXT": {
+      "main": [
+        [
+          {
+            "node": "Convert to File6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If JSON": {
+      "main": [
+        [
+          {
+            "node": "Convert to File5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update File Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If CSV1": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If TXT1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If TXT1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File3": {
+      "main": [
+        [
+          {
+            "node": "Merge9",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Extract from File4": {
+      "main": [
+        [
+          {
+            "node": "Merge10",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Convert to Notion Page": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to Notion Page1": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Convert to Notion Page2": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If JSON1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Merge11",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Convert to JSON": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Create Page1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge8": {
+      "main": [
+        [
+          {
+            "node": "Convert to Notion Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge9": {
+      "main": [
+        [
+          {
+            "node": "Convert to Notion Page2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Merge8",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge10": {
+      "main": [
+        [
+          {
+            "node": "Convert to Notion Page1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge11": {
+      "main": [
+        [
+          {
+            "node": "Convert to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Page": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "adminrh.app.n8n.cloud",
+            "user-agent": "PostmanRuntime/7.44.0",
+            "content-length": "51",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "94.20.42.62",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "AZ",
+            "cf-ray": "9444d15b8568e4ce-RIX",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "postman-token": "466ef2a1-4c1a-407c-823e-40cab2f375d2",
+            "x-forwarded-for": "94.20.42.62, 162.158.48.146",
+            "x-forwarded-host": "adminrh.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-56-6f4b847c49-rhqv5",
+            "x-is-trusted": "yes",
+            "x-real-ip": "94.20.42.62"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "id": "1jgjm2KClN_SvxuTIK6dSRMge2AlzD0Mh"
+          },
+          "webhookUrl": "https://adminrh.app.n8n.cloud/webhook/get_gdrive_subfolders",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "9592af2c-0516-40f4-b6ed-e47a232b868d",
+  "triggerCount": 0,
+  "tags": []
+}
