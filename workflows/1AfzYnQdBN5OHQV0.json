@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-11T07:28:58.965Z",
-  "updatedAt": "2025-06-19T07:58:55.118Z",
+  "updatedAt": "2025-07-02T09:29:49.034Z",
   "id": "1AfzYnQdBN5OHQV0",
   "name": "1 Hour before call",
   "active": true,
@@ -88,7 +88,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        740,
+        960,
         -40
       ],
       "id": "ae9c5227-104e-48da-b568-3ea740e8dd06",
@@ -125,14 +125,14 @@
               }
             }
           ],
-          "combinator": "and"
+          "combinator": "or"
         },
         "options": {}
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        500,
+        680,
         -20
       ],
       "id": "5a811a87-64a5-4a11-b0be-4dfc794c97dd",
@@ -166,7 +166,7 @@
       "typeVersion": 2.2,
       "position": [
         260,
-        120
+        240
       ],
       "id": "bdbfafc3-0b2b-4a3f-80b4-eaf9fa648c8b",
       "name": "Contains RH"
@@ -207,7 +207,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        920,
+        1140,
         -40
       ],
       "id": "54c9c9f1-fa7d-470a-a0fe-598fb96b2d50",
@@ -226,7 +226,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1160,
+        1380,
         -120
       ],
       "id": "29f301d0-4a68-4e15-a0ff-affbe8b20c1d",
@@ -238,6 +238,45 @@
           "name": "Sales Gmail account"
         }
       }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.leadEmail }}",
+        "subject": "=Remote Helpers call reminder",
+        "emailType": "text",
+        "message": "=Hello, \nI Hope you are doing well. \nWe have a call with you today in 35 minutes. \nHere is a link: {{ $json.googleMeet }}  \n\nKind Regards, \nRemote Helpers",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        40
+      ],
+      "id": "84ec61a7-8efc-4969-9f9a-75f9e08c0d91",
+      "name": "Gmail",
+      "webhookId": "f7fa8c60-5859-492e-8b95-e000cfbafe8c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sv4epLX3dUAhBbno",
+          "name": "Sales Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Список емейлів, які треба видалити\nconst emailsToRemove = ['info@rh-s.com', 'lg@rh-s.com'];\n\n// Обробка одного або кількох items\nreturn items.map(item => {\n  const event = { ...item.json };\n  \n  // Фільтруємо список учасників\n  event.attendees = event.attendees.filter(attendee => \n    !emailsToRemove.includes(attendee.email)\n  );\n  \n  return { json: event };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        0
+      ],
+      "id": "bd2372e8-ad18-4cb0-983f-9e91662dee6e",
+      "name": "Code"
     }
   ],
   "connections": {
@@ -245,7 +284,7 @@
       "main": [
         [
           {
-            "node": "Has Sales",
+            "node": "Code",
             "type": "main",
             "index": 0
           }
@@ -301,6 +340,17 @@
         ],
         []
       ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Has Sales",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -315,7 +365,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "97b73dd9-6788-48e8-8b72-e7250a270264",
+  "versionId": "5e26d305-2b37-4d83-833a-82e200c187cf",
   "triggerCount": 1,
   "tags": []
 }
