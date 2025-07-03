@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-10T07:57:35.091Z",
-  "updatedAt": "2025-06-11T08:08:51.202Z",
+  "updatedAt": "2025-07-03T09:30:28.357Z",
   "id": "uoytSJ9PaHw3gCEs",
   "name": "Discord Report Verification",
   "active": true,
@@ -317,7 +317,7 @@
       "credentials": {
         "discordBotApi": {
           "id": "ORC2mh0eSY7Izho1",
-          "name": "Report Discord Bot"
+          "name": "RH Report Discord Bot"
         }
       },
       "onError": "continueRegularOutput"
@@ -353,7 +353,7 @@
       "credentials": {
         "discordBotApi": {
           "id": "ORC2mh0eSY7Izho1",
-          "name": "Report Discord Bot"
+          "name": "RH Report Discord Bot"
         }
       },
       "onError": "continueRegularOutput"
@@ -408,7 +408,7 @@
       "credentials": {
         "discordBotApi": {
           "id": "ORC2mh0eSY7Izho1",
-          "name": "Report Discord Bot"
+          "name": "RH Report Discord Bot"
         }
       },
       "disabled": true,
@@ -473,14 +473,14 @@
     {
       "parameters": {
         "content": "# ANALYSIS LEADGENS REPORTS",
-        "height": 80,
+        "height": 140,
         "width": 560
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1180,
-        160
+        -1220,
+        120
       ],
       "id": "e972f08b-f0a9-4a3b-863c-7f9662f3591c",
       "name": "Sticky Note"
@@ -1977,7 +1977,7 @@
   },
   "meta": null,
   "pinData": {},
-  "versionId": "deb9386c-8a6b-45fd-89fd-ee17fcc5b22d",
+  "versionId": "cb29c424-382a-4ee9-8012-ddc4b089fedf",
   "triggerCount": 1,
   "tags": []
 }
