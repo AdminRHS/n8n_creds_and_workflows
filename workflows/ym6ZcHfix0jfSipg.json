@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-11T09:32:27.866Z",
-  "updatedAt": "2025-07-01T12:16:59.248Z",
+  "updatedAt": "2025-07-14T06:15:39.824Z",
   "id": "ym6ZcHfix0jfSipg",
   "name": "CandidateHandler",
   "active": true,
@@ -183,7 +183,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1740,
+        1500,
         -260
       ],
       "id": "e1ba5e6b-280e-48db-b492-6e8063e20f41",
@@ -305,7 +305,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1340,
+        1260,
         -260
       ],
       "id": "c443ae38-e0fc-4f0d-84a0-8d91cd9b87e1",
@@ -384,7 +384,7 @@
       "typeVersion": 1.1,
       "position": [
         900,
-        -460
+        -660
       ],
       "id": "bf340112-215e-4a06-a369-6fb98eca3415",
       "name": "When chat message received",
@@ -398,7 +398,7 @@
       "typeVersion": 1.7,
       "position": [
         1180,
-        -440
+        -640
       ],
       "id": "252ea10e-64e4-464e-92f3-decafb9d0e20",
       "name": "Basic LLM Chain"
@@ -411,8 +411,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "typeVersion": 1,
       "position": [
-        1580,
-        -400
+        1560,
+        -620
       ],
       "id": "7efb448d-b61f-4e19-a96b-f1d0279d5e0e",
       "name": "OpenRouter Chat Model",
@@ -666,7 +666,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1740,
+        1500,
         -20
       ],
       "id": "27cfd072-7f0f-44a0-9e56-ac46ac78f77a",
@@ -936,7 +936,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1740,
+        1500,
         200
       ],
       "id": "fede2706-ee3d-48ec-b72f-a60701766f56",
@@ -1123,7 +1123,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1340,
+        1260,
         -20
       ],
       "id": "b20283c1-3eab-4531-b56d-eb523953e740",
@@ -1206,7 +1206,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1340,
+        1260,
         200
       ],
       "id": "e7b8b31e-00c8-4bb6-9e23-2daa21a383a1",
@@ -1413,7 +1413,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "98ecb328-b81f-4644-8b21-bd5c8d5a4e70",
+  "versionId": "23114737-00f8-4b75-a607-9327807b51b2",
   "triggerCount": 2,
   "tags": []
 }
