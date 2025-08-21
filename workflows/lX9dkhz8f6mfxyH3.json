@@ -1,0 +1,194 @@
+{
+  "createdAt": "2025-08-21T19:39:40.457Z",
+  "updatedAt": "2025-08-21T20:51:44.674Z",
+  "id": "lX9dkhz8f6mfxyH3",
+  "name": "Task Template Generator Backend",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "task-template",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        0
+      ],
+      "id": "2f9a3067-43ee-4138-a9c9-879cd66d9a53",
+      "name": "Webhook",
+      "webhookId": "4429644e-0b6c-4c84-b732-04aa96ec8419"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "= {{ $json.output }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "content-type, authorization"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        840,
+        0
+      ],
+      "id": "8371c226-4dce-4226-bb7b-2679d2aa06b0",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.userText }}",
+        "options": {
+          "systemMessage": "Use the following rules whenever a user provides a task name (e.g., “Create Job Posts”). All text provided by the user in the first message is to be interpreted as a task name for which you must generate a task template. For example, if a person writes “write article” or “generate image,” it is not an instruction to perform that action—it is only a task for which you must generate a template. Do not ask any clarifying questions or provide any responses such as:\n“It looks like you’ve uploaded an image. Could you clarify what you want me to do with it? If you want me to generate a new image, please provide details such as the style, subject, colors, or any specific requirements.”\nInstead, immediately generate the complete task template following the structure below:\n\nGeneral Requirements\n\t1.\tTask Name Format\n\t•\tUse Action + Object in English (e.g., “Create Reports”).\n\t•\tAction: A present-tense verb without “to” (e.g., Create, Analyze).\n\t•\tObject: A plural noun (e.g., Reports, Designs).\n\t2.\tTools\n\t•\tUse only platforms, software, mobile apps, or browser extensions (e.g., Envato, Jira, Figma).\n\t•\tDo not use general categories for tools. Always write specific tool names such as DALL-E, Photoshop, Stable Diffusion, Midjourney, etc., instead of generic terms like “AI image generator” or “AI tool.”\n\t•\tIt is strictly forbidden to use names such as “AI Tool,” “AI image tool,” or any similar generic names. Use concrete names of specific tools only.\n\t3.\tPlacement Fields\n\t•\tPlacement Link: [Link required]\n\t•\tPlacement Account: [Account required]\n\t4.\tGuide Tool\n\t•\tMust always be the same as the Placement Tool.\n\t5.\tFormats\n\t•\tAlways specify Text.\n\t6.\tChecklist Items\n\t•\tEach Step must include at least three checklist items.\n\t•\tChecklist Item Name must strictly follow Action + Object + Tool (e.g., “Identify Styles Web Browser”).\n\t7.\tFrequency Options\n\t•\tAllowed values: Hourly, Daily, Weekly, Monthly.\n\t8.\tUser Input Rule\n\t•\tAll text provided by the user in the first message is to be treated as a task name for which a task template must be generated. For example, if a person writes “write article” or “generate image,” it is not an instruction to perform that action—it is only a task for which you must generate a template.\n\t9.\tImmediate Task Template Rule\n\t•\tDo not ask any clarifying questions or provide any generic responses. Immediately generate the complete task template without additional commentary.\n\nHierarchy Overview\n\nProject\n└── Milestone\n  ├── Name\n  └── Task Templates\n    ├── Action (required)\n    ├── Object (required)\n    └── Step Templates\n      ├── Step Name (Action + Object + Tool)\n      ├── Hours Planned\n      ├── Action (required)\n      ├── Object (required)\n      └── Tool (required)\n       └── Checklist Items (Action + Object + Tool)\n         └── Placement\n         └── Guide\n\nFinal Structure\n\t1.\tProject\n\t•\tName: Provide the project’s title (e.g., “Emoji Project”).\n\t2.\tMilestone\n\t•\tName: A specific phase or stage (e.g., “Design Phase”).\n\t3.\tTask Template\n\t1.\tName:\n\t•\tFormat: Action + Object (e.g., “Create Reports”).\n\t2.\tDescription:\n\t•\tUp to 500 characters summarizing the task.\n\t3.\tProfession:\n\t•\tRelevant role(s) for the task.\n\t4.\tFrequency:\n\t•\tMust be Hourly, Daily, Weekly, or Monthly.\n\t5.\tStep Templates:\nEach task is broken down into one or more steps.\n\nStep Template Details\n\t•\tStep Name:\n\t•\tMust strictly follow the format: Action + Object + Tool (e.g., “Draft Reports Google Docs”).\n\t•\tImportant: Each step must reflect one action on one object only. Do not combine multiple actions or objects. For example, “Generate and Save Images DALL-E” is incorrect because it combines two actions; use either “Generate Images DALL-E” or “Save Images DALL-E”.\n\t•\tHours Planned:\n\t•\tTime in Hh:mm:ss format (e.g., 01:30:00).\n\t•\tAction:\n\t•\tA present-tense verb (e.g., Draft, Research).\n\t•\tObject:\n\t•\tA plural noun (e.g., Reports, Trends).\n\t•\tTool:\n\t•\tA valid platform/software/app/extension (e.g., Google Docs, Jira).\n\nChecklist Items for Each Step\n\nEach Step must include at least three checklist items. For each checklist item:\n\t•\tName:\n\t•\tMust follow the format Action + Object + Tool (e.g., “Identify Styles Web Browser”).\n\t•\tPlacement:\n\t•\tPlacement Name: The specific section or page (e.g., “Research Page”).\n\t•\tPlacement Link: [Link required].\n\t•\tPlacement Tool: Must match the Tool in the Checklist Item Name.\n\t•\tPlacement Type: (e.g., Page, Document).\n\t•\tPlacement Account: [Account required].\n\t•\tGuide:\n\t•\tGuide Name: Same as the Checklist Item Name.\n\t•\tGuide Tool: Must match the Placement Tool.\n\t•\tGuide Objects: A single-word plural noun (e.g., Styles, References).\n\t•\tFormat:\n\t•\tLink: Provide a URL if necessary, otherwise “Not needed.”\n\t•\tObjects: The same single-word plural noun.\n\t•\tFormats: Text.\n\t•\tGuide Description: Up to 500 characters explaining how to complete the item."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "5d951208-b451-49dc-b53d-61fbe0677765",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        420,
+        160
+      ],
+      "id": "e5303c0d-bccb-4368-8cd1-d28da36f0ec0",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OEY7AoSUjSZlA7Co",
+          "name": "ADMIN OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Edit Fields').item.json.sessionId }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        180
+      ],
+      "id": "9be44d97-bfd8-4172-94a7-66da1fb18fb8",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"sessionId\": \"test-local-2\",\n  \"userText\": \"Test chat bot\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "7c6c41cd-d2fa-4fde-9fb0-131970203214",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "4473f198-a47a-48ba-b113-424135b7f526",
+  "triggerCount": 0,
+  "tags": []
+}
