@@ -1,0 +1,89 @@
+{
+  "createdAt": "2025-08-27T15:03:19.927Z",
+  "updatedAt": "2025-08-27T16:02:23.733Z",
+  "id": "h1Q5ju3TpDPmLlQV",
+  "name": "My workflow 6",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1788219077,
+          "mode": "list",
+          "cachedResultName": "Companies",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=1788219077"
+        },
+        "options": {
+          "columnsToWatch": [
+            "Company Name"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        -200
+      ],
+      "id": "46df95fe-64b3-42ce-8750-e9685bfb882d",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "0ozlVpjsqoDwkQpe",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const name = $input.first().json['company_name'] || \"\";\nconst link = $input.first().json['company_linkedin'] || \"\";\n\nreturn [\n  {\n    json: {\n      payload: [{ company_name: name, company_linkedin: link }],\n      rowNumber: $input.first().json.rowNumber,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        -200
+      ],
+      "id": "4572d475-314b-4717-80a2-b7001fd44c18",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7784d29f-03d9-4989-9a47-d47a9afea363",
+  "triggerCount": 0,
+  "tags": []
+}
