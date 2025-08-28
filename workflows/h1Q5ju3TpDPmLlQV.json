@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-27T15:03:19.927Z",
-  "updatedAt": "2025-08-27T16:02:23.733Z",
+  "updatedAt": "2025-08-28T14:22:40.833Z",
   "id": "h1Q5ju3TpDPmLlQV",
   "name": "My workflow 6",
   "active": false,
@@ -8,13 +8,26 @@
   "nodes": [
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
+        "rule": {
+          "interval": [
             {
-              "mode": "everyMinute"
+              "field": "minutes",
+              "minutesInterval": 1
             }
           ]
-        },
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -500,
+        -460
+      ],
+      "id": "7810e9fe-4296-4c61-9467-3ea94ef77294",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
         "documentId": {
           "__rl": true,
           "value": "1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg",
@@ -22,52 +35,589 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 1788219077,
+          "value": 91167122,
           "mode": "list",
-          "cachedResultName": "Companies",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=1788219077"
+          "cachedResultName": "Test Companies ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=91167122"
         },
-        "options": {
-          "columnsToWatch": [
-            "Company Name"
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Is in CRM"
+            }
           ]
-        }
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.googleSheetsTrigger",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
       "position": [
-        -260,
-        -200
+        -280,
+        -460
       ],
-      "id": "46df95fe-64b3-42ce-8750-e9685bfb882d",
-      "name": "Google Sheets Trigger",
+      "id": "a75b61c4-7e2a-4d22-a77e-5eaaa00c9d19",
+      "name": "Google Sheets",
       "credentials": {
-        "googleSheetsTriggerOAuth2Api": {
-          "id": "0ozlVpjsqoDwkQpe",
-          "name": "Google Sheets Trigger account"
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "const name = $input.first().json['company_name'] || \"\";\nconst link = $input.first().json['company_linkedin'] || \"\";\n\nreturn [\n  {\n    json: {\n      payload: [{ company_name: name, company_linkedin: link }],\n      rowNumber: $input.first().json.rowNumber,\n    }\n  }\n];\n"
+        "batchSize": 5,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -60,
+        -460
+      ],
+      "id": "18215c27-358b-472e-b231-81733d7bd87c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ec959894-c051-4a6d-9c91-ff499a7ac170",
+              "name": "company_name",
+              "value": "={{ $json[\"Company Name\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "592e97f4-4808-437f-af6c-bb039c75a1b6",
+              "name": "company_linkedin",
+              "value": "={{ $json[\"LinkedIn\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "b5496aba-f768-4e03-a632-a59c061db9b1",
+              "name": "row",
+              "value": "={{$json[\"row_number\"] || $json[\"row\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        180,
+        -460
+      ],
+      "id": "559acb9e-207b-40e1-98c2-1d70bbe6debf",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const s = $getWorkflowStaticData('global');\nconst { companies, rowsMeta } = $input.first().json;\nreturn [{ json: { companies, rowsMeta, token: s.token ?? null } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -40,
-        -200
+        520,
+        -460
       ],
-      "id": "4572d475-314b-4717-80a2-b7001fd44c18",
-      "name": "Code"
+      "id": "e28b6516-2f99-42ed-b9d6-e5af785ae602",
+      "name": "Get token"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://crm-s.com/api/v1/lead/get-unique-companies",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.token ? 'Bearer ' + $json.token : '' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "companies",
+              "value": "={{ $json.companies }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        -460
+      ],
+      "id": "e197acc2-18e7-4930-9a94-c48bba1a74b5",
+      "name": "HTTP Request: Send Companies",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://crm-s.com/api/v1/auth/login",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"email\": \"matvey.z.2004@icloud.com\",\n  \"password\": \"jyiAxTIP\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        -160
+      ],
+      "id": "e5e8cff6-3a46-4842-80ef-34fc5213ace1",
+      "name": "HTTP Request: Login"
+    },
+    {
+      "parameters": {
+        "jsCode": "const s = $getWorkflowStaticData('global');\nconst res = $input.first().json;\n\n// якщо у Login-нodi \"Return Full Response\" = OFF:\nconst token   = res?.data?.token;\nconst expires = res?.data?.expires ?? null;\n\n// якщо \"Return Full Response\" = ON:\n// const token   = res?.body?.data?.token;\n// const expires = res?.body?.data?.expires ?? null;\n\nif (token) {\n  s.token = token;\n  s.token_expires = expires;\n}\n\nreturn [{ json: { token } }];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        -160
+      ],
+      "id": "d7a6aafc-8cba-4c2a-933e-c953f9cba5e8",
+      "name": "Save Token"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "693f4e8b-643f-4d9e-9c2b-ec807f271524",
+              "name": "=token",
+              "value": "={{ $json.token }}",
+              "type": "string"
+            },
+            {
+              "id": "71c55985-965c-4ebe-90c5-a801b58dd797",
+              "name": "companies",
+              "value": "={{ $node[\"Build companies payload\"].json[\"companies\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1320,
+        -160
+      ],
+      "id": "721bf7ea-c442-4ad4-a075-e948f360f355",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json);\n\n// те, що піде в API\nconst companies = rows.map(r => ({\n  company_name: (r.company_name ?? '').trim(),\n  company_linkedin: (r.company_linkedin ?? '').trim(),\n}));\n\n// метадані для повернення в Sheet (локально, в API не йде)\nconst rowsMeta = rows.map(r => ({\n  row: r.row,\n  company_name: (r.company_name ?? '').trim(),\n  company_linkedin: (r.company_linkedin ?? '').trim(),\n}));\n\nreturn [{\n  json: {\n    companies: JSON.stringify(companies), // у Form-Data → companies\n    rowsMeta                              // локально для апдейту Sheet\n  }\n}];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        340,
+        -460
+      ],
+      "id": "9745d598-a404-47fd-b844-44e7fa3f38b7",
+      "name": "Build companies payload",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://crm-s.com/api/v1/lead/get-unique-companies",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$json.token}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "companies",
+              "value": "={{ $json.companies }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1480,
+        -160
+      ],
+      "id": "ca9c3cc7-4c0a-48fa-b7d0-4768be9a3b78",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const resp = $input.first().json;        // { message, data: [...] }\nconst rows = Array.isArray(resp.data) ? resp.data : [];\n\nconst updates = rows.map(r => ({\n  json: {\n    \"Company Name\": r.company_name,\n    \"Is in CRM\": r.is_unique ? 'FALSE' : 'TRUE', // false => TRUE в шиті\n  }\n}));\n\nreturn updates;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1740,
+        -460
+      ],
+      "id": "e2fc3cbd-9237-4bc1-9afb-6d37d0e13fe1",
+      "name": "Build Sheet Updates"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 91167122,
+          "mode": "list",
+          "cachedResultName": "Test Companies ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=91167122"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Is in CRM": "=={{ $json[\"Is in CRM\"] }}",
+            "Company Name": "={{ $json[\"Company Name\"] }}"
+          },
+          "matchingColumns": [
+            "Company Name"
+          ],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "LinkedIn",
+              "displayName": "LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Country",
+              "displayName": "Country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Size",
+              "displayName": "Size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Agency",
+              "displayName": "Agency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Profession Needed",
+              "displayName": "Profession Needed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Is in CRM",
+              "displayName": "Is in CRM",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sent Email",
+              "displayName": "Sent Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Manager",
+              "displayName": "Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1960,
+        -460
+      ],
+      "id": "2231c9ab-606f-4bee-b37c-d4bad83dbfa1",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
     }
   ],
   "connections": {
-    "Google Sheets Trigger": {
+    "Schedule Trigger": {
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Build companies payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get token": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request: Send Companies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: Send Companies": {
+      "main": [
+        [
+          {
+            "node": "Build Sheet Updates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request: Login",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: Login": {
+      "main": [
+        [
+          {
+            "node": "Save Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Token": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build companies payload": {
+      "main": [
+        [
+          {
+            "node": "Get token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Build Sheet Updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Sheet Updates": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
             "type": "main",
             "index": 0
           }
@@ -83,7 +633,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "7784d29f-03d9-4989-9a47-d47a9afea363",
+  "versionId": "d9abab62-a369-4ceb-8178-44a1bd48b47e",
   "triggerCount": 0,
   "tags": []
 }
