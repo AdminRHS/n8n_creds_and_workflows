@@ -1,8 +1,8 @@
 {
   "createdAt": "2025-08-27T15:03:19.927Z",
-  "updatedAt": "2025-08-28T14:22:40.833Z",
+  "updatedAt": "2025-08-29T14:08:27.055Z",
   "id": "h1Q5ju3TpDPmLlQV",
-  "name": "My workflow 6",
+  "name": "CRM Matching",
   "active": false,
   "isArchived": false,
   "nodes": [
@@ -20,7 +20,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -500,
+        -580,
         -460
       ],
       "id": "7810e9fe-4296-4c61-9467-3ea94ef77294",
@@ -35,10 +35,10 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 91167122,
+          "value": 1788219077,
           "mode": "list",
-          "cachedResultName": "Test Companies ",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=91167122"
+          "cachedResultName": "Companies",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=1788219077"
         },
         "filtersUI": {
           "values": [
@@ -52,7 +52,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.6,
       "position": [
-        -280,
+        -340,
         -460
       ],
       "id": "a75b61c4-7e2a-4d22-a77e-5eaaa00c9d19",
@@ -72,7 +72,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -60,
+        140,
         -460
       ],
       "id": "18215c27-358b-472e-b231-81733d7bd87c",
@@ -107,7 +107,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        180,
+        400,
         -460
       ],
       "id": "559acb9e-207b-40e1-98c2-1d70bbe6debf",
@@ -120,7 +120,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        520,
+        780,
         -460
       ],
       "id": "e28b6516-2f99-42ed-b9d6-e5af785ae602",
@@ -154,7 +154,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        740,
+        1040,
         -460
       ],
       "id": "e197acc2-18e7-4930-9a94-c48bba1a74b5",
@@ -182,7 +182,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1000,
+        1220,
         -160
       ],
       "id": "e5e8cff6-3a46-4842-80ef-34fc5213ace1",
@@ -195,7 +195,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1160,
+        1380,
         -160
       ],
       "id": "d7a6aafc-8cba-4c2a-933e-c953f9cba5e8",
@@ -224,7 +224,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1320,
+        1540,
         -160
       ],
       "id": "721bf7ea-c442-4ad4-a075-e948f360f355",
@@ -237,7 +237,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        340,
+        560,
         -460
       ],
       "id": "9745d598-a404-47fd-b844-44e7fa3f38b7",
@@ -272,7 +272,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1480,
+        1700,
         -160
       ],
       "id": "ca9c3cc7-4c0a-48fa-b7d0-4768be9a3b78",
@@ -280,13 +280,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const resp = $input.first().json;        // { message, data: [...] }\nconst rows = Array.isArray(resp.data) ? resp.data : [];\n\nconst updates = rows.map(r => ({\n  json: {\n    \"Company Name\": r.company_name,\n    \"Is in CRM\": r.is_unique ? 'FALSE' : 'TRUE', // false => TRUE в шиті\n  }\n}));\n\nreturn updates;\n"
+        "jsCode": "// const resp = $input.first().json;        // { message, data: [...] }\n// const rows = Array.isArray(resp.data) ? resp.data : [];\n\n// const updates = rows.map(r => ({\n//   json: {\n//     \"Company Name\": r.company_name,\n//     \"Is in CRM\": r.is_unique ? 'FALSE' : 'TRUE', // false => TRUE в шиті\n//   }\n// }));\n\n// return updates;\n\n// Об’єднаний item після Merge: є і resp від CRM, і rowsMeta\nconst inJson = $input.first().json;\n\nconst resp = inJson.body ?? inJson; // якщо Return Full Response = ON\nconst results = Array.isArray(resp?.data) ? resp.data : [];\n\nconst rowsMeta = Array.isArray(inJson.rowsMeta) ? inJson.rowsMeta : [];\nconst norm = s => (s ?? '').toString().trim().toLowerCase();\n\nconst updates = rowsMeta.map(meta => {\n  const exact = results.find(r =>\n    norm(r.company_name) === norm(meta.company_name) &&\n    norm(r.company_linkedin) === norm(meta.company_linkedin)\n  );\n  const byName = exact || results.find(r => norm(r.company_name) === norm(meta.company_name));\n  const isInCrm = byName ? !byName.is_unique : false; // is_unique=false => TRUE в шиті\n\n  return {\n    json: {\n      row: Number(meta.row),\n      \"Is in CRM\": isInCrm ? 'TRUE' : 'FALSE',\n    }\n  };\n});\n\nreturn updates;\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1740,
-        -460
+        2280,
+        -700
       ],
       "id": "e2fc3cbd-9237-4bc1-9afb-6d37d0e13fe1",
       "name": "Build Sheet Updates"
@@ -301,20 +301,15 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 91167122,
+          "value": 1788219077,
           "mode": "list",
-          "cachedResultName": "Test Companies ",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=91167122"
+          "cachedResultName": "Companies",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=1788219077"
         },
         "columns": {
           "mappingMode": "defineBelow",
-          "value": {
-            "Is in CRM": "=={{ $json[\"Is in CRM\"] }}",
-            "Company Name": "={{ $json[\"Company Name\"] }}"
-          },
-          "matchingColumns": [
-            "Company Name"
-          ],
+          "value": {},
+          "matchingColumns": [],
           "schema": [
             {
               "id": "Company Name",
@@ -323,8 +318,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Link",
@@ -336,8 +330,8 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "Company website",
-              "displayName": "Company website",
+              "id": "Company Website",
+              "displayName": "Company Website",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -372,8 +366,8 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "Size",
-              "displayName": "Size",
+              "id": "Company Size",
+              "displayName": "Company Size",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -405,8 +399,7 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             },
             {
               "id": "Status",
@@ -464,8 +457,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.6,
       "position": [
-        1960,
-        -460
+        2500,
+        -700
       ],
       "id": "2231c9ab-606f-4bee-b37c-d4bad83dbfa1",
       "name": "Google Sheets1",
@@ -475,6 +468,103 @@
           "name": "Admin Google Sheets"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6bec4b6c-da70-4cda-b049-3ec9850000e0",
+              "leftValue": "={{$json[\"Company Name\"]}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -100,
+        -460
+      ],
+      "id": "8ca7f770-bee0-4526-aa60-61ee6b257f13",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2bf994d8-82f2-45ff-9380-b80b823731a1",
+              "name": "merge_key",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1880,
+        -480
+      ],
+      "id": "ff0bf988-f38d-4993-a278-725a8b2987d2",
+      "name": "Set: merge_key (HTTP)"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ea7102f-8b9b-4b11-93d2-296290b8ef0d",
+              "name": "merge_key",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        -720
+      ],
+      "id": "a6353876-56c9-4b4f-8436-7dc4f80628fa",
+      "name": "Set: merge_key (rowsMeta)"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "merge_key",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2040,
+        -700
+      ],
+      "id": "ae273ac6-0967-4eea-a036-7e80b44670d7",
+      "name": "Merge"
     }
   ],
   "connections": {
@@ -493,7 +583,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Filter",
             "type": "main",
             "index": 0
           }
@@ -533,6 +623,11 @@
       "main": [
         [
           {
+            "node": "Set: merge_key (rowsMeta)",
+            "type": "main",
+            "index": 0
+          },
+          {
             "node": "HTTP Request: Send Companies",
             "type": "main",
             "index": 0
@@ -544,7 +639,7 @@
       "main": [
         [
           {
-            "node": "Build Sheet Updates",
+            "node": "Set: merge_key (HTTP)",
             "type": "main",
             "index": 0
           }
@@ -606,7 +701,7 @@
       "main": [
         [
           {
-            "node": "Build Sheet Updates",
+            "node": "Set: merge_key (HTTP)",
             "type": "main",
             "index": 0
           }
@@ -623,17 +718,69 @@
           }
         ]
       ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: merge_key (HTTP)": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set: merge_key (rowsMeta)": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Build Sheet Updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    },
+    "global": {
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvY3JtLXMuY29tXC9hcGlcL3YxXC9hdXRoXC9sb2dpbiIsImlhdCI6MTc1NjQ2MDIyOSwiZXhwIjoxNzg3OTk2MjI5LCJuYmYiOjE3NTY0NjAyMjksImp0aSI6IjByOHdJeHpUaW4zS1VKdUkiLCJzdWIiOjkxMjQsInBydiI6IjgxOGY1Yzk4YWNlMjM3NTMyZDlkNDk0M2ZkOGVmYjU0MGI4NTViNDIiLCJyZW1lbWJlciI6MSwidHlwZSI6MX0.DvNHPtv2ncTPwr_zgFqmFTq1ep4GalrPV4qh29ni09U",
+      "token_expires": "2026-08-29T09:37:09.960372Z"
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "d9abab62-a369-4ceb-8178-44a1bd48b47e",
-  "triggerCount": 0,
+  "versionId": "a5c0e3d0-8638-43dd-b0e0-9eda5799ce50",
+  "triggerCount": 1,
   "tags": []
 }
