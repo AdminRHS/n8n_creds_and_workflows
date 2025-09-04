@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-08-27T15:03:19.927Z",
-  "updatedAt": "2025-08-29T14:08:27.055Z",
+  "updatedAt": "2025-09-04T12:46:18.512Z",
   "id": "h1Q5ju3TpDPmLlQV",
   "name": "CRM Matching",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -35,10 +35,10 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 1788219077,
+          "value": 663626393,
           "mode": "list",
-          "cachedResultName": "Companies",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=1788219077"
+          "cachedResultName": "Companies for LG",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=663626393"
         },
         "filtersUI": {
           "values": [
@@ -85,13 +85,13 @@
             {
               "id": "ec959894-c051-4a6d-9c91-ff499a7ac170",
               "name": "company_name",
-              "value": "={{ $json[\"Company Name\"] }}",
+              "value": "={{ $json[\"Company name\"] }}",
               "type": "string"
             },
             {
               "id": "592e97f4-4808-437f-af6c-bb039c75a1b6",
               "name": "company_linkedin",
-              "value": "={{ $json[\"LinkedIn\"] }}",
+              "value": "={{ $json[\"Company LinkedIn\"] }}",
               "type": "string"
             },
             {
@@ -301,46 +301,24 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 1788219077,
+          "value": 663626393,
           "mode": "list",
-          "cachedResultName": "Companies",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=1788219077"
+          "cachedResultName": "Companies for LG",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=663626393"
         },
         "columns": {
           "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
+          "value": {
+            "row_number": "={{ $json.row }}",
+            "Is in CRM": "={{ $json['Is in CRM'] }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
           "schema": [
             {
-              "id": "Company Name",
-              "displayName": "Company Name",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Link",
-              "displayName": "Link",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Company Website",
-              "displayName": "Company Website",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "LinkedIn",
-              "displayName": "LinkedIn",
+              "id": "Company name",
+              "displayName": "Company name",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -357,8 +335,8 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "Industry",
-              "displayName": "Industry",
+              "id": "Company LinkedIn",
+              "displayName": "Company LinkedIn",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -366,8 +344,8 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "Company Size",
-              "displayName": "Company Size",
+              "id": "Company Website",
+              "displayName": "Company Website",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -375,17 +353,8 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "Agency",
-              "displayName": "Agency",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Profession Needed",
-              "displayName": "Profession Needed",
+              "id": "Needed profession",
+              "displayName": "Needed profession",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -411,6 +380,15 @@
               "canBeUsedToMatch": true
             },
             {
+              "id": "Contacted at",
+              "displayName": "Contacted at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
               "id": "Sent Email",
               "displayName": "Sent Email",
               "required": false,
@@ -420,8 +398,8 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "Manager",
-              "displayName": "Manager",
+              "id": "LG Manager",
+              "displayName": "LG Manager",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -429,8 +407,35 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "Comment",
-              "displayName": "Comment",
+              "id": "AI manager",
+              "displayName": "AI manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company size",
+              "displayName": "Company size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created at",
+              "displayName": "Created at",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -446,7 +451,7 @@
               "type": "string",
               "canBeUsedToMatch": true,
               "readOnly": true,
-              "removed": true
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -481,12 +486,31 @@
           "conditions": [
             {
               "id": "6bec4b6c-da70-4cda-b049-3ec9850000e0",
-              "leftValue": "={{$json[\"Company Name\"]}}",
+              "leftValue": "={{$json[\"Company name\"]}}",
               "rightValue": "",
               "operator": {
                 "type": "string",
                 "operation": "notEmpty",
                 "singleValue": true
+              }
+            },
+            {
+              "id": "16e81a6b-5ac1-45e8-a8f2-cc2b5a0f496e",
+              "leftValue": "={{$json[\"Company LinkedIn\"]}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "939b78f4-165b-4096-a0fd-dddc7deea97a",
+              "leftValue": "={{$json[\"Company LinkedIn\"]}}",
+              "rightValue": "N/A",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
               }
             }
           ],
@@ -772,15 +796,15 @@
       "recurrenceRules": []
     },
     "global": {
-      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvY3JtLXMuY29tXC9hcGlcL3YxXC9hdXRoXC9sb2dpbiIsImlhdCI6MTc1NjQ2MDIyOSwiZXhwIjoxNzg3OTk2MjI5LCJuYmYiOjE3NTY0NjAyMjksImp0aSI6IjByOHdJeHpUaW4zS1VKdUkiLCJzdWIiOjkxMjQsInBydiI6IjgxOGY1Yzk4YWNlMjM3NTMyZDlkNDk0M2ZkOGVmYjU0MGI4NTViNDIiLCJyZW1lbWJlciI6MSwidHlwZSI6MX0.DvNHPtv2ncTPwr_zgFqmFTq1ep4GalrPV4qh29ni09U",
-      "token_expires": "2026-08-29T09:37:09.960372Z"
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvY3JtLXMuY29tXC9hcGlcL3YxXC9hdXRoXC9sb2dpbiIsImlhdCI6MTc1Njk5NjIwNSwiZXhwIjoxNzg4NTMyMjA1LCJuYmYiOjE3NTY5OTYyMDUsImp0aSI6IjRvTU9kUlBzZDBkdXpSdUYiLCJzdWIiOjkxMjQsInBydiI6IjgxOGY1Yzk4YWNlMjM3NTMyZDlkNDk0M2ZkOGVmYjU0MGI4NTViNDIiLCJyZW1lbWJlciI6MSwidHlwZSI6MX0.6svcderHy-e9ZPtIYI22h9x_2VkQDnsQGd48rSjTjlA",
+      "token_expires": "2026-09-04T14:30:05.442750Z"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "a5c0e3d0-8638-43dd-b0e0-9eda5799ce50",
+  "versionId": "35b17dae-5b09-4e76-a5f1-11645afe6d87",
   "triggerCount": 1,
   "tags": []
 }
