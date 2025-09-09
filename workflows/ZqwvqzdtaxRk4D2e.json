@@ -1,0 +1,546 @@
+{
+  "createdAt": "2025-09-09T07:24:17.575Z",
+  "updatedAt": "2025-09-09T14:11:04.483Z",
+  "id": "ZqwvqzdtaxRk4D2e",
+  "name": "Update LG Companies Social Media",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f95cb704-8c4e-447e-be8d-730de08c9780",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit?gid=663626393#gid=663626393&fvid=617411565",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 663626393,
+          "mode": "list",
+          "cachedResultName": "Companies for LG",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=663626393"
+        },
+        "options": {
+          "returnFirstMatch": false
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        220,
+        0
+      ],
+      "id": "41269fdc-bc15-4563-bb8d-ee0211dd56cd",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3712cf5e-eb8e-4854-9019-e6b7d5851465",
+              "name": "Company Website",
+              "value": "={{ $json['Company Website'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1ade7634-fbc9-44ed-85bc-1cde07679647",
+              "name": "Company name",
+              "value": "={{ $json['Company name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f5252955-1d90-4236-beeb-2b909dda2207",
+              "name": "Industry",
+              "value": "={{ $json.Industry }}",
+              "type": "string"
+            },
+            {
+              "id": "236d18b8-63d4-47ee-a701-4ba3672f619f",
+              "name": "Company LinkedIn",
+              "value": "={{ $json['Company LinkedIn'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7bbd5dd1-a8a2-4ef8-913a-e4aa68c4c1a9",
+              "name": "rowNumber",
+              "value": "={{ $json.row_number }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        920,
+        -140
+      ],
+      "id": "d8c7cae7-538a-4bfb-98a2-de4ecb30ff21",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['Company Website'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        -120
+      ],
+      "id": "693ad648-ec06-4492-b62d-65ded8bac51b",
+      "name": "HTTP Request",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "links",
+              "cssSelector": "a[href]",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1320,
+        -60
+      ],
+      "id": "1b1e4871-60fd-43d6-ad2e-150f2984404b",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const links = item.json.links || [];\n  const out = { ...item.json };\n\n  const norm = (url) => {\n    try { const u = new URL(url); u.hash=''; u.search=''; return u.toString(); }\n    catch { return url; }\n  };\n\n  const pick = (re) => {\n    const hit = links.find(h => typeof h === 'string' && re.test(h));\n    return hit ? norm(hit) : '';\n  };\n\n  out['Instagram link'] = pick(/https?:\\/\\/(www\\.)?instagram\\.com\\//i);\n  out['FaceBook link']  = pick(/https?:\\/\\/(www\\.)?facebook\\.com\\//i);\n  out['YouTube link']   = pick(/https?:\\/\\/(www\\.)?youtube\\.com\\/(channel|@|c\\/|user\\/)|https?:\\/\\/youtu\\.be\\//i);\n  out['TikTok link']    = pick(/https?:\\/\\/(www\\.)?tiktok\\.com\\//i);\n  out['Pinterest link'] = pick(/https?:\\/\\/(www\\.)?pinterest\\./i);\n  out['X link']         = pick(/https?:\\/\\/(www\\.)?(x\\.com|twitter\\.com)\\//i);\n\n  return { json: out };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        -80
+      ],
+      "id": "ca694fea-cc68-406c-bad7-3b9a5d6aa739",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit?gid=663626393#gid=663626393&fvid=617411565",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 663626393,
+          "mode": "list",
+          "cachedResultName": "Companies for LG",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=663626393"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Edit Fields').item.json.rowNumber }}",
+            "Instagram link": "={{ $json['Instagram link'] }}",
+            "YouTube link": "={{ $json['YouTube link'] }}",
+            "Pinterest link": "={{ $json['Pinterest link'] }}",
+            "FaceBook link": "={{ $json['FaceBook link'] }}",
+            "TikTok link": "={{ $json['TikTok link'] }}",
+            "X link": "={{ $json['X link'] }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Country",
+              "displayName": "Country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company LinkedIn",
+              "displayName": "Company LinkedIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Website",
+              "displayName": "Company Website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Needed profession",
+              "displayName": "Needed profession",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Is in CRM",
+              "displayName": "Is in CRM",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contacted at",
+              "displayName": "Contacted at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sent Email",
+              "displayName": "Sent Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "LG Manager",
+              "displayName": "LG Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "AI manager",
+              "displayName": "AI manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company size",
+              "displayName": "Company size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created at",
+              "displayName": "Created at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Instagram link",
+              "displayName": "Instagram link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "YouTube link",
+              "displayName": "YouTube link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pinterest link",
+              "displayName": "Pinterest link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "FaceBook link",
+              "displayName": "FaceBook link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TikTok link",
+              "displayName": "TikTok link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "X link",
+              "displayName": "X link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comment",
+              "displayName": "Comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1740,
+        -80
+      ],
+      "id": "a2de0399-d49b-4fcf-b944-247153debc58",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ON1rXznsMRdSLNBf",
+          "name": "Admin Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 3,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1080,
+        200
+      ],
+      "id": "37a26e26-5208-439d-871b-043ad284903f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 1.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1960,
+        -80
+      ],
+      "id": "4420e04d-915e-4c7c-ad7c-3147952012bc",
+      "name": "Wait",
+      "webhookId": "d8f48376-6c02-4fb7-8fad-49410ee17a3d"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "bb9f58c7-879b-4589-a303-fa29d92e509b",
+  "triggerCount": 0,
+  "tags": []
+}
