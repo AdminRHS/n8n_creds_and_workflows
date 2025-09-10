@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-09T07:24:17.575Z",
-  "updatedAt": "2025-09-09T14:11:04.483Z",
+  "updatedAt": "2025-09-10T06:44:15.838Z",
   "id": "ZqwvqzdtaxRk4D2e",
   "name": "Update LG Companies Social Media",
   "active": false,
@@ -38,8 +38,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.6,
       "position": [
-        220,
-        0
+        320,
+        -40
       ],
       "id": "41269fdc-bc15-4563-bb8d-ee0211dd56cd",
       "name": "Google Sheets",
@@ -409,8 +409,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1080,
-        200
+        640,
+        -140
       ],
       "id": "37a26e26-5208-439d-871b-043ad284903f",
       "name": "Loop Over Items"
@@ -540,7 +540,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "bb9f58c7-879b-4589-a303-fa29d92e509b",
+  "versionId": "ac6e6090-4d0f-465a-a4b4-ec9f7d848412",
   "triggerCount": 0,
   "tags": []
 }

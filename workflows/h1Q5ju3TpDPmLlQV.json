@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-27T15:03:19.927Z",
-  "updatedAt": "2025-09-04T12:46:18.512Z",
+  "updatedAt": "2025-09-10T07:08:31.563Z",
   "id": "h1Q5ju3TpDPmLlQV",
   "name": "CRM Matching",
   "active": true,
@@ -35,10 +35,10 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 663626393,
+          "value": 761155993,
           "mode": "list",
-          "cachedResultName": "Companies for LG",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=663626393"
+          "cachedResultName": "Copy of Companies for LG",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=761155993"
         },
         "filtersUI": {
           "values": [
@@ -301,10 +301,10 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 663626393,
+          "value": 761155993,
           "mode": "list",
-          "cachedResultName": "Companies for LG",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=663626393"
+          "cachedResultName": "Copy of Companies for LG",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jxVLpFuxAcVNL-xKLaAtgFlaQ_Sk7tm83O7L-8eyqYg/edit#gid=761155993"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -796,15 +796,15 @@
       "recurrenceRules": []
     },
     "global": {
-      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvY3JtLXMuY29tXC9hcGlcL3YxXC9hdXRoXC9sb2dpbiIsImlhdCI6MTc1Njk5NjIwNSwiZXhwIjoxNzg4NTMyMjA1LCJuYmYiOjE3NTY5OTYyMDUsImp0aSI6IjRvTU9kUlBzZDBkdXpSdUYiLCJzdWIiOjkxMjQsInBydiI6IjgxOGY1Yzk4YWNlMjM3NTMyZDlkNDk0M2ZkOGVmYjU0MGI4NTViNDIiLCJyZW1lbWJlciI6MSwidHlwZSI6MX0.6svcderHy-e9ZPtIYI22h9x_2VkQDnsQGd48rSjTjlA",
-      "token_expires": "2026-09-04T14:30:05.442750Z"
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvY3JtLXMuY29tXC9hcGlcL3YxXC9hdXRoXC9sb2dpbiIsImlhdCI6MTc1NzQ5MjExMCwiZXhwIjoxNzg5MDI4MTEwLCJuYmYiOjE3NTc0OTIxMTAsImp0aSI6IlRkYlVid3oyeEh5dVVBMnYiLCJzdWIiOjkxMjQsInBydiI6IjgxOGY1Yzk4YWNlMjM3NTMyZDlkNDk0M2ZkOGVmYjU0MGI4NTViNDIiLCJyZW1lbWJlciI6MSwidHlwZSI6MX0.7SFPswpRm9j15-YWGK70bP0LYbQt2iZPCCTzVTj6QFE",
+      "token_expires": "2026-09-10T08:15:10.410528Z"
     }
   },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "35b17dae-5b09-4e76-a5f1-11645afe6d87",
+  "versionId": "3cd1437e-364e-453d-990d-0af8133160c5",
   "triggerCount": 1,
   "tags": []
 }
