@@ -1,0 +1,36 @@
+{
+  "createdAt": "2025-09-11T08:10:59.336Z",
+  "updatedAt": "2025-09-11T09:01:03.441Z",
+  "id": "iRR7EROZLsLKxJ5q",
+  "name": "Parse Google Search leads",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "leadparser",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0747f0e3-1da7-4781-8009-63677653ff71",
+      "name": "Webhook",
+      "webhookId": "d2ed5f19-38de-4c07-8fe5-f9ded06d1481"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "1bad956c-e2e4-4bb8-91a0-bd6f22438cee",
+  "triggerCount": 1,
+  "tags": []
+}
